@@ -15,15 +15,19 @@ const app = document.getElementById("app");
 
 let mode = "login";
 
-// ---------------- AUTH SCREEN ----------------
+// ================= AUTH SCREEN =================
 
 function renderAuth() {
   app.innerHTML = `
     <main class="app">
-      <div class="logo">TRUSTED <span>OP</span></div>
+      <div class="logo">
+        TRUSTED <span>OP</span>
+      </div>
 
       <section class="auth-card">
-        <h1>${mode === "login" ? "Welcome Back" : "Create Account"}</h1>
+        <h1>
+          ${mode === "login" ? "Welcome Back" : "Create Account"}
+        </h1>
 
         <p>
           ${
@@ -82,21 +86,37 @@ function renderAuth() {
             required
           />
 
-          <button class="primary-btn" id="submitBtn" type="submit">
+          <button
+            class="primary-btn"
+            id="submitBtn"
+            type="submit"
+          >
             ${mode === "login" ? "Login" : "Create Account"}
           </button>
 
           <p class="signup-text">
             ${
               mode === "login"
-                ? `Don't have an account?
-                   <button type="button" class="link-btn" id="switchMode">
-                     Create Account
-                   </button>`
-                : `Already have an account?
-                   <button type="button" class="link-btn" id="switchMode">
-                     Login
-                   </button>`
+                ? `
+                  Don't have an account?
+                  <button
+                    type="button"
+                    class="link-btn"
+                    id="switchMode"
+                  >
+                    Create Account
+                  </button>
+                `
+                : `
+                  Already have an account?
+                  <button
+                    type="button"
+                    class="link-btn"
+                    id="switchMode"
+                  >
+                    Login
+                  </button>
+                `
             }
           </p>
 
@@ -126,7 +146,7 @@ function renderAuth() {
     });
 }
 
-// ---------------- AUTH ----------------
+// ================= EMAIL AUTH =================
 
 async function handleEmailAuth(event) {
   event.preventDefault();
@@ -143,6 +163,7 @@ async function handleEmailAuth(event) {
     document.getElementById("submitBtn");
 
   submitBtn.disabled = true;
+
   submitBtn.textContent =
     mode === "login"
       ? "Logging in..."
@@ -182,25 +203,33 @@ async function handleEmailAuth(event) {
     renderDashboard(backendUser);
 
   } catch (error) {
-    console.error(error);
+    console.error("AUTH ERROR:", error);
 
     let message = "Something went wrong.";
 
     if (error.code === "auth/email-already-in-use") {
       message = "This email is already registered.";
-    } else if (error.code === "auth/invalid-email") {
+    }
+
+    else if (error.code === "auth/invalid-email") {
       message = "Please enter a valid email.";
-    } else if (error.code === "auth/weak-password") {
+    }
+
+    else if (error.code === "auth/weak-password") {
       message =
         "Password must be at least 6 characters.";
-    } else if (
+    }
+
+    else if (
       error.code === "auth/invalid-credential" ||
       error.code === "auth/wrong-password" ||
       error.code === "auth/user-not-found"
     ) {
       message =
         "Email or password is incorrect.";
-    } else if (error.code === "auth/too-many-requests") {
+    }
+
+    else if (error.code === "auth/too-many-requests") {
       message =
         "Too many attempts. Please try again later.";
     }
@@ -213,6 +242,7 @@ async function handleEmailAuth(event) {
 
     if (button) {
       button.disabled = false;
+
       button.textContent =
         mode === "login"
           ? "Login"
@@ -221,7 +251,7 @@ async function handleEmailAuth(event) {
   }
 }
 
-// ---------------- BACKEND ----------------
+// ================= BACKEND =================
 
 async function verifyBackendUser(idToken) {
   const response = await fetch(
@@ -246,7 +276,7 @@ async function verifyBackendUser(idToken) {
   return data.user;
 }
 
-// ---------------- DASHBOARD ----------------
+// ================= DASHBOARD =================
 
 function renderDashboard(user) {
   const email =
@@ -261,6 +291,7 @@ function renderDashboard(user) {
     <main class="dashboard">
 
       <header class="topbar">
+
         <div>
           <div class="dashboard-logo">
             TRUSTED <span>OP</span>
@@ -278,9 +309,11 @@ function renderDashboard(user) {
         >
           Logout
         </button>
+
       </header>
 
       <section class="balance-card">
+
         <div>
           <p class="balance-label">
             Available Balance
@@ -296,26 +329,39 @@ function renderDashboard(user) {
         <div class="wallet-icon">
           ₹
         </div>
+
       </section>
 
       <section class="quick-actions">
 
-        <button class="dashboard-action">
+        <button
+          class="dashboard-action"
+          type="button"
+        >
           <span>➕</span>
           <strong>Add Money</strong>
         </button>
 
-        <button class="dashboard-action">
+        <button
+          class="dashboard-action"
+          type="button"
+        >
           <span>💸</span>
           <strong>Withdraw</strong>
         </button>
 
-        <button class="dashboard-action">
+        <button
+          class="dashboard-action"
+          type="button"
+        >
           <span>🎮</span>
           <strong>Tournaments</strong>
         </button>
 
-        <button class="dashboard-action">
+        <button
+          class="dashboard-action"
+          type="button"
+        >
           <span>🏆</span>
           <strong>My Matches</strong>
         </button>
@@ -325,21 +371,33 @@ function renderDashboard(user) {
       <section class="section-card">
 
         <div class="section-title">
-          <h2>Upcoming Tournaments</h2>
-          <button class="see-all">
+          <h2>
+            Upcoming Tournaments
+          </h2>
+
+          <button
+            class="see-all"
+            type="button"
+          >
             View All
           </button>
         </div>
 
         <div class="empty-state">
-          <div class="empty-icon">🎮</div>
 
-          <h3>No tournaments yet</h3>
+          <div class="empty-icon">
+            🎮
+          </div>
+
+          <h3>
+            No tournaments yet
+          </h3>
 
           <p>
             Upcoming Trusted OP tournaments
             will appear here.
           </p>
+
         </div>
 
       </section>
@@ -347,40 +405,65 @@ function renderDashboard(user) {
       <section class="section-card">
 
         <div class="section-title">
-          <h2>Account</h2>
+          <h2>
+            Account
+          </h2>
         </div>
 
         <div class="profile-row">
+
           <div class="avatar">
-            ${email.charAt(0).toUpperCase()}
+            ${escapeHtml(
+              email.charAt(0).toUpperCase()
+            )}
           </div>
 
           <div class="profile-info">
-            <strong>${escapeHtml(email)}</strong>
-            <span>UID: ${escapeHtml(shortUid)}</span>
+
+            <strong>
+              ${escapeHtml(email)}
+            </strong>
+
+            <span>
+              UID: ${escapeHtml(shortUid)}
+            </span>
+
           </div>
+
         </div>
 
       </section>
 
       <nav class="bottom-nav">
 
-        <button class="nav-item active">
+        <button
+          class="nav-item active"
+          type="button"
+        >
           <span>🏠</span>
           <small>Home</small>
         </button>
 
-        <button class="nav-item">
+        <button
+          class="nav-item"
+          type="button"
+        >
           <span>🎮</span>
           <small>Tournaments</small>
         </button>
 
-        <button class="nav-item">
+        <button
+          class="nav-item"
+          type="button"
+        >
           <span>🏆</span>
           <small>Matches</small>
         </button>
 
-        <button class="nav-item">
+        <button
+          class="nav-item"
+          type="button"
+        >
           <span>👤</span>
           <small>Profile</small>
         </button>
@@ -393,13 +476,16 @@ function renderDashboard(user) {
   document
     .getElementById("logoutBtn")
     .addEventListener("click", async () => {
+
       await signOut(auth);
+
       mode = "login";
+
       renderAuth();
     });
 }
 
-// ---------------- SECURITY ----------------
+// ================= SECURITY =================
 
 function escapeHtml(value) {
   return String(value)
@@ -410,7 +496,7 @@ function escapeHtml(value) {
     .replaceAll("'", "&#039;");
 }
 
-// ---------------- MESSAGE ----------------
+// ================= MESSAGE =================
 
 function showMessage(message, type) {
   const box =
@@ -426,22 +512,28 @@ function showMessage(message, type) {
 
   if (type === "error") {
     box.style.background = "#35151a";
-  } else if (type === "success") {
+  }
+
+  else if (type === "success") {
     box.style.background = "#12351f";
-  } else {
+  }
+
+  else {
     box.style.background = "#18202d";
   }
 }
 
-// ---------------- AUTH STATE ----------------
+// ================= AUTH STATE =================
 
 onAuthStateChanged(auth, async (user) => {
+
   if (!user) {
     renderAuth();
     return;
   }
 
   try {
+
     const idToken =
       await user.getIdToken();
 
@@ -451,12 +543,14 @@ onAuthStateChanged(auth, async (user) => {
     renderDashboard(backendUser);
 
   } catch (error) {
+
     console.error(
       "SESSION ERROR:",
       error.message
     );
 
     await signOut(auth);
+
     renderAuth();
   }
 });
