@@ -26,7 +26,7 @@ button {
 }
 
 /* =========================
-   AUTH
+   AUTH / LOGIN
 ========================= */
 
 .app {
@@ -87,7 +87,7 @@ button {
 
 .auth-tabs button.active {
   background: #ff3b30;
-  color: #fff;
+  color: #ffffff;
   border-color: #ff3b30;
 }
 
@@ -99,4 +99,376 @@ button {
 
 .form input {
   width: 100%;
-  background
+  background: #0b0d12;
+  color: #ffffff;
+  border: 1px solid #303442;
+  border-radius: 10px;
+  padding: 14px;
+  outline: none;
+}
+
+.form input::placeholder {
+  color: #6f7585;
+}
+
+.form input:focus {
+  border-color: #ff3b30;
+}
+
+.primary-btn {
+  width: 100%;
+  border: none;
+  background: #ff3b30;
+  color: #ffffff;
+  font-weight: 700;
+  padding: 14px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.primary-btn:hover {
+  opacity: 0.9;
+}
+
+.primary-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.signup-text {
+  text-align: center;
+  color: #9da3b4;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  color: #ff3b30;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+/* =========================
+   DASHBOARD
+========================= */
+
+.dashboard {
+  width: 100%;
+  max-width: 1100px;
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 24px 24px 110px;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.dashboard-logo {
+  font-size: 28px;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+
+.dashboard-logo span {
+  color: #ff3b30;
+}
+
+.welcome {
+  color: #9da3b4;
+  margin-top: 6px;
+  font-size: 14px;
+}
+
+.logout-btn {
+  border: 1px solid #303442;
+  background: #181b24;
+  color: #ffffff;
+  padding: 10px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  border-color: #ff3b30;
+}
+
+/* =========================
+   BALANCE CARD
+========================= */
+
+.balance-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, #171a22, #101219);
+  border: 1px solid #292d38;
+  border-radius: 18px;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+
+.balance-label {
+  color: #9da3b4;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.balance-card h1 {
+  font-size: 36px;
+  margin-bottom: 6px;
+}
+
+.balance-note {
+  color: #73798a;
+  font-size: 13px;
+}
+
+.wallet-icon {
+  width: 54px;
+  height: 54px;
+  display: grid;
+  place-items: center;
+  background: #ff3b30;
+  border-radius: 15px;
+  font-size: 25px;
+  font-weight: 900;
+}
+
+/* =========================
+   QUICK ACTIONS
+========================= */
+
+.quick-actions {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.dashboard-action {
+  border: 1px solid #292d38;
+  background: #11131a;
+  color: #ffffff;
+  padding: 18px 12px;
+  border-radius: 14px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: 0.2s ease;
+}
+
+.dashboard-action:hover {
+  border-color: #ff3b30;
+  transform: translateY(-1px);
+}
+
+.dashboard-action span {
+  font-size: 24px;
+}
+
+.dashboard-action strong {
+  font-size: 13px;
+}
+
+/* =========================
+   SECTION CARDS
+========================= */
+
+.section-card {
+  background: #11131a;
+  border: 1px solid #252936;
+  border-radius: 18px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.section-title h2 {
+  font-size: 19px;
+}
+
+.see-all {
+  background: none;
+  border: none;
+  color: #ff3b30;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 30px 15px;
+  color: #9da3b4;
+}
+
+.empty-icon {
+  font-size: 38px;
+  margin-bottom: 10px;
+}
+
+.empty-state h3 {
+  color: #ffffff;
+  margin-bottom: 8px;
+}
+
+.empty-state p {
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* =========================
+   PROFILE
+========================= */
+
+.profile-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  background: #ff3b30;
+  border-radius: 50%;
+  color: #ffffff;
+  font-weight: 900;
+  font-size: 20px;
+}
+
+.profile-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.profile-info strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.profile-info span {
+  color: #73798a;
+  font-size: 12px;
+}
+
+/* =========================
+   BOTTOM NAVIGATION
+========================= */
+
+.bottom-nav {
+  position: fixed;
+  left: 50%;
+  bottom: 14px;
+  transform: translateX(-50%);
+  width: min(680px, calc(100% - 28px));
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  background: #11131a;
+  border: 1px solid #292d38;
+  border-radius: 18px;
+  padding: 8px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+  z-index: 20;
+}
+
+.nav-item {
+  border: none;
+  background: none;
+  color: #73798a;
+  padding: 8px;
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+}
+
+.nav-item span {
+  font-size: 20px;
+}
+
+.nav-item small {
+  font-size: 10px;
+}
+
+.nav-item.active {
+  color: #ff3b30;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 700px) {
+  .dashboard {
+    padding: 18px 14px 105px;
+  }
+
+  .quick-actions {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .balance-card h1 {
+    font-size: 30px;
+  }
+}
+
+@media (max-width: 480px) {
+  .app {
+    padding: 16px;
+  }
+
+  .auth-card {
+    padding: 22px;
+  }
+
+  .auth-card h1 {
+    font-size: 23px;
+  }
+
+  .dashboard-logo {
+    font-size: 23px;
+  }
+
+  .logout-btn {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+
+  .balance-card {
+    padding: 18px;
+  }
+
+  .balance-card h1 {
+    font-size: 28px;
+  }
+
+  .section-card {
+    padding: 16px;
+  }
+}
