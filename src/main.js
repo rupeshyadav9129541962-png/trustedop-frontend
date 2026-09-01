@@ -15,9 +15,9 @@ const app = document.getElementById("app");
 
 let mode = "login";
 
-// ---------------- UI ----------------
+// ---------------- AUTH SCREEN ----------------
 
-function render() {
+function renderAuth() {
   app.innerHTML = `
     <main class="app">
       <div class="logo">TRUSTED <span>OP</span></div>
@@ -74,7 +74,9 @@ function render() {
             type="password"
             placeholder="Password"
             autocomplete="${
-              mode === "login" ? "current-password" : "new-password"
+              mode === "login"
+                ? "current-password"
+                : "new-password"
             }"
             minlength="6"
             required
@@ -111,20 +113,20 @@ function render() {
     .getElementById("switchMode")
     .addEventListener("click", () => {
       mode = mode === "login" ? "signup" : "login";
-      render();
+      renderAuth();
     });
 
   document
     .getElementById("mobileTab")
     .addEventListener("click", () => {
       showMessage(
-        "Mobile OTP will be added in the next step.",
+        "Mobile OTP will be added later.",
         "info"
       );
     });
 }
 
-// ---------------- FIREBASE AUTH ----------------
+// ---------------- AUTH ----------------
 
 async function handleEmailAuth(event) {
   event.preventDefault();
@@ -134,15 +136,17 @@ async function handleEmailAuth(event) {
     .value
     .trim();
 
-  const password = document
-    .getElementById("password")
-    .value;
+  const password =
+    document.getElementById("password").value;
 
-  const submitBtn = document.getElementById("submitBtn");
+  const submitBtn =
+    document.getElementById("submitBtn");
 
   submitBtn.disabled = true;
   submitBtn.textContent =
-    mode === "login" ? "Logging in..." : "Creating account...";
+    mode === "login"
+      ? "Logging in..."
+      : "Creating account...";
 
   try {
     let userCredential;
@@ -154,11 +158,6 @@ async function handleEmailAuth(event) {
           email,
           password
         );
-
-      showMessage(
-        "Account created successfully!",
-        "success"
-      );
     } else {
       userCredential =
         await signInWithEmailAndPassword(
@@ -166,56 +165,51 @@ async function handleEmailAuth(event) {
           email,
           password
         );
-
-      showMessage(
-        "Login successful!",
-        "success"
-      );
     }
 
-    // Get Firebase ID token
     const idToken =
       await userCredential.user.getIdToken();
 
-    // Verify token with Trusted OP backend
-    await verifyBackendUser(idToken);
+    const backendUser =
+      await verifyBackendUser(idToken);
+
+    if (!backendUser) {
+      throw new Error(
+        "Backend authentication failed"
+      );
+    }
+
+    renderDashboard(backendUser);
 
   } catch (error) {
-    console.error("AUTH ERROR:", error);
+    console.error(error);
 
     let message = "Something went wrong.";
 
-    switch (error.code) {
-      case "auth/email-already-in-use":
-        message = "This email is already registered.";
-        break;
-
-      case "auth/invalid-email":
-        message = "Please enter a valid email.";
-        break;
-
-      case "auth/weak-password":
-        message =
-          "Password must be at least 6 characters.";
-        break;
-
-      case "auth/invalid-credential":
-      case "auth/wrong-password":
-      case "auth/user-not-found":
-        message =
-          "Email or password is incorrect.";
-        break;
-
-      case "auth/too-many-requests":
-        message =
-          "Too many attempts. Please try again later.";
-        break;
+    if (error.code === "auth/email-already-in-use") {
+      message = "This email is already registered.";
+    } else if (error.code === "auth/invalid-email") {
+      message = "Please enter a valid email.";
+    } else if (error.code === "auth/weak-password") {
+      message =
+        "Password must be at least 6 characters.";
+    } else if (
+      error.code === "auth/invalid-credential" ||
+      error.code === "auth/wrong-password" ||
+      error.code === "auth/user-not-found"
+    ) {
+      message =
+        "Email or password is incorrect.";
+    } else if (error.code === "auth/too-many-requests") {
+      message =
+        "Too many attempts. Please try again later.";
     }
 
     showMessage(message, "error");
 
   } finally {
-    const button = document.getElementById("submitBtn");
+    const button =
+      document.getElementById("submitBtn");
 
     if (button) {
       button.disabled = false;
@@ -227,51 +221,200 @@ async function handleEmailAuth(event) {
   }
 }
 
-// ---------------- BACKEND AUTH TEST ----------------
+// ---------------- BACKEND ----------------
 
 async function verifyBackendUser(idToken) {
-  try {
-    const response = await fetch(
-      `${API_URL}/api/me`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${idToken}`,
-          "Content-Type": "application/json"
-        }
+  const response = await fetch(
+    `${API_URL}/api/me`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${idToken}`
       }
-    );
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(
-        data.message || "Backend authentication failed"
-      );
     }
+  );
 
-    console.log(
-      "Trusted OP backend user:",
-      data.user
-    );
+  const data = await response.json();
 
-  } catch (error) {
-    console.error(
-      "BACKEND AUTH ERROR:",
-      error.message
-    );
-
-    showMessage(
-      "Firebase login successful, but backend connection failed.",
-      "error"
+  if (!response.ok) {
+    throw new Error(
+      data.message ||
+      "Backend authentication failed"
     );
   }
+
+  return data.user;
+}
+
+// ---------------- DASHBOARD ----------------
+
+function renderDashboard(user) {
+  const email =
+    user.email || "Trusted OP User";
+
+  const shortUid =
+    user.uid
+      ? user.uid.substring(0, 10) + "..."
+      : "";
+
+  app.innerHTML = `
+    <main class="dashboard">
+
+      <header class="topbar">
+        <div>
+          <div class="dashboard-logo">
+            TRUSTED <span>OP</span>
+          </div>
+
+          <p class="welcome">
+            Welcome back 👋
+          </p>
+        </div>
+
+        <button
+          id="logoutBtn"
+          class="logout-btn"
+          type="button"
+        >
+          Logout
+        </button>
+      </header>
+
+      <section class="balance-card">
+        <div>
+          <p class="balance-label">
+            Available Balance
+          </p>
+
+          <h1>₹0.00</h1>
+
+          <p class="balance-note">
+            Wallet will be connected to backend
+          </p>
+        </div>
+
+        <div class="wallet-icon">
+          ₹
+        </div>
+      </section>
+
+      <section class="quick-actions">
+
+        <button class="dashboard-action">
+          <span>➕</span>
+          <strong>Add Money</strong>
+        </button>
+
+        <button class="dashboard-action">
+          <span>💸</span>
+          <strong>Withdraw</strong>
+        </button>
+
+        <button class="dashboard-action">
+          <span>🎮</span>
+          <strong>Tournaments</strong>
+        </button>
+
+        <button class="dashboard-action">
+          <span>🏆</span>
+          <strong>My Matches</strong>
+        </button>
+
+      </section>
+
+      <section class="section-card">
+
+        <div class="section-title">
+          <h2>Upcoming Tournaments</h2>
+          <button class="see-all">
+            View All
+          </button>
+        </div>
+
+        <div class="empty-state">
+          <div class="empty-icon">🎮</div>
+
+          <h3>No tournaments yet</h3>
+
+          <p>
+            Upcoming Trusted OP tournaments
+            will appear here.
+          </p>
+        </div>
+
+      </section>
+
+      <section class="section-card">
+
+        <div class="section-title">
+          <h2>Account</h2>
+        </div>
+
+        <div class="profile-row">
+          <div class="avatar">
+            ${email.charAt(0).toUpperCase()}
+          </div>
+
+          <div class="profile-info">
+            <strong>${escapeHtml(email)}</strong>
+            <span>UID: ${escapeHtml(shortUid)}</span>
+          </div>
+        </div>
+
+      </section>
+
+      <nav class="bottom-nav">
+
+        <button class="nav-item active">
+          <span>🏠</span>
+          <small>Home</small>
+        </button>
+
+        <button class="nav-item">
+          <span>🎮</span>
+          <small>Tournaments</small>
+        </button>
+
+        <button class="nav-item">
+          <span>🏆</span>
+          <small>Matches</small>
+        </button>
+
+        <button class="nav-item">
+          <span>👤</span>
+          <small>Profile</small>
+        </button>
+
+      </nav>
+
+    </main>
+  `;
+
+  document
+    .getElementById("logoutBtn")
+    .addEventListener("click", async () => {
+      await signOut(auth);
+      mode = "login";
+      renderAuth();
+    });
+}
+
+// ---------------- SECURITY ----------------
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 }
 
 // ---------------- MESSAGE ----------------
 
 function showMessage(message, type) {
-  const box = document.getElementById("message");
+  const box =
+    document.getElementById("message");
 
   if (!box) return;
 
@@ -293,24 +436,27 @@ function showMessage(message, type) {
 // ---------------- AUTH STATE ----------------
 
 onAuthStateChanged(auth, async (user) => {
-  if (user) {
-    console.log("Logged in:", user.uid);
+  if (!user) {
+    renderAuth();
+    return;
+  }
 
-    try {
-      const idToken = await user.getIdToken();
+  try {
+    const idToken =
+      await user.getIdToken();
 
+    const backendUser =
       await verifyBackendUser(idToken);
-    } catch (error) {
-      console.error(
-        "SESSION ERROR:",
-        error.message
-      );
-    }
-  } else {
-    console.log("No user logged in");
+
+    renderDashboard(backendUser);
+
+  } catch (error) {
+    console.error(
+      "SESSION ERROR:",
+      error.message
+    );
+
+    await signOut(auth);
+    renderAuth();
   }
 });
-
-// ---------------- START ----------------
-
-render();
