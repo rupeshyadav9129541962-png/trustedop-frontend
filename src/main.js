@@ -14,8 +14,9 @@ const API_URL = "https://trustedop-backend-1.onrender.com";
 const app = document.getElementById("app");
 
 let mode = "login";
+let currentUser = null;
 
-// ================= AUTH SCREEN =================
+// ================= AUTH =================
 
 function renderAuth() {
   app.innerHTML = `
@@ -38,13 +39,8 @@ function renderAuth() {
         </p>
 
         <div class="auth-tabs">
-          <button id="emailTab" class="active" type="button">
-            Email
-          </button>
-
-          <button id="mobileTab" type="button">
-            Mobile OTP
-          </button>
+          <button class="active" type="button">Email</button>
+          <button id="mobileTab" type="button">Mobile OTP</button>
         </div>
 
         <div id="message"></div>
@@ -146,7 +142,7 @@ function renderAuth() {
     });
 }
 
-// ================= EMAIL AUTH =================
+// ================= EMAIL LOGIN =================
 
 async function handleEmailAuth(event) {
   event.preventDefault();
@@ -163,24 +159,23 @@ async function handleEmailAuth(event) {
     document.getElementById("submitBtn");
 
   submitBtn.disabled = true;
-
   submitBtn.textContent =
     mode === "login"
       ? "Logging in..."
       : "Creating account...";
 
   try {
-    let userCredential;
+    let credential;
 
     if (mode === "signup") {
-      userCredential =
+      credential =
         await createUserWithEmailAndPassword(
           auth,
           email,
           password
         );
     } else {
-      userCredential =
+      credential =
         await signInWithEmailAndPassword(
           auth,
           email,
@@ -188,50 +183,35 @@ async function handleEmailAuth(event) {
         );
     }
 
-    const idToken =
-      await userCredential.user.getIdToken();
+    const token =
+      await credential.user.getIdToken();
 
-    const backendUser =
-      await verifyBackendUser(idToken);
+    const user =
+      await verifyBackendUser(token);
 
-    if (!backendUser) {
-      throw new Error(
-        "Backend authentication failed"
-      );
-    }
+    currentUser = user;
 
-    renderDashboard(backendUser);
+    renderHome();
 
   } catch (error) {
-    console.error("AUTH ERROR:", error);
+    console.error(error);
 
     let message = "Something went wrong.";
 
     if (error.code === "auth/email-already-in-use") {
       message = "This email is already registered.";
-    }
-
-    else if (error.code === "auth/invalid-email") {
+    } else if (error.code === "auth/invalid-email") {
       message = "Please enter a valid email.";
-    }
-
-    else if (error.code === "auth/weak-password") {
+    } else if (error.code === "auth/weak-password") {
       message =
         "Password must be at least 6 characters.";
-    }
-
-    else if (
+    } else if (
       error.code === "auth/invalid-credential" ||
       error.code === "auth/wrong-password" ||
       error.code === "auth/user-not-found"
     ) {
       message =
         "Email or password is incorrect.";
-    }
-
-    else if (error.code === "auth/too-many-requests") {
-      message =
-        "Too many attempts. Please try again later.";
     }
 
     showMessage(message, "error");
@@ -242,7 +222,6 @@ async function handleEmailAuth(event) {
 
     if (button) {
       button.disabled = false;
-
       button.textContent =
         mode === "login"
           ? "Login"
@@ -251,15 +230,14 @@ async function handleEmailAuth(event) {
   }
 }
 
-// ================= BACKEND =================
+// ================= BACKEND AUTH =================
 
-async function verifyBackendUser(idToken) {
+async function verifyBackendUser(token) {
   const response = await fetch(
     `${API_URL}/api/me`,
     {
-      method: "GET",
       headers: {
-        Authorization: `Bearer ${idToken}`
+        Authorization: `Bearer ${token}`
       }
     }
   );
@@ -276,17 +254,9 @@ async function verifyBackendUser(idToken) {
   return data.user;
 }
 
-// ================= DASHBOARD =================
+// ================= HOME =================
 
-function renderDashboard(user) {
-  const email =
-    user.email || "Trusted OP User";
-
-  const shortUid =
-    user.uid
-      ? user.uid.substring(0, 10) + "..."
-      : "";
-
+function renderHome() {
   app.innerHTML = `
     <main class="dashboard">
 
@@ -298,7 +268,7 @@ function renderDashboard(user) {
           </div>
 
           <p class="welcome">
-            Welcome back 👋
+            Welcome to Trusted OP 👋
           </p>
         </div>
 
@@ -312,6 +282,451 @@ function renderDashboard(user) {
 
       </header>
 
+      <section class="section-card">
+
+        <div class="section-title">
+          <h2>🔥 Live & Upcoming Contests</h2>
+
+          <button
+            id="refreshContests"
+            class="see-all"
+            type="button"
+          >
+            Refresh
+          </button>
+        </div>
+
+        <div class="contest-list">
+
+          ${contestCard({
+            id: "solo-10",
+            title: "SOLO MATCH",
+            mode: "SOLO",
+            entry: "₹10",
+            prize: "₹20",
+            kill: "₹2",
+            players: "10",
+            time: "Today • 8:00 PM"
+          })}
+
+          ${contestCard({
+            id: "solo-20",
+            title: "SOLO PRO MATCH",
+            mode: "SOLO",
+            entry: "₹20",
+            prize: "₹40",
+            kill: "₹4",
+            players: "10",
+            time: "Today • 9:00 PM"
+          })}
+
+          ${contestCard({
+            id: "duo-20",
+            title: "DUO MATCH",
+            mode: "DUO",
+            entry: "₹20",
+            prize: "₹40",
+            kill: "₹4",
+            players: "10 Teams",
+            time: "Tomorrow • 7:00 PM"
+          })}
+
+        </div>
+
+      </section>
+
+      <nav class="bottom-nav">
+
+        <button
+          class="nav-item active"
+          id="homeNav"
+          type="button"
+        >
+          <span>🏠</span>
+          <small>Home</small>
+        </button>
+
+        <button
+          class="nav-item"
+          id="matchesNav"
+          type="button"
+        >
+          <span>🏆</span>
+          <small>My Matches</small>
+        </button>
+
+        <button
+          class="nav-item"
+          id="walletNav"
+          type="button"
+        >
+          <span>💰</span>
+          <small>Wallet</small>
+        </button>
+
+        <button
+          class="nav-item"
+          id="profileNav"
+          type="button"
+        >
+          <span>👤</span>
+          <small>Profile</small>
+        </button>
+
+      </nav>
+
+    </main>
+  `;
+
+  document
+    .getElementById("logoutBtn")
+    .addEventListener("click", logout);
+
+  document
+    .getElementById("refreshContests")
+    .addEventListener("click", renderHome);
+
+  document
+    .getElementById("matchesNav")
+    .addEventListener("click", renderMyMatches);
+
+  document
+    .getElementById("walletNav")
+    .addEventListener("click", renderWallet);
+
+  document
+    .getElementById("profileNav")
+    .addEventListener("click", renderProfile);
+
+  document
+    .querySelectorAll(".contest-card")
+    .forEach((card) => {
+      card.addEventListener("click", () => {
+        const id = card.dataset.id;
+        renderMatchDetails(id);
+      });
+    });
+}
+
+// ================= CONTEST CARD =================
+
+function contestCard(contest) {
+  return `
+    <article
+      class="contest-card"
+      data-id="${contest.id}"
+    >
+
+      <div class="contest-header">
+
+        <div>
+          <span class="contest-badge">
+            ${contest.mode}
+          </span>
+
+          <h3>
+            ${contest.title}
+          </h3>
+        </div>
+
+        <span class="contest-time">
+          🕐 ${contest.time}
+        </span>
+
+      </div>
+
+      <div class="contest-stats">
+
+        <div>
+          <small>Entry Fee</small>
+          <strong>${contest.entry}</strong>
+        </div>
+
+        <div>
+          <small>Prize Pool</small>
+          <strong>${contest.prize}</strong>
+        </div>
+
+        <div>
+          <small>Per Kill</small>
+          <strong>${contest.kill}</strong>
+        </div>
+
+        <div>
+          <small>Players</small>
+          <strong>${contest.players}</strong>
+        </div>
+
+      </div>
+
+      <button
+        class="contest-join"
+        type="button"
+      >
+        View Match Details →
+      </button>
+
+    </article>
+  `;
+}
+
+// ================= MATCH DETAILS =================
+
+function renderMatchDetails(contestId) {
+  const contests = {
+    "solo-10": {
+      title: "SOLO MATCH",
+      mode: "SOLO",
+      entry: "₹10",
+      prize: "₹20",
+      kill: "₹2",
+      players: "10 Players",
+      map: "Bermuda",
+      time: "Today • 8:00 PM"
+    },
+
+    "solo-20": {
+      title: "SOLO PRO MATCH",
+      mode: "SOLO",
+      entry: "₹20",
+      prize: "₹40",
+      kill: "₹4",
+      players: "10 Players",
+      map: "Bermuda",
+      time: "Today • 9:00 PM"
+    },
+
+    "duo-20": {
+      title: "DUO MATCH",
+      mode: "DUO",
+      entry: "₹20",
+      prize: "₹40",
+      kill: "₹4",
+      players: "10 Teams",
+      map: "Bermuda",
+      time: "Tomorrow • 7:00 PM"
+    }
+  };
+
+  const contest = contests[contestId];
+
+  if (!contest) {
+    renderHome();
+    return;
+  }
+
+  app.innerHTML = `
+    <main class="dashboard">
+
+      <header class="topbar">
+
+        <button
+          id="backBtn"
+          class="logout-btn"
+          type="button"
+        >
+          ← Back
+        </button>
+
+        <div class="dashboard-logo">
+          TRUSTED <span>OP</span>
+        </div>
+
+        <div></div>
+
+      </header>
+
+      <section class="section-card">
+
+        <span class="contest-badge">
+          ${contest.mode}
+        </span>
+
+        <h1 class="match-title">
+          ${contest.title}
+        </h1>
+
+        <p class="match-time">
+          🕐 ${contest.time}
+        </p>
+
+        <div class="match-stats">
+
+          <div>
+            <small>Entry Fee</small>
+            <strong>${contest.entry}</strong>
+          </div>
+
+          <div>
+            <small>Prize Pool</small>
+            <strong>${contest.prize}</strong>
+          </div>
+
+          <div>
+            <small>Per Kill</small>
+            <strong>${contest.kill}</strong>
+          </div>
+
+          <div>
+            <small>Players</small>
+            <strong>${contest.players}</strong>
+          </div>
+
+          <div>
+            <small>Map</small>
+            <strong>${contest.map}</strong>
+          </div>
+
+        </div>
+
+      </section>
+
+      <section class="section-card">
+
+        <div class="section-title">
+          <h2>📋 Match Rules</h2>
+        </div>
+
+        <div class="rules">
+
+          <p>• Teaming is strictly prohibited.</p>
+          <p>• Only registered players are allowed.</p>
+          <p>• Hack or unfair gameplay = permanent ban.</p>
+          <p>• Room ID & Password will be released before match.</p>
+          <p>• Follow Trusted OP official match rules.</p>
+
+        </div>
+
+      </section>
+
+      <section class="section-card">
+
+        <div class="section-title">
+          <h2>🎮 Match Room</h2>
+        </div>
+
+        <div class="room-locked">
+
+          <div class="empty-icon">
+            🔒
+          </div>
+
+          <h3>
+            Room details locked
+          </h3>
+
+          <p>
+            Room ID and Password will appear
+            after the admin releases them.
+          </p>
+
+        </div>
+
+      </section>
+
+      <button
+        id="joinBtn"
+        class="primary-btn"
+        type="button"
+      >
+        Join Contest — ${contest.entry}
+      </button>
+
+    </main>
+  `;
+
+  document
+    .getElementById("backBtn")
+    .addEventListener("click", renderHome);
+
+  document
+    .getElementById("joinBtn")
+    .addEventListener("click", () => {
+      showMessage(
+        "Joining system will be connected to wallet later.",
+        "info"
+      );
+    });
+}
+
+// ================= MY MATCHES =================
+
+function renderMyMatches() {
+  app.innerHTML = `
+    <main class="dashboard">
+
+      <header class="topbar">
+
+        <div class="dashboard-logo">
+          TRUSTED <span>OP</span>
+        </div>
+
+        <button
+          id="backHome"
+          class="logout-btn"
+          type="button"
+        >
+          Home
+        </button>
+
+      </header>
+
+      <section class="section-card">
+
+        <div class="section-title">
+          <h2>🏆 My Matches</h2>
+        </div>
+
+        <div class="empty-state">
+
+          <div class="empty-icon">
+            🏆
+          </div>
+
+          <h3>
+            No joined matches
+          </h3>
+
+          <p>
+            Your joined contests will appear here.
+          </p>
+
+        </div>
+
+      </section>
+
+      ${bottomNav("matches")}
+
+    </main>
+  `;
+
+  setupNavigation();
+
+  document
+    .getElementById("backHome")
+    .addEventListener("click", renderHome);
+}
+
+// ================= WALLET =================
+
+function renderWallet() {
+  app.innerHTML = `
+    <main class="dashboard">
+
+      <header class="topbar">
+
+        <div>
+          <div class="dashboard-logo">
+            TRUSTED <span>OP</span>
+          </div>
+
+          <p class="welcome">
+            Your Wallet
+          </p>
+        </div>
+
+      </header>
+
       <section class="balance-card">
 
         <div>
@@ -322,7 +737,7 @@ function renderDashboard(user) {
           <h1>₹0.00</h1>
 
           <p class="balance-note">
-            Wallet will be connected to backend
+            Secure wallet
           </p>
         </div>
 
@@ -334,36 +749,14 @@ function renderDashboard(user) {
 
       <section class="quick-actions">
 
-        <button
-          class="dashboard-action"
-          type="button"
-        >
+        <button class="dashboard-action">
           <span>➕</span>
           <strong>Add Money</strong>
         </button>
 
-        <button
-          class="dashboard-action"
-          type="button"
-        >
+        <button class="dashboard-action">
           <span>💸</span>
           <strong>Withdraw</strong>
-        </button>
-
-        <button
-          class="dashboard-action"
-          type="button"
-        >
-          <span>🎮</span>
-          <strong>Tournaments</strong>
-        </button>
-
-        <button
-          class="dashboard-action"
-          type="button"
-        >
-          <span>🏆</span>
-          <strong>My Matches</strong>
         </button>
 
       </section>
@@ -371,44 +764,59 @@ function renderDashboard(user) {
       <section class="section-card">
 
         <div class="section-title">
-          <h2>
-            Upcoming Tournaments
-          </h2>
-
-          <button
-            class="see-all"
-            type="button"
-          >
-            View All
-          </button>
+          <h2>Transaction History</h2>
         </div>
 
         <div class="empty-state">
 
           <div class="empty-icon">
-            🎮
+            💳
           </div>
 
           <h3>
-            No tournaments yet
+            No transactions
           </h3>
 
           <p>
-            Upcoming Trusted OP tournaments
-            will appear here.
+            Your transactions will appear here.
           </p>
 
         </div>
 
       </section>
 
-      <section class="section-card">
+      ${bottomNav("wallet")}
 
-        <div class="section-title">
-          <h2>
-            Account
-          </h2>
+    </main>
+  `;
+
+  setupNavigation();
+}
+
+// ================= PROFILE =================
+
+function renderProfile() {
+  const email =
+    currentUser?.email || "Trusted OP User";
+
+  app.innerHTML = `
+    <main class="dashboard">
+
+      <header class="topbar">
+
+        <div>
+          <div class="dashboard-logo">
+            TRUSTED <span>OP</span>
+          </div>
+
+          <p class="welcome">
+            My Profile
+          </p>
         </div>
+
+      </header>
+
+      <section class="section-card">
 
         <div class="profile-row">
 
@@ -425,7 +833,10 @@ function renderDashboard(user) {
             </strong>
 
             <span>
-              UID: ${escapeHtml(shortUid)}
+              UID:
+              ${escapeHtml(
+                currentUser?.uid || ""
+              )}
             </span>
 
           </div>
@@ -434,66 +845,139 @@ function renderDashboard(user) {
 
       </section>
 
-      <nav class="bottom-nav">
+      <section class="section-card">
+
+        <div class="section-title">
+          <h2>Account</h2>
+        </div>
 
         <button
-          class="nav-item active"
+          id="profileLogout"
+          class="primary-btn"
           type="button"
         >
-          <span>🏠</span>
-          <small>Home</small>
+          Logout
         </button>
 
-        <button
-          class="nav-item"
-          type="button"
-        >
-          <span>🎮</span>
-          <small>Tournaments</small>
-        </button>
+      </section>
 
-        <button
-          class="nav-item"
-          type="button"
-        >
-          <span>🏆</span>
-          <small>Matches</small>
-        </button>
-
-        <button
-          class="nav-item"
-          type="button"
-        >
-          <span>👤</span>
-          <small>Profile</small>
-        </button>
-
-      </nav>
+      ${bottomNav("profile")}
 
     </main>
   `;
 
+  setupNavigation();
+
   document
-    .getElementById("logoutBtn")
-    .addEventListener("click", async () => {
-
-      await signOut(auth);
-
-      mode = "login";
-
-      renderAuth();
-    });
+    .getElementById("profileLogout")
+    .addEventListener("click", logout);
 }
 
-// ================= SECURITY =================
+// ================= BOTTOM NAV =================
 
-function escapeHtml(value) {
-  return String(value)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
+function bottomNav(active) {
+  return `
+    <nav class="bottom-nav">
+
+      <button
+        class="nav-item ${active === "home" ? "active" : ""}"
+        id="homeNav"
+        type="button"
+      >
+        <span>🏠</span>
+        <small>Home</small>
+      </button>
+
+      <button
+        class="nav-item ${active === "matches" ? "active" : ""}"
+        id="matchesNav"
+        type="button"
+      >
+        <span>🏆</span>
+        <small>My Matches</small>
+      </button>
+
+      <button
+        class="nav-item ${active === "wallet" ? "active" : ""}"
+        id="walletNav"
+        type="button"
+      >
+        <span>💰</span>
+        <small>Wallet</small>
+      </button>
+
+      <button
+        class="nav-item ${active === "profile" ? "active" : ""}"
+        id="profileNav"
+        type="button"
+      >
+        <span>👤</span>
+        <small>Profile</small>
+      </button>
+
+    </nav>
+  `;
+}
+
+function setupNavigation() {
+  const home =
+    document.getElementById("homeNav");
+
+  const matches =
+    document.getElementById("matchesNav");
+
+  const wallet =
+    document.getElementById("walletNav");
+
+  const profile =
+    document.getElementById("profileNav");
+
+  if (home) {
+    home.addEventListener(
+      "click",
+      renderHome
+    );
+  }
+
+  if (matches) {
+    matches.addEventListener(
+      "click",
+      renderMyMatches
+    );
+  }
+
+  if (wallet) {
+    wallet.addEventListener(
+      "click",
+      renderWallet
+    );
+  }
+
+  if (profile) {
+    profile.addEventListener(
+      "click",
+      renderProfile
+    );
+  }
+}
+
+// ================= LOGOUT =================
+
+async function logout() {
+  try {
+    await signOut(auth);
+
+    currentUser = null;
+    mode = "login";
+
+    renderAuth();
+
+  } catch (error) {
+    console.error(
+      "LOGOUT ERROR:",
+      error
+    );
+  }
 }
 
 // ================= MESSAGE =================
@@ -512,15 +996,22 @@ function showMessage(message, type) {
 
   if (type === "error") {
     box.style.background = "#35151a";
-  }
-
-  else if (type === "success") {
+  } else if (type === "success") {
     box.style.background = "#12351f";
-  }
-
-  else {
+  } else {
     box.style.background = "#18202d";
   }
+}
+
+// ================= SECURITY =================
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 }
 
 // ================= AUTH STATE =================
@@ -528,28 +1019,31 @@ function showMessage(message, type) {
 onAuthStateChanged(auth, async (user) => {
 
   if (!user) {
+    currentUser = null;
     renderAuth();
     return;
   }
 
   try {
 
-    const idToken =
+    const token =
       await user.getIdToken();
 
-    const backendUser =
-      await verifyBackendUser(idToken);
+    currentUser =
+      await verifyBackendUser(token);
 
-    renderDashboard(backendUser);
+    renderHome();
 
   } catch (error) {
 
     console.error(
       "SESSION ERROR:",
-      error.message
+      error
     );
 
     await signOut(auth);
+
+    currentUser = null;
 
     renderAuth();
   }
