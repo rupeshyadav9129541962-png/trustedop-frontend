@@ -1,9 +1,14 @@
 import { initializeApp } from "firebase/app";
+
 import {
   getAuth,
   setPersistence,
   browserLocalPersistence
 } from "firebase/auth";
+
+import {
+  getDatabase
+} from "firebase/database";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBYGg4tIwZ72iOPkYKD6Fw2PFVWRQMDjoM",
@@ -18,9 +23,16 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 export const auth = getAuth(app);
+export const db = getDatabase(app);
 
-setPersistence(auth, browserLocalPersistence).catch((error) => {
-  console.error("Firebase persistence error:", error);
+setPersistence(
+  auth,
+  browserLocalPersistence
+).catch((error) => {
+  console.error(
+    "Firebase persistence error:",
+    error
+  );
 });
 
 export default app;
