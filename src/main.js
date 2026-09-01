@@ -9,9 +9,13 @@ import {
   onAuthStateChanged
 } from "firebase/auth";
 
+const API_URL = "https://trustedop-backend-1.onrender.com";
+
 const app = document.getElementById("app");
 
 let mode = "login";
+
+// ---------------- UI ----------------
 
 function render() {
   app.innerHTML = `
@@ -22,14 +26,21 @@ function render() {
         <h1>${mode === "login" ? "Welcome Back" : "Create Account"}</h1>
 
         <p>
-          ${mode === "login"
-            ? "Login to your Trusted OP account"
-            : "Create your secure tournament account"}
+          ${
+            mode === "login"
+              ? "Login to your Trusted OP account"
+              : "Create your secure tournament account"
+          }
         </p>
 
         <div class="auth-tabs">
-          <button id="emailTab" class="active">Email</button>
-          <button id="mobileTab">Mobile OTP</button>
+          <button id="emailTab" class="active" type="button">
+            Email
+          </button>
+
+          <button id="mobileTab" type="button">
+            Mobile OTP
+          </button>
         </div>
 
         <div id="message"></div>
@@ -69,7 +80,7 @@ function render() {
             required
           />
 
-          <button class="primary-btn" type="submit">
+          <button class="primary-btn" id="submitBtn" type="submit">
             ${mode === "login" ? "Login" : "Create Account"}
           </button>
 
@@ -106,47 +117,158 @@ function render() {
   document
     .getElementById("mobileTab")
     .addEventListener("click", () => {
-      showMessage("Mobile OTP will be added in the next step.", "info");
+      showMessage(
+        "Mobile OTP will be added in the next step.",
+        "info"
+      );
     });
 }
+
+// ---------------- FIREBASE AUTH ----------------
 
 async function handleEmailAuth(event) {
   event.preventDefault();
 
-  const email = document.getElementById("email").value.trim();
-  const password = document.getElementById("password").value;
+  const email = document
+    .getElementById("email")
+    .value
+    .trim();
+
+  const password = document
+    .getElementById("password")
+    .value;
+
+  const submitBtn = document.getElementById("submitBtn");
+
+  submitBtn.disabled = true;
+  submitBtn.textContent =
+    mode === "login" ? "Logging in..." : "Creating account...";
 
   try {
+    let userCredential;
+
     if (mode === "signup") {
-      await createUserWithEmailAndPassword(auth, email, password);
+      userCredential =
+        await createUserWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
 
-      showMessage("Account created successfully!", "success");
+      showMessage(
+        "Account created successfully!",
+        "success"
+      );
     } else {
-      await signInWithEmailAndPassword(auth, email, password);
+      userCredential =
+        await signInWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
 
-      showMessage("Login successful!", "success");
+      showMessage(
+        "Login successful!",
+        "success"
+      );
     }
+
+    // Get Firebase ID token
+    const idToken =
+      await userCredential.user.getIdToken();
+
+    // Verify token with Trusted OP backend
+    await verifyBackendUser(idToken);
+
   } catch (error) {
-    console.error(error);
+    console.error("AUTH ERROR:", error);
 
     let message = "Something went wrong.";
 
-    if (error.code === "auth/email-already-in-use") {
-      message = "This email is already registered.";
-    } else if (error.code === "auth/invalid-email") {
-      message = "Please enter a valid email.";
-    } else if (error.code === "auth/weak-password") {
-      message = "Password must be at least 6 characters.";
-    } else if (
-      error.code === "auth/invalid-credential" ||
-      error.code === "auth/wrong-password"
-    ) {
-      message = "Email or password is incorrect.";
+    switch (error.code) {
+      case "auth/email-already-in-use":
+        message = "This email is already registered.";
+        break;
+
+      case "auth/invalid-email":
+        message = "Please enter a valid email.";
+        break;
+
+      case "auth/weak-password":
+        message =
+          "Password must be at least 6 characters.";
+        break;
+
+      case "auth/invalid-credential":
+      case "auth/wrong-password":
+      case "auth/user-not-found":
+        message =
+          "Email or password is incorrect.";
+        break;
+
+      case "auth/too-many-requests":
+        message =
+          "Too many attempts. Please try again later.";
+        break;
     }
 
     showMessage(message, "error");
+
+  } finally {
+    const button = document.getElementById("submitBtn");
+
+    if (button) {
+      button.disabled = false;
+      button.textContent =
+        mode === "login"
+          ? "Login"
+          : "Create Account";
+    }
   }
 }
+
+// ---------------- BACKEND AUTH TEST ----------------
+
+async function verifyBackendUser(idToken) {
+  try {
+    const response = await fetch(
+      `${API_URL}/api/me`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${idToken}`,
+          "Content-Type": "application/json"
+        }
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.message || "Backend authentication failed"
+      );
+    }
+
+    console.log(
+      "Trusted OP backend user:",
+      data.user
+    );
+
+  } catch (error) {
+    console.error(
+      "BACKEND AUTH ERROR:",
+      error.message
+    );
+
+    showMessage(
+      "Firebase login successful, but backend connection failed.",
+      "error"
+    );
+  }
+}
+
+// ---------------- MESSAGE ----------------
 
 function showMessage(message, type) {
   const box = document.getElementById("message");
@@ -154,6 +276,7 @@ function showMessage(message, type) {
   if (!box) return;
 
   box.textContent = message;
+
   box.style.marginBottom = "14px";
   box.style.padding = "10px";
   box.style.borderRadius = "8px";
@@ -167,10 +290,27 @@ function showMessage(message, type) {
   }
 }
 
-onAuthStateChanged(auth, (user) => {
+// ---------------- AUTH STATE ----------------
+
+onAuthStateChanged(auth, async (user) => {
   if (user) {
     console.log("Logged in:", user.uid);
+
+    try {
+      const idToken = await user.getIdToken();
+
+      await verifyBackendUser(idToken);
+    } catch (error) {
+      console.error(
+        "SESSION ERROR:",
+        error.message
+      );
+    }
+  } else {
+    console.log("No user logged in");
   }
 });
+
+// ---------------- START ----------------
 
 render();
