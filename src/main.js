@@ -1,64 +1,55 @@
-// ================================
-// TRUSTED OP - HOME SCREEN
-// ================================
+// ========================================
+// TRUSTED OP - MAIN JAVASCRIPT
+// ========================================
+
+
+// ========================================
+// PROMOTION
+// ========================================
 
 const promotions = [
   {
     title: "TRUSTED OP",
-    subtitle: "Play Tournament • Win Real Rewards",
-    image: "../Image/file_000000001d9071fb89ee875444fe92f4.png",
-    button: "JOIN NOW"
+    subtitle: "Play • Compete • Win",
+    image: "./Image/file_000000001d9071fb89ee875444fe92f4.png"
   }
 ];
 
-const matches = [
+
+// ========================================
+// TOURNAMENT CARDS
+// ========================================
+
+const tournaments = [
   {
     id: 1,
-    title: "SOLO BATTLE",
-    mode: "SOLO",
-    entry: "₹10",
-    prize: "₹500",
-    perKill: "₹5",
-    map: "Bermuda",
-    date: "Today",
-    time: "8:00 PM",
-    image: "../Image/file_000000003ae071fb8535359ee0b42157.png",
-    status: "JOIN NOW"
+    name: "1 FULL MAP",
+    image: "./Image/file_000000003ae071fb8535359ee0b42157.png"
   },
 
   {
     id: 2,
-    title: "DUO CLASH",
-    mode: "DUO",
-    entry: "₹20",
-    prize: "₹1,000",
-    perKill: "₹10",
-    map: "Bermuda",
-    date: "Today",
-    time: "9:00 PM",
-    image: "../Image/file_0000000070c082119a1f752d3655a033.png",
-    status: "JOIN NOW"
+    name: "2 FULL MAP 2",
+    image: "./Image/file_0000000070c082119a1f752d3655a033.png"
   },
 
   {
     id: 3,
-    title: "SQUAD WAR",
-    mode: "SQUAD",
-    entry: "₹40",
-    prize: "₹2,000",
-    perKill: "₹20",
-    map: "Purgatory",
-    date: "Tomorrow",
-    time: "8:30 PM",
-    image: "../Image/file_000000003ae071fb8535359ee0b42157.png",
-    status: "JOIN NOW"
+    name: "3 FULL MAP 3",
+    image: "./Image/file_000000001d9071fb89ee875444fe92f4.png"
+  },
+
+  {
+    id: 4,
+    name: "4 FULL MAP 4",
+    image: "./Image/file_000000003ae071fb8535359ee0b42157.png"
   }
 ];
 
 
-// ================================
+// ========================================
 // ELEMENTS
-// ================================
+// ========================================
 
 const promotionContainer =
   document.getElementById("promotionContainer");
@@ -67,9 +58,9 @@ const matchesContainer =
   document.getElementById("matchesContainer");
 
 
-// ================================
-// PROMOTION
-// ================================
+// ========================================
+// RENDER PROMOTION
+// ========================================
 
 function renderPromotion() {
 
@@ -93,17 +84,21 @@ function renderPromotion() {
             SPECIAL
           </span>
 
-          <h2>${promo.title}</h2>
+          <h2>
+            ${promo.title}
+          </h2>
 
-          <p>${promo.subtitle}</p>
+          <p>
+            ${promo.subtitle}
+          </p>
 
         </div>
 
         <button
           class="promo-button"
-          onclick="handlePromotion()"
+          onclick="openPromotion()"
         >
-          ${promo.button}
+          JOIN NOW
         </button>
 
       </div>
@@ -114,32 +109,28 @@ function renderPromotion() {
 }
 
 
-// ================================
-// MATCH CARDS
-// ================================
+// ========================================
+// RENDER TOURNAMENT CARDS
+// ========================================
 
-function renderMatches() {
+function renderTournaments() {
 
   if (!matchesContainer) return;
 
-  matchesContainer.innerHTML = matches.map(match => `
+  matchesContainer.innerHTML = tournaments.map(tournament => `
 
     <article
       class="match-card"
-      onclick="openMatch(${match.id})"
+      onclick="openTournament(${tournament.id})"
     >
 
       <div class="match-image-wrapper">
 
         <img
-          src="${match.image}"
-          alt="${match.title}"
+          src="${tournament.image}"
+          alt="${tournament.name}"
           class="match-image"
         >
-
-        <span class="match-status">
-          ${match.status}
-        </span>
 
       </div>
 
@@ -148,62 +139,11 @@ function renderMatches() {
 
         <div class="match-title-row">
 
-          <div>
-
-            <span class="mode">
-              ${match.mode}
-            </span>
-
-            <h3>${match.title}</h3>
-
-          </div>
-
-          <div class="prize-box">
-
-            <small>PRIZE</small>
-
-            <strong>${match.prize}</strong>
-
-          </div>
+          <h3>
+            ${tournament.name}
+          </h3>
 
         </div>
-
-
-        <div class="match-info">
-
-          <div>
-            <span>ENTRY</span>
-            <strong>${match.entry}</strong>
-          </div>
-
-          <div>
-            <span>PER KILL</span>
-            <strong>${match.perKill}</strong>
-          </div>
-
-          <div>
-            <span>MAP</span>
-            <strong>${match.map}</strong>
-          </div>
-
-        </div>
-
-
-        <div class="match-footer">
-
-          <span>🗓 ${match.date}</span>
-
-          <span>⏰ ${match.time}</span>
-
-        </div>
-
-
-        <button
-          class="join-button"
-          onclick="event.stopPropagation(); openMatch(${match.id})"
-        >
-          VIEW MATCH
-        </button>
 
       </div>
 
@@ -213,42 +153,120 @@ function renderMatches() {
 }
 
 
-// ================================
-// MATCH DETAILS
-// ================================
+// ========================================
+// TOURNAMENT CLICK
+// ========================================
 
-function openMatch(id) {
+function openTournament(id) {
 
-  const match =
-    matches.find(item => item.id === id);
+  const tournament =
+    tournaments.find(item => item.id === id);
 
-  if (!match) return;
+  if (!tournament) return;
 
-  alert(
-    `${match.title}\n\n` +
-    `Mode: ${match.mode}\n` +
-    `Entry: ${match.entry}\n` +
-    `Prize: ${match.prize}\n` +
-    `Per Kill: ${match.perKill}\n` +
-    `Map: ${match.map}\n` +
-    `Date: ${match.date}\n` +
-    `Time: ${match.time}`
+  // Match Details page will be connected here later.
+  console.log(
+    "Tournament selected:",
+    tournament.name
   );
+
 }
 
 
-// ================================
-// PROMOTION BUTTON
-// ================================
+// ========================================
+// PROMOTION CLICK
+// ========================================
 
-function handlePromotion() {
-  alert("Promotion opened!");
+function openPromotion() {
+
+  console.log("Promotion clicked");
+
 }
 
 
-// ================================
-// START
-// ================================
+// ========================================
+// PAGE ELEMENTS
+// ========================================
+
+const pages = {
+  home: document.getElementById("homePage"),
+  wallet: document.getElementById("walletPage"),
+  winners: document.getElementById("winnersPage"),
+  profile: document.getElementById("profilePage")
+};
+
+
+// ========================================
+// SHOW PAGE
+// ========================================
+
+function showPage(pageName) {
+
+  Object.keys(pages).forEach(page => {
+
+    if (pages[page]) {
+      pages[page].classList.add("hidden");
+    }
+
+  });
+
+
+  if (pages[pageName]) {
+    pages[pageName].classList.remove("hidden");
+  }
+
+
+  // Update bottom navigation
+
+  document
+    .querySelectorAll(".nav-item")
+    .forEach(item => {
+
+      item.classList.remove("active");
+
+      if (item.dataset.page === pageName) {
+        item.classList.add("active");
+      }
+
+    });
+
+
+  // Scroll to top
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+
+}
+
+
+// ========================================
+// BOTTOM NAVIGATION
+// ========================================
+
+document
+  .querySelectorAll(".nav-item")
+  .forEach(item => {
+
+    item.addEventListener("click", () => {
+
+      const page =
+        item.dataset.page;
+
+      showPage(page);
+
+    });
+
+  });
+
+
+// ========================================
+// START HOME
+// ========================================
 
 renderPromotion();
-renderMatches();
+
+renderTournaments();
+
+showPage("home");
