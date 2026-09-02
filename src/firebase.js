@@ -1,17 +1,15 @@
 import { initializeApp } from "firebase/app";
-
 import {
   getAuth,
   setPersistence,
   browserLocalPersistence
 } from "firebase/auth";
-
 import {
   getDatabase
 } from "firebase/database";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBYGg4tIwZ72iOPkYKD6Fw2PFVWRQMDjoM",
+  apiKey: "...",
   authDomain: "trusted-op-new.firebaseapp.com",
   databaseURL: "https://trusted-op-new-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "trusted-op-new",
@@ -29,10 +27,7 @@ setPersistence(
   auth,
   browserLocalPersistence
 ).catch((error) => {
-  console.error(
-    "Firebase persistence error:",
-    error
-  );
+  console.error("Firebase persistence error:", error);
 });
 
 export default app;
