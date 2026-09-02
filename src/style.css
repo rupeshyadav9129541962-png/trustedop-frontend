@@ -1,6 +1,6 @@
 /* =========================================================
-   TRUSTED OP - FINAL STYLE
-   Matches current main.js
+   TRUSTED OP — FINAL RESPONSIVE CSS
+   Matches the FINAL main.js below
    ========================================================= */
 
 * {
@@ -10,15 +10,14 @@
 }
 
 :root {
-  --bg: #080812;
-  --bg-2: #0d0d1b;
-  --card: #121225;
-  --card-2: #18182e;
-  --border: rgba(255, 255, 255, 0.08);
-  --text: #ffffff;
+  --bg: #070711;
+  --bg2: #0d0d19;
+  --card: #121221;
+  --card2: #18182b;
+  --border: rgba(255,255,255,.08);
+  --text: #fff;
   --muted: #9292a8;
   --purple: #8b5cf6;
-  --purple-2: #6d28d9;
   --blue: #4f46e5;
   --red: #ef4444;
   --green: #22c55e;
@@ -40,8 +39,9 @@ body {
 }
 
 button {
-  font: inherit;
+  font-family: inherit;
   border: 0;
+  outline: none;
   cursor: pointer;
 }
 
@@ -51,12 +51,11 @@ img {
 }
 
 #app {
+  width: 100%;
   min-height: 100vh;
 }
 
-/* =========================================================
-   APP SHELL
-   ========================================================= */
+/* ================= APP ================= */
 
 .app-shell {
   width: 100%;
@@ -64,45 +63,46 @@ img {
   min-height: 100vh;
   margin: 0 auto;
   background:
-    radial-gradient(circle at top right, rgba(111, 55, 220, 0.12), transparent 35%),
+    radial-gradient(circle at top right, rgba(139,92,246,.12), transparent 35%),
     var(--bg);
-  padding-bottom: 82px;
+  padding-bottom: 88px;
 }
 
-/* =========================================================
-   HEADER
-   ========================================================= */
+/* ================= HEADER ================= */
 
 .app-header {
-  height: 72px;
-  padding: 12px 16px;
+  width: 100%;
+  min-height: 68px;
+  padding: 10px 14px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 10px;
+  background: rgba(7,7,17,.96);
   border-bottom: 1px solid var(--border);
-  background: rgba(8, 8, 18, 0.92);
   position: sticky;
   top: 0;
-  z-index: 20;
+  z-index: 30;
   backdrop-filter: blur(14px);
 }
 
 .brand {
+  min-width: 0;
   display: flex;
   align-items: center;
-  gap: 10px;
-  min-width: 0;
+  gap: 9px;
 }
 
 .brand-logo {
-  width: 43px;
-  height: 43px;
-  border-radius: 12px;
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  border-radius: 11px;
   overflow: hidden;
-  background: linear-gradient(135deg, var(--purple), var(--blue));
   display: flex;
   align-items: center;
   justify-content: center;
+  background: linear-gradient(135deg,var(--purple),var(--blue));
 }
 
 .header-logo {
@@ -111,360 +111,347 @@ img {
   object-fit: cover;
 }
 
-.brand-text {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+.brand-name {
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: .7px;
+  white-space: nowrap;
 }
 
-.brand-text strong {
-  font-size: 15px;
-  letter-spacing: 0.8px;
-}
-
-.brand-text small {
+.brand-subtitle {
+  margin-top: 2px;
   color: var(--purple);
-  font-size: 9px;
-  font-weight: 700;
+  font-size: 8px;
+  font-weight: 800;
   letter-spacing: 2px;
 }
 
 .header-actions {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
 }
 
-.coin-box,
-.icon-button {
-  height: 38px;
-  border-radius: 11px;
-  background: var(--card-2);
-  color: var(--text);
+.balance-box,
+.notification-btn {
+  height: 37px;
+  border-radius: 10px;
+  color: #fff;
+  background: var(--card2);
   border: 1px solid var(--border);
 }
 
-.coin-box {
-  padding: 0 11px;
-  font-size: 12px;
-  font-weight: 700;
+.balance-box {
+  padding: 0 10px;
+  font-size: 11px;
+  font-weight: 800;
 }
 
-.icon-button {
-  width: 38px;
+.notification-btn {
+  width: 37px;
   position: relative;
-  font-size: 17px;
+  font-size: 16px;
 }
 
-.notification-dot {
+.notification-badge {
   position: absolute;
-  top: -3px;
-  right: -3px;
+  top: -4px;
+  right: -4px;
   min-width: 16px;
   height: 16px;
   padding: 0 4px;
   border-radius: 20px;
-  background: var(--red);
-  color: white;
-  font-size: 9px;
   display: flex;
   align-items: center;
   justify-content: center;
+  background: var(--red);
+  color: #fff;
   border: 2px solid var(--bg);
+  font-size: 8px;
+  font-weight: 900;
 }
 
-/* =========================================================
-   PAGE CONTENT
-   ========================================================= */
+/* ================= COMMON ================= */
 
-.page-content {
-  padding: 20px 16px 25px;
+.page-content,
+.matches-page,
+.wallet-page,
+.menu-page {
+  width: 100%;
+  padding: 18px 14px 24px;
 }
 
 .page-title {
+  margin-bottom: 17px;
+  color: #fff;
+  font-size: 25px;
+  font-weight: 900;
+}
+
+.page-subtitle {
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: -10px;
   margin-bottom: 18px;
 }
 
-.page-title h1 {
-  font-size: 26px;
-  margin-bottom: 5px;
-}
-
-.page-title p {
-  color: var(--muted);
-  font-size: 13px;
-}
-
-/* =========================================================
-   WELCOME
-   ========================================================= */
+/* ================= HOME ================= */
 
 .welcome {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 18px;
+  margin-bottom: 16px;
 }
 
-.welcome small {
+.welcome-small {
   color: var(--muted);
-  font-size: 10px;
-  letter-spacing: 1.4px;
-  font-weight: 700;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
 }
 
-.welcome h2 {
-  margin-top: 4px;
+.welcome-name {
+  margin-top: 5px;
   font-size: 21px;
+  font-weight: 900;
 }
 
-.profile-avatar {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, var(--purple), var(--blue));
-  font-size: 20px;
-}
+/* ================= NOTICE ================= */
 
-/* =========================================================
-   NOTICE
-   ========================================================= */
-
-.notice-banner {
+.notice {
+  width: 100%;
+  min-height: 64px;
+  padding: 12px;
+  margin-bottom: 17px;
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 13px;
-  margin-bottom: 18px;
-  border-radius: 14px;
+  border-radius: 13px;
   background: linear-gradient(
     135deg,
-    rgba(139, 92, 246, 0.14),
-    rgba(79, 70, 229, 0.08)
+    rgba(139,92,246,.15),
+    rgba(79,70,229,.07)
   );
-  border: 1px solid rgba(139, 92, 246, 0.22);
+  border: 1px solid rgba(139,92,246,.22);
 }
 
-.notice-banner > div {
-  flex: 1;
-  min-width: 0;
+.notice-icon {
+  flex: 0 0 auto;
+  font-size: 19px;
 }
 
-.notice-banner strong {
-  display: block;
-  font-size: 10px;
+.notice-title {
   margin-bottom: 4px;
+  font-size: 9px;
+  font-weight: 900;
 }
 
-.notice-banner small {
+.notice-text {
   color: var(--muted);
-  font-size: 10px;
-  line-height: 1.4;
+  font-size: 9px;
+  line-height: 1.45;
 }
 
-.notice-banner > b {
-  font-size: 22px;
-  color: var(--muted);
-}
+/* ================= HERO ================= */
 
-/* =========================================================
-   HERO
-   ========================================================= */
-
-.hero-card {
+.hero {
+  width: 100%;
   min-height: 205px;
+  padding: 22px 19px;
   position: relative;
   overflow: hidden;
-  border-radius: 20px;
-  margin-bottom: 25px;
-  padding: 24px 20px;
+  border-radius: 19px;
+  margin-bottom: 24px;
   background:
-    radial-gradient(
-      circle at 85% 30%,
-      rgba(139, 92, 246, 0.45),
-      transparent 30%
-    ),
-    linear-gradient(135deg, #17112d, #101024 70%);
-  border: 1px solid rgba(139, 92, 246, 0.2);
+    radial-gradient(circle at 88% 35%, rgba(139,92,246,.42), transparent 32%),
+    linear-gradient(135deg,#19132e,#101021);
+  border: 1px solid rgba(139,92,246,.20);
 }
 
-.hero-content {
+.hero::after {
+  content: "";
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  right: -55px;
+  bottom: -70px;
+  border-radius: 50%;
+  background: rgba(139,92,246,.16);
+}
+
+.hero-label {
   position: relative;
   z-index: 2;
-  max-width: 70%;
-}
-
-.hero-content small {
-  color: #b9a6ff;
-  font-size: 9px;
+  color: #baa9ff;
+  font-size: 8px;
+  font-weight: 900;
   letter-spacing: 1.5px;
-  font-weight: 700;
 }
 
-.hero-content h1 {
-  font-size: 28px;
-  line-height: 0.95;
-  margin: 10px 0;
+.hero-title {
+  position: relative;
+  z-index: 2;
+  margin: 9px 0;
+  font-size: 29px;
+  line-height: .94;
   letter-spacing: 1px;
 }
 
-.hero-content h1 span {
+.hero-title span {
   color: var(--purple);
 }
 
-.hero-content p {
+.hero-text {
+  position: relative;
+  z-index: 2;
+  max-width: 230px;
   color: var(--muted);
-  font-size: 10px;
-  line-height: 1.4;
-  margin-bottom: 15px;
+  font-size: 9px;
+  line-height: 1.45;
+  margin-bottom: 14px;
 }
 
-.hero-content button {
+.hero-btn {
+  position: relative;
+  z-index: 3;
   padding: 10px 13px;
   border-radius: 9px;
-  background: linear-gradient(135deg, var(--purple), var(--blue));
-  color: white;
-  font-size: 10px;
-  font-weight: 800;
+  color: #fff;
+  background: linear-gradient(135deg,var(--purple),var(--blue));
+  font-size: 9px;
+  font-weight: 900;
 }
 
 .hero-gamepad {
   position: absolute;
-  right: 8px;
-  bottom: 12px;
-  font-size: 78px;
-  opacity: 0.22;
+  right: 7px;
+  bottom: 8px;
+  z-index: 1;
+  font-size: 76px;
+  opacity: .18;
   transform: rotate(-12deg);
 }
 
-/* =========================================================
-   SECTION HEADING
-   ========================================================= */
+/* ================= SECTION ================= */
 
-.section-heading {
+.section-head {
+  width: 100%;
+  margin: 20px 0 11px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 22px 0 12px;
+  gap: 10px;
 }
 
-.section-heading h2 {
-  font-size: 17px;
+.section-title {
+  font-size: 16px;
+  font-weight: 900;
 }
 
-.section-heading button {
-  background: transparent;
+.view-all {
+  flex-shrink: 0;
   color: var(--purple);
-  font-size: 11px;
-  font-weight: 700;
+  background: transparent;
+  font-size: 10px;
+  font-weight: 800;
 }
 
-/* =========================================================
-   MATCH STATS
-   ========================================================= */
+/* ================= STATS ================= */
 
 .match-stats {
+  width: 100%;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 9px;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 8px;
 }
 
-.stat-card {
-  min-height: 91px;
-  padding: 12px 8px;
-  border-radius: 14px;
+.match-stat {
+  min-width: 0;
+  min-height: 88px;
+  padding: 10px 6px;
+  border-radius: 13px;
   background: var(--card);
   border: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
 }
 
-.stat-card span {
-  font-size: 16px;
+.match-stat-icon {
+  font-size: 15px;
   margin-bottom: 4px;
 }
 
-.stat-card strong {
+.match-stat-number {
   font-size: 20px;
+  font-weight: 900;
 }
 
-.stat-card small {
-  color: var(--muted);
-  font-size: 8px;
+.match-stat-label {
   margin-top: 3px;
-  letter-spacing: 0.7px;
+  color: var(--muted);
+  font-size: 7px;
+  font-weight: 800;
+  letter-spacing: .7px;
 }
 
-/* =========================================================
-   FILTER TABS
-   ========================================================= */
+/* ================= FILTER ================= */
 
-.filter-tabs {
+.filters {
+  width: 100%;
   display: flex;
-  gap: 8px;
+  gap: 7px;
   overflow-x: auto;
-  padding-bottom: 3px;
-  margin-bottom: 15px;
+  margin-bottom: 14px;
+  padding-bottom: 2px;
   scrollbar-width: none;
 }
 
-.filter-tabs::-webkit-scrollbar {
+.filters::-webkit-scrollbar {
   display: none;
 }
 
-.filter-tabs button {
-  flex-shrink: 0;
-  padding: 9px 15px;
-  border-radius: 10px;
+.filter-btn {
+  flex: 0 0 auto;
+  padding: 8px 14px;
+  border-radius: 9px;
   color: var(--muted);
   background: var(--card);
   border: 1px solid var(--border);
-  font-size: 11px;
-  font-weight: 700;
+  font-size: 10px;
+  font-weight: 800;
 }
 
-.filter-tabs button.active {
-  color: white;
-  background: linear-gradient(135deg, var(--purple), var(--blue));
+.filter-btn.active {
+  color: #fff;
+  background: linear-gradient(135deg,var(--purple),var(--blue));
   border-color: transparent;
 }
 
-/* =========================================================
-   TOURNAMENT GRID
-   ========================================================= */
+/* ================= TOURNAMENT ================= */
 
 .tournament-grid {
+  width: 100%;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 10px;
 }
 
 .tournament-card {
+  min-width: 0;
   overflow: hidden;
-  border-radius: 15px;
+  border-radius: 14px;
   background: var(--card);
   border: 1px solid var(--border);
   cursor: pointer;
-  transition: transform 0.18s ease, border-color 0.18s ease;
+  transition: transform .15s ease;
 }
 
 .tournament-card:active {
-  transform: scale(0.98);
-}
-
-.tournament-card:hover {
-  border-color: rgba(139, 92, 246, 0.45);
+  transform: scale(.98);
 }
 
 .tournament-image {
   width: 100%;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 16/9;
   overflow: hidden;
-  background: linear-gradient(135deg, #1b1731, #111121);
+  background: linear-gradient(135deg,#1c1830,#10101f);
 }
 
 .tournament-image img {
@@ -473,427 +460,377 @@ img {
   object-fit: cover;
 }
 
-.clean-card-title {
-  padding: 11px 10px;
-  font-size: 12px;
-  font-weight: 800;
+.tournament-card-content {
+  width: 100%;
+}
+
+.tournament-title {
+  padding: 10px 9px;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 900;
   line-height: 1.25;
 }
 
-/* =========================================================
-   DETAILS PAGE
-   ========================================================= */
+/* ================= DETAILS ================= */
 
-.details-page {
-  padding-bottom: 0;
+.detail-page {
+  width: 100%;
+  min-height: 100vh;
+  padding-bottom: 25px;
 }
 
-.details-header {
-  height: 65px;
-  padding: 0 16px;
+.detail-header {
+  width: 100%;
+  height: 62px;
+  padding: 0 14px;
   display: grid;
-  grid-template-columns: 42px 1fr 42px;
+  grid-template-columns: 40px minmax(0,1fr) 40px;
   align-items: center;
   gap: 8px;
-  border-bottom: 1px solid var(--border);
-  background: rgba(8, 8, 18, 0.96);
   position: sticky;
   top: 0;
-  z-index: 20;
+  z-index: 30;
+  background: rgba(7,7,17,.97);
+  border-bottom: 1px solid var(--border);
   backdrop-filter: blur(14px);
 }
 
-.details-header button {
-  width: 38px;
-  height: 38px;
+.back-btn {
+  width: 37px;
+  height: 37px;
   border-radius: 10px;
+  color: #fff;
   background: var(--card);
-  color: white;
-  font-size: 27px;
-  line-height: 1;
+  font-size: 26px;
 }
 
-.details-header strong {
+.detail-header-title {
+  min-width: 0;
+  overflow: hidden;
   text-align: center;
-  font-size: 14px;
-  white-space: nowrap;
-  overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+  font-weight: 900;
 }
 
-.details-content {
-  padding: 16px;
-}
-
-.details-image {
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  border-radius: 17px;
+.detail-image {
+  width: calc(100% - 28px);
+  aspect-ratio: 16/9;
+  margin: 15px 14px 17px;
   overflow: hidden;
+  border-radius: 16px;
   background: var(--card);
-  margin-bottom: 18px;
 }
 
-.details-image img {
+.detail-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.details-main h1 {
-  font-size: 25px;
-  margin-bottom: 5px;
-}
-
-.details-game {
-  color: var(--purple);
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 1px;
-}
-
-.details-time {
-  color: var(--muted);
-  font-size: 11px;
-  margin-top: 8px;
-}
-
-.details-stats {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  margin-top: 15px;
-}
-
-.details-stats > div {
-  padding: 12px 8px;
-  min-height: 67px;
-  border-radius: 12px;
-  background: var(--card);
-  border: 1px solid var(--border);
-}
-
-.details-stats small {
-  display: block;
-  color: var(--muted);
-  font-size: 7px;
-  line-height: 1.3;
-  margin-bottom: 5px;
-}
-
-.details-stats strong {
-  font-size: 11px;
-}
-
-/* =========================================================
-   SLOT
-   ========================================================= */
-
-.slot-section {
-  margin-top: 18px;
-}
-
-.slot-bar {
+.detail-body {
   width: 100%;
-  height: 7px;
-  overflow: hidden;
-  border-radius: 20px;
-  background: #24243a;
+  padding: 0 14px 25px;
 }
 
-.slot-bar span {
-  display: block;
-  height: 100%;
-  border-radius: inherit;
-  background: linear-gradient(90deg, var(--purple), var(--blue));
+.detail-title {
+  font-size: 23px;
+  font-weight: 900;
 }
 
-.slot-info {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 7px;
-  color: var(--muted);
+.detail-description {
+  margin-top: 6px;
+  color: var(--purple);
   font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .6px;
 }
 
-/* =========================================================
-   RULES
-   ========================================================= */
-
-.rules-box {
-  margin-top: 20px;
-  padding: 15px;
+.detail-card {
+  width: 100%;
+  margin-top: 14px;
+  overflow: hidden;
   border-radius: 14px;
   background: var(--card);
   border: 1px solid var(--border);
 }
 
-.rules-box h3 {
-  font-size: 14px;
-  margin-bottom: 10px;
-}
-
-.rules-box ul {
-  padding-left: 17px;
-}
-
-.rules-box li {
-  color: var(--muted);
-  font-size: 10px;
-  line-height: 1.6;
-  margin-bottom: 3px;
-}
-
-/* =========================================================
-   JOIN BUTTON
-   ========================================================= */
-
-.join-button {
-  width: 100%;
-  height: 50px;
-  margin-top: 20px;
-  border-radius: 13px;
-  color: white;
-  background: linear-gradient(135deg, var(--purple), var(--blue));
+.detail-card-title {
+  padding: 13px 15px;
   font-size: 13px;
   font-weight: 900;
-  letter-spacing: 0.5px;
-  box-shadow: 0 8px 25px rgba(109, 40, 217, 0.25);
+  border-bottom: 1px solid var(--border);
 }
 
-.joined-button {
-  background: #26342b;
-  color: #6ee7a0;
-  box-shadow: none;
+.detail-row {
+  min-height: 43px;
+  padding: 9px 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border-bottom: 1px solid rgba(255,255,255,.045);
 }
 
-/* =========================================================
-   EMPTY STATE
-   ========================================================= */
-
-.empty-state {
-  text-align: center;
-  padding: 55px 20px;
+.detail-row:last-child {
+  border-bottom: 0;
 }
 
-.empty-state > div {
-  font-size: 45px;
-  margin-bottom: 14px;
-}
-
-.empty-state h2 {
-  font-size: 20px;
-  margin-bottom: 7px;
-}
-
-.empty-state p {
+.detail-row span:first-child {
   color: var(--muted);
-  font-size: 12px;
-  margin-bottom: 20px;
+  font-size: 10px;
 }
 
-.empty-state button {
-  padding: 12px 17px;
-  border-radius: 10px;
-  background: linear-gradient(135deg, var(--purple), var(--blue));
-  color: white;
+.detail-row span:last-child {
+  color: #fff;
   font-size: 10px;
   font-weight: 800;
+  text-align: right;
 }
 
-/* =========================================================
-   WALLET
-   ========================================================= */
+.contest-progress {
+  width: calc(100% - 32px);
+  height: 7px;
+  overflow: hidden;
+  border-radius: 20px;
+  background: #27273b;
+}
 
-.wallet-card {
-  padding: 22px;
-  border-radius: 18px;
+.contest-progress span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg,var(--purple),var(--blue));
+}
+
+.join-btn {
+  width: 100%;
+  min-height: 49px;
+  margin-top: 16px;
+  padding: 12px;
+  border-radius: 12px;
+  color: #fff;
+  background: linear-gradient(135deg,var(--purple),var(--blue));
+  font-size: 12px;
+  font-weight: 900;
+  box-shadow: 0 8px 25px rgba(109,40,217,.22);
+}
+
+/* ================= WALLET ================= */
+
+.wallet-balance {
+  width: 100%;
+  padding: 21px;
+  border-radius: 17px;
   background:
-    radial-gradient(circle at top right, rgba(139, 92, 246, 0.25), transparent 40%),
+    radial-gradient(circle at top right,rgba(139,92,246,.25),transparent 42%),
     var(--card);
   border: 1px solid var(--border);
 }
 
-.wallet-card > small {
+.wallet-balance-label {
   color: var(--muted);
-  font-size: 9px;
+  font-size: 8px;
+  font-weight: 800;
   letter-spacing: 1px;
 }
 
-.wallet-card h1 {
-  margin: 8px 0 22px;
-  font-size: 32px;
+.wallet-amount {
+  margin: 7px 0 21px;
+  font-size: 31px;
+  font-weight: 900;
 }
 
 .wallet-actions {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 9px;
+  gap: 8px;
 }
 
-.wallet-actions button {
-  padding: 12px 8px;
-  border-radius: 10px;
-  background: var(--card-2);
-  color: white;
+.wallet-action {
+  padding: 11px 7px;
+  border-radius: 9px;
+  color: #fff;
+  background: var(--card2);
   border: 1px solid var(--border);
   font-size: 9px;
-  font-weight: 800;
+  font-weight: 900;
 }
 
-.wallet-actions button:first-child {
-  background: linear-gradient(135deg, var(--purple), var(--blue));
-  border: 0;
+.wallet-action.primary {
+  background: linear-gradient(135deg,var(--purple),var(--blue));
+  border-color: transparent;
 }
 
-.wallet-info {
-  margin-top: 22px;
+.earn-card {
+  margin-top: 20px;
 }
 
-.wallet-info h3 {
-  font-size: 15px;
+.earn-card h3 {
   margin-bottom: 10px;
+  font-size: 14px;
 }
 
 .transaction {
+  width: 100%;
+  padding: 13px;
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 13px;
   border-radius: 13px;
   background: var(--card);
   border: 1px solid var(--border);
 }
 
-.transaction > span {
+.transaction-icon {
   width: 35px;
   height: 35px;
+  flex: 0 0 35px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 10px;
-  background: rgba(250, 204, 21, 0.1);
+  border-radius: 9px;
+  background: rgba(250,204,21,.1);
 }
 
-.transaction > div {
+.transaction-info {
+  min-width: 0;
   flex: 1;
 }
 
-.transaction strong {
+.transaction-info strong {
   display: block;
-  font-size: 11px;
+  font-size: 10px;
 }
 
-.transaction small {
+.transaction-info small {
+  display: block;
+  margin-top: 3px;
   color: var(--muted);
-  font-size: 9px;
+  font-size: 8px;
 }
 
-.transaction > b {
-  font-size: 11px;
+.transaction-amount {
+  flex-shrink: 0;
+  font-size: 10px;
+  font-weight: 900;
 }
 
-/* =========================================================
-   NOTIFICATIONS
-   ========================================================= */
+/* ================= NOTIFICATION ================= */
+
+.notification-list {
+  width: 100%;
+}
 
 .notification-item {
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 9px;
   display: flex;
-  gap: 11px;
-  padding: 15px;
-  margin-bottom: 10px;
-  border-radius: 14px;
+  gap: 10px;
+  border-radius: 13px;
   background: var(--card);
   border: 1px solid var(--border);
 }
 
-.notification-item > span {
-  font-size: 21px;
+.notification-icon {
+  font-size: 20px;
 }
 
-.notification-item strong {
+.notification-content {
+  min-width: 0;
+}
+
+.notification-content strong {
   display: block;
-  font-size: 12px;
   margin-bottom: 5px;
+  font-size: 11px;
 }
 
-.notification-item p {
+.notification-content p {
   color: var(--muted);
-  font-size: 10px;
+  font-size: 9px;
   line-height: 1.5;
 }
 
-/* =========================================================
-   MENU
-   ========================================================= */
+/* ================= MENU ================= */
 
 .menu-list {
+  width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 9px;
+  gap: 8px;
 }
 
 .menu-list button {
   width: 100%;
-  min-height: 54px;
-  padding: 0 15px;
+  min-height: 53px;
+  padding: 0 14px;
   display: flex;
   align-items: center;
   gap: 12px;
-  border-radius: 13px;
+  border-radius: 12px;
+  color: #fff;
   background: var(--card);
-  color: white;
   border: 1px solid var(--border);
   text-align: left;
 }
 
-.menu-list button > span {
+.menu-icon {
+  font-size: 17px;
+}
+
+.menu-label {
   flex: 1;
-  font-size: 12px;
-  font-weight: 700;
+  font-size: 11px;
+  font-weight: 800;
 }
 
-.menu-list button > b {
+.menu-arrow {
   color: var(--muted);
-  font-size: 20px;
-  font-weight: 400;
+  font-size: 19px;
 }
 
-/* =========================================================
-   PROFILE
-   ========================================================= */
+/* ================= PROFILE ================= */
 
 .profile-card {
-  text-align: center;
+  width: 100%;
   padding: 25px 15px;
-  border-radius: 18px;
+  text-align: center;
+  border-radius: 17px;
   background: var(--card);
   border: 1px solid var(--border);
 }
 
-.profile-avatar.large {
-  width: 75px;
-  height: 75px;
+.profile-avatar {
+  width: 72px;
+  height: 72px;
   margin: 0 auto 12px;
-  font-size: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: linear-gradient(135deg,var(--purple),var(--blue));
+  font-size: 28px;
 }
 
 .profile-card h2 {
   font-size: 19px;
-  margin-bottom: 5px;
 }
 
 .profile-card p {
+  margin-top: 5px;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 9px;
 }
 
 .profile-info {
-  margin-top: 15px;
+  margin-top: 12px;
   display: flex;
   flex-direction: column;
-  gap: 9px;
+  gap: 8px;
 }
 
 .profile-info > div {
@@ -906,176 +843,182 @@ img {
 .profile-info small {
   display: block;
   color: var(--muted);
-  font-size: 8px;
+  font-size: 7px;
   margin-bottom: 5px;
 }
 
 .profile-info strong {
-  font-size: 12px;
+  font-size: 11px;
 }
 
-/* =========================================================
-   BOTTOM NAV
-   ========================================================= */
+/* ================= EMPTY ================= */
+
+.empty-state {
+  padding: 60px 15px;
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 45px;
+  margin-bottom: 13px;
+}
+
+.empty-state h2 {
+  font-size: 19px;
+}
+
+.empty-state p {
+  margin: 7px 0 17px;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+/* ================= BOTTOM NAV ================= */
 
 .bottom-nav {
   position: fixed;
-  bottom: 0;
   left: 50%;
+  bottom: 0;
   transform: translateX(-50%);
   width: 100%;
   max-width: 520px;
   height: 70px;
-  padding: 7px 8px;
+  padding: 6px 6px;
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  background: rgba(12, 12, 25, 0.96);
+  grid-template-columns: repeat(5,minmax(0,1fr));
+  background: rgba(12,12,25,.97);
   border-top: 1px solid var(--border);
   backdrop-filter: blur(15px);
-  z-index: 50;
+  z-index: 100;
 }
 
 .bottom-nav button {
+  min-width: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 4px;
-  background: transparent;
   color: var(--muted);
+  background: transparent;
 }
 
 .bottom-nav button span {
-  font-size: 18px;
+  font-size: 17px;
   line-height: 1;
 }
 
 .bottom-nav button small {
-  font-size: 8px;
-  font-weight: 700;
+  font-size: 7px;
+  font-weight: 800;
 }
 
 .bottom-nav button.active {
   color: var(--purple);
 }
 
-.bottom-nav button.active span {
-  transform: translateY(-1px);
-}
-
-/* =========================================================
-   TOAST
-   ========================================================= */
+/* ================= TOAST ================= */
 
 .toast {
   position: fixed;
   left: 50%;
-  bottom: 88px;
-  transform: translate(-50%, 15px);
+  bottom: 86px;
+  z-index: 200;
   width: max-content;
   max-width: calc(100% - 30px);
-  padding: 12px 16px;
-  border-radius: 11px;
-  background: #202035;
-  color: white;
+  padding: 11px 15px;
+  border-radius: 10px;
+  color: #fff;
+  background: #222238;
   border: 1px solid var(--border);
-  font-size: 11px;
-  font-weight: 700;
+  font-size: 10px;
+  font-weight: 800;
   opacity: 0;
-  z-index: 100;
-  transition: all 0.25s ease;
+  transform: translate(-50%,15px);
+  transition: .25s ease;
 }
 
 .toast.show {
   opacity: 1;
-  transform: translate(-50%, 0);
+  transform: translate(-50%,0);
 }
 
-/* =========================================================
-   SMALL MOBILE
-   ========================================================= */
+/* ================= MOBILE ================= */
 
 @media (max-width: 390px) {
-  .page-content {
-    padding-left: 13px;
-    padding-right: 13px;
+  .page-content,
+  .matches-page,
+  .wallet-page,
+  .menu-page {
+    padding-left: 12px;
+    padding-right: 12px;
   }
 
-  .hero-card {
-    padding: 20px 16px;
+  .detail-body {
+    padding-left: 12px;
+    padding-right: 12px;
   }
 
-  .hero-content h1 {
-    font-size: 25px;
+  .detail-image {
+    width: calc(100% - 24px);
+    margin-left: 12px;
+    margin-right: 12px;
   }
 
-  .tournament-grid {
-    gap: 9px;
+  .hero {
+    padding-left: 16px;
+    padding-right: 16px;
   }
 
-  .clean-card-title {
-    font-size: 11px;
-    padding: 10px 8px;
-  }
-
-  .details-stats {
-    gap: 6px;
-  }
-
-  .details-stats > div {
-    padding: 10px 6px;
+  .hero-title {
+    font-size: 26px;
   }
 }
 
-/* =========================================================
-   VERY SMALL MOBILE
-   ========================================================= */
-
 @media (max-width: 360px) {
-  .page-content {
+  .app-header {
     padding-left: 10px;
     padding-right: 10px;
   }
 
-  .app-header {
-    padding-left: 11px;
-    padding-right: 11px;
+  .brand-logo {
+    width: 39px;
+    height: 39px;
+    flex-basis: 39px;
   }
 
-  .brand-text strong {
-    font-size: 13px;
+  .brand-name {
+    font-size: 12px;
   }
 
-  .coin-box {
-    padding: 0 8px;
+  .balance-box {
+    padding: 0 7px;
+    font-size: 10px;
   }
 
-  .hero-content {
-    max-width: 76%;
+  .notification-btn {
+    width: 34px;
   }
 
-  .hero-content h1 {
-    font-size: 23px;
+  .tournament-grid {
+    gap: 8px;
   }
 
-  .hero-gamepad {
-    font-size: 62px;
+  .tournament-title {
+    padding: 9px 7px;
+    font-size: 10px;
   }
 
   .match-stats {
-    gap: 6px;
+    gap: 5px;
   }
 
-  .stat-card {
-    padding-left: 5px;
-    padding-right: 5px;
+  .match-stat {
+    padding-left: 4px;
+    padding-right: 4px;
   }
 
-  .stat-card strong {
+  .match-stat-number {
     font-size: 18px;
-  }
-
-  .details-stats strong {
-    font-size: 10px;
   }
 }
