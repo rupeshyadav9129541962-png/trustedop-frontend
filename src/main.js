@@ -2,7 +2,8 @@
    TRUSTED OP — FINAL MAIN.JS
    Fully matches the CSS above
    ========================================================= */
-
+import { db } from "./firebase.js";
+import { ref, onValue } from "firebase/database";
 const app = document.getElementById("app");
 
 const LOGO = "./images/trusted-op-logo.png";
