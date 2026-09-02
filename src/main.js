@@ -12,8 +12,7 @@ const LOGO = "./images/trusted-op-logo.png";
    TOURNAMENT DATA
    ========================================================= */
 
-const tournaments = [
-  {
+let tournaments = [];
     id: "match-1",
     title: "BR FULL MAP",
     image: "./images/br-survival.jpg",
