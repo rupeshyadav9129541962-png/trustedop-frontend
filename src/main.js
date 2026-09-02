@@ -1,24 +1,18 @@
 /* =========================================================
-   TRUSTED OP — MAIN.JS
-   Firebase-connected tournament system
+   TRUSTED OP — FINAL TOURNAMENT UI
+   Firebase Connected
    ========================================================= */
 
 import { db } from "./firebase.js";
 import { ref, onValue } from "firebase/database";
 
 const app = document.getElementById("app");
-
 const LOGO = "./images/trusted-op-logo.png";
 
-/* =========================================================
-   TOURNAMENT DATA
-   ========================================================= */
-
 let tournaments = [];
-
-/* =========================================================
-   LOCAL DATA
-   ========================================================= */
+let currentPage = "home";
+let selectedGame = "";
+let contestTab = "UPCOMING";
 
 let balance = Number(
   localStorage.getItem("trusted_op_balance") || 811
@@ -27,19 +21,19 @@ let balance = Number(
 let joinedMatches = [];
 
 try {
-  const saved = JSON.parse(
+  joinedMatches = JSON.parse(
     localStorage.getItem("trusted_op_joined") || "[]"
   );
 
-  joinedMatches = Array.isArray(saved) ? saved : [];
+  if (!Array.isArray(joinedMatches)) {
+    joinedMatches = [];
+  }
 } catch {
   joinedMatches = [];
 }
 
-let currentPage = "home";
-
 /* =========================================================
-   FIREBASE TOURNAMENT LISTENER
+   FIREBASE
    ========================================================= */
 
 onValue(
@@ -49,11 +43,12 @@ onValue(
 
     tournaments = Object.entries(data).map(
       ([id, item]) => {
+
         const rules = Array.isArray(item.rules)
           ? item.rules
           : String(item.rules || "")
               .split("\n")
-              .map((rule) => rule.trim())
+              .map(x => x.trim())
               .filter(Boolean);
 
         return {
@@ -70,12 +65,16 @@ onValue(
 
           game:
             item.game ||
-            "FREE FIRE",
+            "BR Survival",
 
           type:
             item.mode ||
             item.type ||
-            "Squad",
+            "Solo",
+
+          mode:
+            item.mode ||
+            "Solo",
 
           prize:
             Number(
@@ -101,7 +100,7 @@ onValue(
             Number(
               item.slots ??
               item.totalSlots ??
-              0
+              20
             ),
 
           joined:
@@ -112,7 +111,7 @@ onValue(
 
           map:
             item.map ||
-            "",
+            "Bermuda",
 
           date:
             item.date ||
@@ -142,39 +141,11 @@ onValue(
       }
     );
 
-    /*
-     * Refresh current page whenever
-     * Firebase tournament data changes.
-     */
-
-    if (currentPage === "home") {
-      showHome();
-    }
-
-    if (currentPage === "tournaments") {
-      showTournaments();
-    }
-
-    if (currentPage === "details") {
-      /*
-       * Do not force the details page to change.
-       * User can continue viewing it normally.
-       */
-    }
-
-    if (currentPage === "matches") {
-      showMatches();
-    }
+    refreshPage();
   },
   (error) => {
-    console.error(
-      "Tournament Firebase error:",
-      error
-    );
-
-    toast(
-      "Tournament data load failed"
-    );
+    console.error(error);
+    toast("Tournament data load failed");
   }
 );
 
@@ -182,55 +153,21 @@ onValue(
    HELPERS
    ========================================================= */
 
-function saveData() {
-  localStorage.setItem(
-    "trusted_op_balance",
-    String(balance)
-  );
-
-  localStorage.setItem(
-    "trusted_op_joined",
-    JSON.stringify(joinedMatches)
-  );
-}
-
 function money(value) {
-  return (
-    "₹" +
-    Number(value || 0).toLocaleString(
-      "en-IN"
-    )
-  );
+  return "₹" + Number(value || 0).toLocaleString("en-IN");
 }
 
 function escapeHTML(value) {
-  const div =
-    document.createElement("div");
-
-  div.textContent =
-    value ?? "";
-
+  const div = document.createElement("div");
+  div.textContent = value ?? "";
   return div.innerHTML;
 }
 
-function imageHTML(
-  src,
-  alt = ""
-) {
+function imageHTML(src, alt = "") {
+
   if (!src) {
     return `
-      <div
-        style="
-          width:100%;
-          height:100%;
-          display:flex;
-          align-items:center;
-          justify-content:center;
-          background:#151522;
-          color:#777;
-          font-size:30px;
-        "
-      >
+      <div class="no-image">
         🎮
       </div>
     `;
@@ -245,20 +182,44 @@ function imageHTML(
   `;
 }
 
+function saveData() {
+
+  localStorage.setItem(
+    "trusted_op_balance",
+    String(balance)
+  );
+
+  localStorage.setItem(
+    "trusted_op_joined",
+    JSON.stringify(joinedMatches)
+  );
+}
+
+function isJoined(id) {
+  return joinedMatches.some(
+    item =>
+      typeof item === "string"
+        ? item === id
+        : item.id === id
+  );
+}
+
+function getJoined(id) {
+  return joinedMatches.find(
+    item =>
+      typeof item === "string"
+        ? item === id
+        : item.id === id
+  );
+}
+
 function toast(message) {
-  const old =
-    document.querySelector(
-      ".toast"
-    );
 
-  if (old) {
-    old.remove();
-  }
+  const old = document.querySelector(".toast");
 
-  const el =
-    document.createElement(
-      "div"
-    );
+  if (old) old.remove();
+
+  const el = document.createElement("div");
 
   el.className = "toast";
   el.textContent = message;
@@ -270,14 +231,33 @@ function toast(message) {
   });
 
   setTimeout(() => {
+
     el.classList.remove("show");
 
     setTimeout(() => {
-      if (el.parentNode) {
-        el.remove();
-      }
+      el.remove();
     }, 300);
-  }, 2300);
+
+  }, 2200);
+}
+
+function refreshPage() {
+
+  if (currentPage === "home") {
+    showHome();
+  }
+
+  if (currentPage === "contests") {
+    showContests(selectedGame);
+  }
+
+  if (currentPage === "matches") {
+    showMyMatches();
+  }
+
+  if (currentPage === "details") {
+    return;
+  }
 }
 
 /* =========================================================
@@ -285,32 +265,25 @@ function toast(message) {
    ========================================================= */
 
 function header() {
+
   return `
     <header class="app-header">
 
-      <div class="brand">
+      <div class="profile-mini"
+           onclick="showProfile()">
 
-        <div class="brand-logo">
-
-          <img
-            class="header-logo"
-            src="${LOGO}"
-            alt="TRUSTED OP"
-            onerror="this.style.display='none'"
-          >
-
+        <div class="profile-mini-avatar">
+          👤
         </div>
 
         <div>
-
-          <div class="brand-name">
-            TRUSTED OP
+          <div class="profile-mini-name">
+            Trusted Player
           </div>
 
-          <div class="brand-subtitle">
-            ESPORTS
+          <div class="profile-mini-sub">
+            VIEW PROFILE
           </div>
-
         </div>
 
       </div>
@@ -346,18 +319,29 @@ function header() {
    BOTTOM NAV
    ========================================================= */
 
-function bottomNav(
-  active = "home"
-) {
+function bottomNav(active = "home") {
+
   return `
     <nav class="bottom-nav">
 
       <button
-        class="${
-          active === "home"
-            ? "active"
-            : ""
-        }"
+        class="${active === "earn" ? "active" : ""}"
+        onclick="showEarn()"
+      >
+        <span>💰</span>
+        <small>Earn</small>
+      </button>
+
+      <button
+        class="${active === "leaderboard" ? "active" : ""}"
+        onclick="showLeaderboard()"
+      >
+        <span>🏆</span>
+        <small>Leaderboard</small>
+      </button>
+
+      <button
+        class="${active === "home" ? "active" : ""}"
         onclick="showHome()"
       >
         <span>⌂</span>
@@ -365,47 +349,7 @@ function bottomNav(
       </button>
 
       <button
-        class="${
-          active === "tournaments"
-            ? "active"
-            : ""
-        }"
-        onclick="showTournaments()"
-      >
-        <span>🏆</span>
-        <small>Tournaments</small>
-      </button>
-
-      <button
-        class="${
-          active === "matches"
-            ? "active"
-            : ""
-        }"
-        onclick="showMatches()"
-      >
-        <span>⚔</span>
-        <small>My Matches</small>
-      </button>
-
-      <button
-        class="${
-          active === "wallet"
-            ? "active"
-            : ""
-        }"
-        onclick="showWallet()"
-      >
-        <span>🪙</span>
-        <small>Wallet</small>
-      </button>
-
-      <button
-        class="${
-          active === "menu"
-            ? "active"
-            : ""
-        }"
+        class="${active === "menu" ? "active" : ""}"
         onclick="showMenu()"
       >
         <span>☰</span>
@@ -417,21 +361,156 @@ function bottomNav(
 }
 
 /* =========================================================
-   TOURNAMENT CARD
+   HOME
    ========================================================= */
 
-function tournamentCard(
-  tournament
-) {
+function showHome() {
+
+  currentPage = "home";
+
+  const gameList = [
+    ["BR Survival", "🔥", "BR"],
+    ["Per Kill", "🎯", "PK"],
+    ["Clash Squad 1v1", "⚔️", "CS"],
+    ["Lone Wolf 1v1", "🥷", "LW"]
+  ];
+
+  app.innerHTML = `
+
+    <div class="app-shell">
+
+      ${header()}
+
+      <main class="page-content">
+
+        <!-- ANNOUNCEMENT -->
+
+        <section
+          class="announcement"
+          onclick="showNotifications()"
+        >
+          <div class="announcement-icon">
+            📢
+          </div>
+
+          <div>
+            <strong>
+              IMPORTANT ANNOUNCEMENT
+            </strong>
+
+            <p>
+              Check match rules before joining.
+            </p>
+          </div>
+
+          <span>›</span>
+        </section>
+
+        <!-- MY MATCHES -->
+
+        <div class="section-head">
+
+          <h2>
+            My Matches
+          </h2>
+
+          <button
+            onclick="showMyMatches()"
+          >
+            View All
+          </button>
+
+        </div>
+
+        <div class="status-row">
+
+          <div
+            class="status-card ongoing"
+            onclick="showMyMatches('ONGOING')"
+          >
+            <span>🔥</span>
+            <strong>${countMyMatches("ONGOING")}</strong>
+            <small>ONGOING</small>
+          </div>
+
+          <div
+            class="status-card upcoming"
+            onclick="showMyMatches('UPCOMING')"
+          >
+            <span>⏰</span>
+            <strong>${countMyMatches("UPCOMING")}</strong>
+            <small>UPCOMING</small>
+          </div>
+
+          <div
+            class="status-card completed"
+            onclick="showMyMatches('COMPLETED')"
+          >
+            <span>🏆</span>
+            <strong>${countMyMatches("COMPLETED")}</strong>
+            <small>COMPLETED</small>
+          </div>
+
+        </div>
+
+        <!-- ESPORTS GAMES -->
+
+        <div class="section-head game-heading">
+          <h2>Esports Games</h2>
+        </div>
+
+        <section class="games-grid">
+
+          ${gameList.map(game => `
+            <button
+              class="game-card"
+              onclick="showContests('${escapeHTML(game[0])}')"
+            >
+
+              <div class="game-icon">
+                ${game[1]}
+              </div>
+
+              <div class="game-name">
+                ${escapeHTML(game[0])}
+              </div>
+
+              <div class="game-arrow">
+                ›
+              </div>
+
+            </button>
+          `).join("")}
+
+        </section>
+
+        <!-- MORE -->
+
+        <div class="more-games">
+          MORE GAMES COMING SOON
+        </div>
+
+      </main>
+
+      ${bottomNav("home")}
+
+    </div>
+  `;
+}
+
+/* =========================================================
+   CONTEST CARD
+   ========================================================= */
+
+function contestCard(tournament) {
+
   return `
     <article
-      class="tournament-card"
-      onclick="showTournamentDetails('${escapeHTML(
-        tournament.id
-      )}')"
+      class="contest-card"
+      onclick="showContestDetails('${escapeHTML(tournament.id)}')"
     >
 
-      <div class="tournament-image">
+      <div class="contest-banner">
 
         ${imageHTML(
           tournament.image,
@@ -440,13 +519,11 @@ function tournamentCard(
 
       </div>
 
-      <div class="tournament-card-content">
+      <div class="contest-name">
 
-        <div class="tournament-title">
-          ${escapeHTML(
-            tournament.title
-          )}
-        </div>
+        ${escapeHTML(tournament.title)}
+
+        <span>›</span>
 
       </div>
 
@@ -455,220 +532,701 @@ function tournamentCard(
 }
 
 /* =========================================================
-   HOME
+   CONTEST LIST
    ========================================================= */
 
-function showHome() {
-  currentPage = "home";
+function showContests(game = "") {
+
+  currentPage = "contests";
+  selectedGame = game;
+
+  const filtered = tournaments.filter(t => {
+
+    const gameMatch =
+      !game ||
+      String(t.game).toLowerCase() ===
+      String(game).toLowerCase();
+
+    return gameMatch;
+  });
+
+  const statusFiltered =
+    filtered.filter(
+      t => t.status === contestTab
+    );
 
   app.innerHTML = `
+
     <div class="app-shell">
 
-      ${header()}
+      <header class="contest-header">
 
-      <main class="page-content">
-
-        <section class="welcome">
-
-          <div class="welcome-small">
-            WELCOME BACK!
-          </div>
-
-          <div class="welcome-name">
-            Trusted Player
-          </div>
-
-        </section>
-
-        <section
-          class="notice"
-          onclick="showNotifications()"
+        <button
+          class="back-btn"
+          onclick="showHome()"
         >
+          ‹
+        </button>
 
-          <div class="notice-icon">
-            📢
-          </div>
+        <h1>
+          ${escapeHTML(game || "Contests")}
+        </h1>
 
-          <div>
+        <div></div>
 
-            <div class="notice-title">
-              HACKERS & POV RULES UPDATE
-            </div>
+      </header>
 
-            <div class="notice-text">
-              Player ko match ke dauran POV /
-              screen recording maintain karna hoga.
-            </div>
+      <main class="page-content contest-page">
 
-          </div>
-
-        </section>
-
-        <section class="hero">
-
-          <div class="hero-label">
-            TRUSTED OP COMMUNITY
-          </div>
-
-          <h1 class="hero-title">
-            PLAY.<br>
-            COMPETE.<br>
-            <span>WIN.</span>
-          </h1>
-
-          <p class="hero-text">
-            India's next generation gaming
-            tournament platform.
-          </p>
+        <div class="contest-tabs">
 
           <button
-            class="hero-btn"
-            onclick="showTournaments()"
+            class="${contestTab === "ONGOING" ? "active" : ""}"
+            onclick="setContestTab('ONGOING')"
           >
-            EXPLORE TOURNAMENTS →
+            Ongoing
           </button>
-
-          <div class="hero-gamepad">
-            🎮
-          </div>
-
-        </section>
-
-        <section class="section-head">
-
-          <h2 class="section-title">
-            My Matches
-          </h2>
 
           <button
-            class="view-all"
-            onclick="showMatches()"
+            class="${contestTab === "UPCOMING" ? "active" : ""}"
+            onclick="setContestTab('UPCOMING')"
           >
-            View all
+            Upcoming
           </button>
-
-        </section>
-
-        <section class="match-stats">
-
-          <div class="match-stat">
-
-            <div class="match-stat-icon">
-              🔥
-            </div>
-
-            <div class="match-stat-number">
-              2
-            </div>
-
-            <div class="match-stat-label">
-              ONGOING
-            </div>
-
-          </div>
-
-          <div class="match-stat">
-
-            <div class="match-stat-icon">
-              ⏰
-            </div>
-
-            <div class="match-stat-number">
-              5
-            </div>
-
-            <div class="match-stat-label">
-              UPCOMING
-            </div>
-
-          </div>
-
-          <div class="match-stat">
-
-            <div class="match-stat-icon">
-              🏆
-            </div>
-
-            <div class="match-stat-number">
-              12
-            </div>
-
-            <div class="match-stat-label">
-              COMPLETED
-            </div>
-
-          </div>
-
-        </section>
-
-        <section class="section-head">
-
-          <h2 class="section-title">
-            Live Tournaments
-          </h2>
 
           <button
-            class="view-all"
-            onclick="showTournaments()"
+            class="${contestTab === "RESULTED" ? "active" : ""}"
+            onclick="setContestTab('RESULTED')"
           >
-            View all
-          </button>
-
-        </section>
-
-        <div class="filters">
-
-          <button class="filter-btn active">
-            All
-          </button>
-
-          <button class="filter-btn">
-            Solo
-          </button>
-
-          <button class="filter-btn">
-            Duo
-          </button>
-
-          <button class="filter-btn">
-            Squad
+            Resulted
           </button>
 
         </div>
 
-        <section class="tournament-grid">
+        <section class="contest-list">
 
           ${
-            tournaments
-              .filter(
-                (tournament) =>
-                  tournament.status ===
-                    "LIVE" ||
-                  tournament.status ===
-                    "UPCOMING"
-              )
-              .map(
-                tournamentCard
-              )
-              .join("")
+            statusFiltered.length
+              ? statusFiltered
+                  .map(contestCard)
+                  .join("")
+              : `
+                <div class="empty-state">
+                  <div class="empty-icon">
+                    🎮
+                  </div>
+
+                  <h2>
+                    No Contests
+                  </h2>
+
+                  <p>
+                    No ${contestTab.toLowerCase()}
+                    contests available.
+                  </p>
+                </div>
+              `
           }
 
         </section>
 
+      </main>
+
+    </div>
+  `;
+}
+
+function setContestTab(tab) {
+
+  contestTab = tab;
+  showContests(selectedGame);
+}
+
+/* =========================================================
+   CONTEST DETAILS
+   ========================================================= */
+
+function showContestDetails(id) {
+
+  const tournament =
+    tournaments.find(
+      t => t.id === id
+    );
+
+  if (!tournament) {
+    toast("Contest not found");
+    return;
+  }
+
+  currentPage = "details";
+
+  const joined = isJoined(id);
+
+  const slotsLeft =
+    Math.max(
+      0,
+      tournament.slots -
+      tournament.joined
+    );
+
+  const joinedData =
+    getJoined(id);
+
+  app.innerHTML = `
+
+    <div class="detail-page">
+
+      <header class="detail-header">
+
+        <button
+          class="back-btn"
+          onclick="showContests('${escapeHTML(selectedGame)}')"
+        >
+          ‹
+        </button>
+
+        <h1>
+          Contest Details #${escapeHTML(id)}
+        </h1>
+
+        <div></div>
+
+      </header>
+
+      <main class="detail-content">
+
+        <!-- BANNER -->
+
+        <div class="detail-banner">
+
+          ${imageHTML(
+            tournament.image,
+            tournament.title
+          )}
+
+        </div>
+
+        <!-- TIME -->
+
+        <div
+          class="time-left"
+          data-date="${escapeHTML(tournament.date)}"
+          data-time="${escapeHTML(tournament.time)}"
+        >
+          ⏱️ Time Left:
+          <span class="countdown">
+            Calculating...
+          </span>
+        </div>
+
+        <!-- TITLE -->
+
+        <div class="detail-name">
+
+          ${escapeHTML(tournament.title)}
+
+          <div class="detail-id">
+            ID #${escapeHTML(id)}
+          </div>
+
+        </div>
+
+        <!-- BASIC INFO -->
+
+        <section class="info-grid">
+
+          <div class="info-box">
+            <span>Team</span>
+            <strong>
+              ${escapeHTML(tournament.type)}
+            </strong>
+          </div>
+
+          <div class="info-box">
+            <span>Mode</span>
+            <strong>
+              ${escapeHTML(tournament.mode)}
+            </strong>
+          </div>
+
+          <div class="info-box">
+            <span>Map</span>
+            <strong>
+              ${escapeHTML(tournament.map)}
+            </strong>
+          </div>
+
+          <div class="info-box">
+            <span>Match Type</span>
+            <strong>
+              ${tournament.entry > 0 ? "Paid" : "Free"}
+            </strong>
+          </div>
+
+          <div class="info-box">
+            <span>Entry Fee</span>
+            <strong>
+              🪙 ${money(tournament.entry)}
+            </strong>
+          </div>
+
+          <div class="info-box">
+            <span>Available Spots</span>
+            <strong>
+              ${slotsLeft}
+            </strong>
+          </div>
+
+        </section>
+
+        <!-- SCHEDULE -->
+
+        <section class="schedule-box">
+
+          <span>
+            Match Schedule
+          </span>
+
+          <strong>
+            ${escapeHTML(tournament.date)}
+            ${escapeHTML(tournament.time)}
+          </strong>
+
+        </section>
+
+        <!-- PRIZE -->
+
+        <section class="prize-section">
+
+          <h2>
+            Prize Details
+          </h2>
+
+          <div class="prize-card">
+
+            <div>
+              <span>Prize Pool</span>
+              <strong>
+                🪙 ${money(tournament.prize)}
+              </strong>
+            </div>
+
+            <div>
+              <span>Per Kill</span>
+              <strong>
+                🪙 ${money(tournament.perKill)}
+              </strong>
+            </div>
+
+          </div>
+
+          <div class="prize-list">
+
+            <div>
+              <span>1st Place</span>
+              <strong>
+                ${money(Math.round(tournament.prize * .45))}
+              </strong>
+            </div>
+
+            <div>
+              <span>2nd Place</span>
+              <strong>
+                ${money(Math.round(tournament.prize * .30))}
+              </strong>
+            </div>
+
+            <div>
+              <span>3rd Place</span>
+              <strong>
+                ${money(Math.round(tournament.prize * .15))}
+              </strong>
+            </div>
+
+            <div>
+              <span>Other Positions</span>
+              <strong>
+                ${money(Math.round(tournament.prize * .10))}
+              </strong>
+            </div>
+
+          </div>
+
+        </section>
+
+        <!-- RULES -->
+
+        <section class="rules-section">
+
+          <h2>
+            Match Rules
+          </h2>
+
+          ${
+            tournament.rules.length
+              ? tournament.rules.map(
+                  rule => `
+                    <div class="rule">
+                      ✓ ${escapeHTML(rule)}
+                    </div>
+                  `
+                ).join("")
+              : `
+                <div class="rule">
+                  ✓ Follow official tournament rules.
+                </div>
+
+                <div class="rule">
+                  ✓ Teaming and unregistered players are banned.
+                </div>
+
+                <div class="rule">
+                  ✓ Follow room and match instructions.
+                </div>
+              `
+          }
+
+        </section>
+
+        <!-- JOIN / MY ENTRY -->
+
+        <div class="bottom-action">
+
+          ${
+            joined
+              ? `
+                <button
+                  class="join-btn joined-btn"
+                  onclick="showMyEntry('${escapeHTML(id)}')"
+                >
+                  ✓ VIEW MY ENTRY
+                </button>
+              `
+              : `
+                <button
+                  class="join-btn"
+                  onclick="joinTournament('${escapeHTML(id)}')"
+                >
+                  JOIN MATCH
+                </button>
+              `
+          }
+
+        </div>
+
+      </main>
+
+    </div>
+  `;
+
+  startCountdown();
+}
+
+/* =========================================================
+   JOIN
+   ========================================================= */
+
+function joinTournament(id) {
+
+  const tournament =
+    tournaments.find(
+      t => t.id === id
+    );
+
+  if (!tournament) return;
+
+  if (isJoined(id)) {
+    showMyEntry(id);
+    return;
+  }
+
+  if (
+    tournament.slots > 0 &&
+    tournament.joined >= tournament.slots
+  ) {
+    toast("No spots available");
+    return;
+  }
+
+  if (balance < tournament.entry) {
+    toast("Insufficient coin balance");
+    return;
+  }
+
+  if (tournament.entry > 0) {
+    balance -= tournament.entry;
+  }
+
+  joinedMatches.push({
+    id: tournament.id,
+    joinedAt: Date.now(),
+    status: tournament.status
+  });
+
+  saveData();
+
+  toast("Match joined successfully 🎮");
+
+  showMyEntry(id);
+}
+
+/* =========================================================
+   MY ENTRY
+   ========================================================= */
+
+function showMyEntry(id) {
+
+  const tournament =
+    tournaments.find(
+      t => t.id === id
+    );
+
+  if (!tournament) {
+    toast("Match not found");
+    return;
+  }
+
+  currentPage = "matches";
+
+  app.innerHTML = `
+
+    <div class="detail-page">
+
+      <header class="detail-header">
+
+        <button
+          class="back-btn"
+          onclick="showContestDetails('${escapeHTML(id)}')"
+        >
+          ‹
+        </button>
+
+        <h1>
+          My Entry
+        </h1>
+
+        <div></div>
+
+      </header>
+
+      <main class="detail-content">
+
+        <div class="entry-success">
+          <div>✓</div>
+          <strong>
+            MATCH JOINED
+          </strong>
+
+          <span>
+            Your entry has been confirmed.
+          </span>
+        </div>
+
+        <div class="detail-banner">
+          ${imageHTML(
+            tournament.image,
+            tournament.title
+          )}
+        </div>
+
+        <section class="entry-card">
+
+          <h2>
+            ${escapeHTML(tournament.title)}
+          </h2>
+
+          <p>
+            Contest ID:
+            <strong>#${escapeHTML(id)}</strong>
+          </p>
+
+          <div class="entry-row">
+            <span>Team</span>
+            <strong>${escapeHTML(tournament.type)}</strong>
+          </div>
+
+          <div class="entry-row">
+            <span>Map</span>
+            <strong>${escapeHTML(tournament.map)}</strong>
+          </div>
+
+          <div class="entry-row">
+            <span>Entry Fee</span>
+            <strong>🪙 ${money(tournament.entry)}</strong>
+          </div>
+
+          <div class="entry-row">
+            <span>Schedule</span>
+            <strong>
+              ${escapeHTML(tournament.date)}
+              ${escapeHTML(tournament.time)}
+            </strong>
+          </div>
+
+        </section>
+
+        <section class="room-card">
+
+          <h2>
+            Match Joining
+          </h2>
+
+          ${
+            tournament.roomId
+              ? `
+                <div class="room-row">
+                  <span>Room ID</span>
+                  <strong>${escapeHTML(tournament.roomId)}</strong>
+                </div>
+
+                <div class="room-row">
+                  <span>Password</span>
+                  <strong>${escapeHTML(tournament.roomPassword || "Hidden")}</strong>
+                </div>
+              `
+              : `
+                <div class="room-wait">
+                  🔒 Room ID & Password will appear here
+                  when admin releases the match room.
+                </div>
+              `
+          }
+
+        </section>
+
+        <button
+          class="join-btn"
+          onclick="showContestDetails('${escapeHTML(id)}')"
+        >
+          VIEW CONTEST DETAILS
+        </button>
+
+      </main>
+
+    </div>
+  `;
+}
+
+/* =========================================================
+   MY MATCHES
+   ========================================================= */
+
+function countMyMatches(status) {
+
+  return joinedMatches.filter(entry => {
+
+    const id =
+      typeof entry === "string"
+        ? entry
+        : entry.id;
+
+    const tournament =
+      tournaments.find(t => t.id === id);
+
+    return tournament &&
+      tournament.status === status;
+
+  }).length;
+}
+
+function showMyMatches() {
+
+  currentPage = "matches";
+
+  const matches =
+    joinedMatches.map(entry => {
+
+      const id =
+        typeof entry === "string"
+          ? entry
+          : entry.id;
+
+      return tournaments.find(
+        t => t.id === id
+      );
+
+    }).filter(Boolean);
+
+  app.innerHTML = `
+
+    <div class="app-shell">
+
+      <header class="contest-header">
+
+        <button
+          class="back-btn"
+          onclick="showHome()"
+        >
+          ‹
+        </button>
+
+        <h1>
+          My Matches
+        </h1>
+
+        <div></div>
+
+      </header>
+
+      <main class="page-content">
+
         ${
-          tournaments.length === 0
-            ? `
-              <div
-                style="
-                  text-align:center;
-                  padding:30px 15px;
-                  color:#9292a8;
-                "
-              >
-                No tournaments available
+          matches.length
+            ? matches.map(t => `
+                <article
+                  class="my-match-card"
+                  onclick="showMyEntry('${escapeHTML(t.id)}')"
+                >
+
+                  <div class="my-match-image">
+                    ${imageHTML(t.image, t.title)}
+                  </div>
+
+                  <div class="my-match-info">
+
+                    <strong>
+                      ${escapeHTML(t.title)}
+                    </strong>
+
+                    <span>
+                      #${escapeHTML(t.id)}
+                    </span>
+
+                    <small>
+                      ${escapeHTML(t.date)}
+                      ${escapeHTML(t.time)}
+                    </small>
+
+                    <b class="match-status">
+                      ${escapeHTML(t.status)}
+                    </b>
+
+                  </div>
+
+                </article>
+              `).join("")
+            : `
+              <div class="empty-state">
+                <div class="empty-icon">
+                  🎮
+                </div>
+
+                <h2>
+                  No Joined Matches
+                </h2>
+
+                <p>
+                  Join a contest and it will appear here.
+                </p>
+
+                <button
+                  class="join-btn"
+                  onclick="showHome()"
+                >
+                  EXPLORE CONTESTS
+                </button>
               </div>
             `
-            : ""
         }
 
       </main>
@@ -680,619 +1238,105 @@ function showHome() {
 }
 
 /* =========================================================
-   TOURNAMENTS
+   WALLET / EARN
    ========================================================= */
 
-function showTournaments() {
-  currentPage =
-    "tournaments";
+function showWallet() {
+  showEarn();
+}
+
+function showEarn() {
+
+  currentPage = "wallet";
 
   app.innerHTML = `
-    <div class="app-shell">
 
-      ${header()}
+    <div class="app-shell">
 
       <main class="page-content">
 
         <div class="page-title">
-          Tournaments
+          Earn
         </div>
 
-        <div class="page-subtitle">
-          Choose your tournament
-        </div>
+        <div class="wallet-card">
 
-        <div class="filters">
-
-          <button class="filter-btn active">
-            All
-          </button>
-
-          <button class="filter-btn">
-            Solo
-          </button>
-
-          <button class="filter-btn">
-            Duo
-          </button>
-
-          <button class="filter-btn">
-            Squad
-          </button>
-
-        </div>
-
-        <section class="tournament-grid">
-
-          ${tournaments
-            .map(
-              tournamentCard
-            )
-            .join("")}
-
-        </section>
-
-        ${
-          tournaments.length === 0
-            ? `
-              <div
-                style="
-                  text-align:center;
-                  padding:30px 15px;
-                  color:#9292a8;
-                "
-              >
-                No tournaments available
-              </div>
-            `
-            : ""
-        }
-
-      </main>
-
-      ${bottomNav(
-        "tournaments"
-      )}
-
-    </div>
-  `;
-}
-
-/* =========================================================
-   DETAILS
-   ========================================================= */
-
-function showTournamentDetails(
-  id
-) {
-  const tournament =
-    tournaments.find(
-      (item) =>
-        item.id === id
-    );
-
-  if (!tournament) {
-    toast(
-      "Tournament not found"
-    );
-
-    return;
-  }
-
-  currentPage =
-    "details";
-
-  const alreadyJoined =
-    joinedMatches.includes(
-      tournament.id
-    );
-
-  const percentage =
-    tournament.slots > 0
-      ? Math.min(
-          100,
-          (tournament.joined /
-            tournament.slots) *
-            100
-        )
-      : 0;
-
-  app.innerHTML = `
-    <div class="detail-page">
-
-      <header class="detail-header">
-
-        <button
-          class="back-btn"
-          onclick="goBack()"
-        >
-          ‹
-        </button>
-
-        <div class="detail-header-title">
-          ${escapeHTML(
-            tournament.title
-          )}
-        </div>
-
-        <div></div>
-
-      </header>
-
-      <div class="detail-image">
-
-        ${imageHTML(
-          tournament.image,
-          tournament.title
-        )}
-
-      </div>
-
-      <main class="detail-body">
-
-        <h1 class="detail-title">
-          ${escapeHTML(
-            tournament.title
-          )}
-        </h1>
-
-        <p class="detail-description">
-          ${escapeHTML(
-            tournament.game
-          )}
-          •
-          ${escapeHTML(
-            tournament.type
-          )}
-          •
-          ${escapeHTML(
-            tournament.map
-          )}
-        </p>
-
-        <section class="detail-card">
-
-          <div class="detail-card-title">
-            Tournament Details
-          </div>
-
-          <div class="detail-row">
-            <span>Prize Pool</span>
-            <span>
-              🪙 ${money(
-                tournament.prize
-              )}
-            </span>
-          </div>
-
-          <div class="detail-row">
-            <span>Per Kill</span>
-            <span>
-              🪙 ${money(
-                tournament.perKill
-              )}
-            </span>
-          </div>
-
-          <div class="detail-row">
-            <span>Entry Fee</span>
-            <span>
-              🪙 ${money(
-                tournament.entry
-              )}
-            </span>
-          </div>
-
-          <div class="detail-row">
-            <span>Type</span>
-            <span>
-              ${escapeHTML(
-                tournament.type
-              )}
-            </span>
-          </div>
-
-          <div class="detail-row">
-            <span>Map</span>
-            <span>
-              ${escapeHTML(
-                tournament.map
-              )}
-            </span>
-          </div>
-
-          <div class="detail-row">
-            <span>Date</span>
-            <span>
-              ${escapeHTML(
-                tournament.date
-              )}
-            </span>
-          </div>
-
-          <div class="detail-row">
-            <span>Time</span>
-            <span>
-              ${escapeHTML(
-                tournament.time
-              )}
-            </span>
-          </div>
-
-        </section>
-
-        <section class="detail-card">
-
-          <div class="detail-card-title">
-            Slots
-          </div>
-
-          <div class="contest-progress">
-
-            <span
-              style="
-                width:${percentage}%
-              "
-            ></span>
-
-          </div>
-
-          <div
-            style="
-              display:flex;
-              justify-content:space-between;
-              padding:0 16px 15px;
-              color:#9292a8;
-              font-size:10px;
-            "
-          >
-
-            <span>
-              ${tournament.joined}/${tournament.slots}
-            </span>
-
-            <span>
-              ${Math.max(
-                0,
-                tournament.slots -
-                  tournament.joined
-              )}
-              Spot Left
-            </span>
-
-          </div>
-
-        </section>
-
-        <section class="detail-card">
-
-          <div class="detail-card-title">
-            Rules
-          </div>
-
-          <div style="padding:15px">
-
-            ${
-              tournament.rules.length
-                ? tournament.rules
-                    .map(
-                      (rule) => `
-                        <div
-                          style="
-                            color:#9292a8;
-                            font-size:10px;
-                            line-height:1.6;
-                            margin-bottom:7px;
-                          "
-                        >
-                          • ${escapeHTML(
-                            rule
-                          )}
-                        </div>
-                      `
-                    )
-                    .join("")
-                : `
-                    <div
-                      style="
-                        color:#9292a8;
-                        font-size:10px;
-                      "
-                    >
-                      No rules added.
-                    </div>
-                  `
-            }
-
-          </div>
-
-        </section>
-
-        ${
-          alreadyJoined
-            ? `
-              <button
-                class="join-btn"
-                disabled
-                style="
-                  opacity:.55;
-                  cursor:not-allowed;
-                "
-              >
-                ✓ JOINED
-              </button>
-            `
-            : `
-              <button
-                class="join-btn"
-                onclick="joinTournament('${escapeHTML(
-                  tournament.id
-                )}')"
-              >
-                JOIN MATCH
-              </button>
-            `
-        }
-
-      </main>
-
-    </div>
-  `;
-}
-
-/* =========================================================
-   JOIN
-   ========================================================= */
-
-function joinTournament(
-  id
-) {
-  const tournament =
-    tournaments.find(
-      (item) =>
-        item.id === id
-    );
-
-  if (!tournament) {
-    return;
-  }
-
-  if (
-    joinedMatches.includes(id)
-  ) {
-    toast(
-      "Already joined"
-    );
-
-    return;
-  }
-
-  if (
-    tournament.slots > 0 &&
-    tournament.joined >=
-      tournament.slots
-  ) {
-    toast(
-      "Tournament is full"
-    );
-
-    return;
-  }
-
-  if (
-    balance <
-    tournament.entry
-  ) {
-    toast(
-      "Insufficient wallet balance"
-    );
-
-    return;
-  }
-
-  balance -=
-    tournament.entry;
-
-  joinedMatches.push(id);
-
-  saveData();
-
-  toast(
-    "Tournament joined successfully ✓"
-  );
-
-  setTimeout(() => {
-    showTournamentDetails(
-      id
-    );
-  }, 600);
-}
-
-/* =========================================================
-   MY MATCHES
-   ========================================================= */
-
-function showMatches() {
-  currentPage =
-    "matches";
-
-  const myMatches =
-    tournaments.filter(
-      (tournament) =>
-        joinedMatches.includes(
-          tournament.id
-        )
-    );
-
-  app.innerHTML = `
-    <div class="app-shell">
-
-      ${header()}
-
-      <main class="matches-page">
-
-        <div class="page-title">
-          My Matches
-        </div>
-
-        <div class="page-subtitle">
-          Your joined tournaments
-        </div>
-
-        ${
-          myMatches.length
-            ? `
-              <section class="tournament-grid">
-
-                ${myMatches
-                  .map(
-                    tournamentCard
-                  )
-                  .join("")}
-
-              </section>
-            `
-            : `
-              <div class="empty-state">
-
-                <div class="empty-icon">
-                  🎮
-                </div>
-
-                <h2>
-                  No Matches Yet
-                </h2>
-
-                <p>
-                  Join a tournament to see it here.
-                </p>
-
-                <button
-                  class="join-btn"
-                  onclick="showTournaments()"
-                >
-                  FIND TOURNAMENT
-                </button>
-
-              </div>
-            `
-        }
-
-      </main>
-
-      ${bottomNav(
-        "matches"
-      )}
-
-    </div>
-  `;
-}
-
-/* =========================================================
-   WALLET
-   ========================================================= */
-
-function showWallet() {
-  currentPage =
-    "wallet";
-
-  app.innerHTML = `
-    <div class="app-shell">
-
-      ${header()}
-
-      <main class="wallet-page">
-
-        <div class="page-title">
-          Wallet
-        </div>
-
-        <div class="page-subtitle">
-          Manage your tournament balance
-        </div>
-
-        <section class="wallet-balance">
-
-          <div class="wallet-balance-label">
+          <small>
             AVAILABLE BALANCE
-          </div>
+          </small>
 
-          <div class="wallet-amount">
-            ${money(balance)}
-          </div>
+          <strong>
+            🪙 ${balance}
+          </strong>
 
-          <div class="wallet-actions">
+          <div class="wallet-buttons">
 
-            <button
-              class="wallet-action primary"
-              onclick="addDemoMoney()"
-            >
+            <button onclick="toast('Add money coming soon')">
               + ADD MONEY
             </button>
 
-            <button
-              class="wallet-action"
-              onclick="toast('Withdrawal coming soon')"
-            >
+            <button onclick="toast('Withdrawal coming soon')">
               WITHDRAW
             </button>
 
           </div>
 
-        </section>
-
-        <section class="earn-card">
-
-          <h3>
-            Transaction History
-          </h3>
-
-          <div class="transaction">
-
-            <div class="transaction-icon">
-              🪙
-            </div>
-
-            <div class="transaction-info">
-
-              <strong>
-                Current Balance
-              </strong>
-
-              <small>
-                TRUSTED OP Wallet
-              </small>
-
-            </div>
-
-            <div class="transaction-amount">
-              ${money(balance)}
-            </div>
-
-          </div>
-
-        </section>
+        </div>
 
       </main>
 
-      ${bottomNav(
-        "wallet"
-      )}
+      ${bottomNav("earn")}
 
     </div>
   `;
 }
 
-function addDemoMoney() {
-  balance += 100;
+/* =========================================================
+   LEADERBOARD
+   ========================================================= */
 
-  saveData();
+function showLeaderboard() {
 
-  toast(
-    "₹100 demo balance added"
-  );
+  currentPage = "leaderboard";
 
-  showWallet();
+  app.innerHTML = `
+
+    <div class="app-shell">
+
+      <main class="page-content">
+
+        <div class="page-title">
+          Leaderboard
+        </div>
+
+        <div class="leaderboard-card">
+
+          <div class="rank">
+            🥇
+            <strong>Trusted Player</strong>
+            <span>1</span>
+          </div>
+
+          <div class="rank">
+            🥈
+            <strong>Top Player</strong>
+            <span>2</span>
+          </div>
+
+          <div class="rank">
+            🥉
+            <strong>Pro Player</strong>
+            <span>3</span>
+          </div>
+
+        </div>
+
+      </main>
+
+      ${bottomNav("leaderboard")}
+
+    </div>
+  `;
 }
 
 /* =========================================================
@@ -1300,73 +1344,89 @@ function addDemoMoney() {
    ========================================================= */
 
 function showNotifications() {
-  currentPage =
-    "notifications";
 
   app.innerHTML = `
+
     <div class="app-shell">
-
-      <header class="detail-header">
-
-        <button
-          class="back-btn"
-          onclick="goBack()"
-        >
-          ‹
-        </button>
-
-        <div class="detail-header-title">
-          Notifications
-        </div>
-
-        <div></div>
-
-      </header>
 
       <main class="page-content">
 
-        <div class="notification-list">
+        <div class="page-title">
+          Notifications
+        </div>
 
-          <div class="notification-item">
+        <div class="notification-item">
+          📢
+          <div>
+            <strong>
+              Tournament Update
+            </strong>
+            <p>
+              Check your upcoming match before joining.
+            </p>
+          </div>
+        </div>
 
-            <div class="notification-icon">
-              📢
-            </div>
+        <div class="notification-item">
+          🔥
+          <div>
+            <strong>
+              TRUSTED OP
+            </strong>
+            <p>
+              New contests are available now.
+            </p>
+          </div>
+        </div>
 
-            <div class="notification-content">
+      </main>
 
-              <strong>
-                Rules Updated
-              </strong>
+    </div>
+  `;
+}
 
-              <p>
-                Please maintain POV/screen recording
-                during matches.
-              </p>
+/* =========================================================
+   PROFILE
+   ========================================================= */
 
-            </div>
+function showProfile() {
 
+  app.innerHTML = `
+
+    <div class="app-shell">
+
+      <main class="page-content">
+
+        <div class="page-title">
+          Profile
+        </div>
+
+        <div class="profile-card">
+
+          <div class="profile-avatar">
+            👤
           </div>
 
-          <div class="notification-item">
+          <h2>
+            Trusted Player
+          </h2>
 
-            <div class="notification-icon">
-              🏆
-            </div>
+          <p>
+            TRUSTED OP MEMBER
+          </p>
 
-            <div class="notification-content">
+          <div class="profile-stat">
+            🏆 Matches Joined:
+            <strong>
+              ${joinedMatches.length}
+            </strong>
+          </div>
 
-              <strong>
-                Welcome to TRUSTED OP
-              </strong>
-
-              <p>
-                Join tournaments and compete
-                with other players.
-              </p>
-
-            </div>
-
+          <div class="profile-stat">
+            🪙 Balance:
+            <strong>
+              ${balance}
+            </strong>
           </div>
 
         </div>
@@ -1382,205 +1442,48 @@ function showNotifications() {
    ========================================================= */
 
 function showMenu() {
-  currentPage =
-    "menu";
 
   app.innerHTML = `
+
     <div class="app-shell">
 
-      ${header()}
-
-      <main class="menu-page">
+      <main class="page-content">
 
         <div class="page-title">
           Menu
         </div>
 
-        <div class="page-subtitle">
-          TRUSTED OP
-        </div>
-
         <div class="menu-list">
 
-          <button
-            onclick="showProfile()"
-          >
-            <span class="menu-icon">
-              👤
-            </span>
-
-            <span class="menu-label">
-              Profile
-            </span>
-
-            <span class="menu-arrow">
-              ›
-            </span>
-          </button>
-
-          <button
-            onclick="showTournaments()"
-          >
-            <span class="menu-icon">
-              🏆
-            </span>
-
-            <span class="menu-label">
-              Tournaments
-            </span>
-
-            <span class="menu-arrow">
-              ›
-            </span>
-          </button>
-
-          <button
-            onclick="showMatches()"
-          >
-            <span class="menu-icon">
-              ⚔
-            </span>
-
-            <span class="menu-label">
-              My Matches
-            </span>
-
-            <span class="menu-arrow">
-              ›
-            </span>
-          </button>
-
-          <button
-            onclick="showWallet()"
-          >
-            <span class="menu-icon">
-              🪙
-            </span>
-
-            <span class="menu-label">
-              Wallet
-            </span>
-
-            <span class="menu-arrow">
-              ›
-            </span>
-          </button>
-
-          <button
-            onclick="showNotifications()"
-          >
-            <span class="menu-icon">
-              🔔
-            </span>
-
-            <span class="menu-label">
-              Notifications
-            </span>
-
-            <span class="menu-arrow">
-              ›
-            </span>
-          </button>
-
-        </div>
-
-      </main>
-
-      ${bottomNav(
-        "menu"
-      )}
-
-    </div>
-  `;
-}
-
-/* =========================================================
-   PROFILE
-   ========================================================= */
-
-function showProfile() {
-  currentPage =
-    "profile";
-
-  app.innerHTML = `
-    <div class="app-shell">
-
-      <header class="detail-header">
-
-        <button
-          class="back-btn"
-          onclick="goBack()"
-        >
-          ‹
-        </button>
-
-        <div class="detail-header-title">
-          Profile
-        </div>
-
-        <div></div>
-
-      </header>
-
-      <main class="page-content">
-
-        <section class="profile-card">
-
-          <div class="profile-avatar">
+          <button onclick="showProfile()">
             👤
-          </div>
+            <span>Profile</span>
+            ›
+          </button>
 
-          <h2>
-            Trusted Player
-          </h2>
+          <button onclick="showMyMatches()">
+            🎮
+            <span>My Matches</span>
+            ›
+          </button>
 
-          <p>
-            TRUSTED OP Member
-          </p>
+          <button onclick="showNotifications()">
+            🔔
+            <span>Notifications</span>
+            ›
+          </button>
 
-        </section>
-
-        <div class="profile-info">
-
-          <div>
-
-            <small>
-              USERNAME
-            </small>
-
-            <strong>
-              Trusted Player
-            </strong>
-
-          </div>
-
-          <div>
-
-            <small>
-              WALLET BALANCE
-            </small>
-
-            <strong>
-              ${money(balance)}
-            </strong>
-
-          </div>
-
-          <div>
-
-            <small>
-              JOINED MATCHES
-            </small>
-
-            <strong>
-              ${joinedMatches.length}
-            </strong>
-
-          </div>
+          <button onclick="toast('Settings coming soon')">
+            ⚙️
+            <span>Settings</span>
+            ›
+          </button>
 
         </div>
 
       </main>
+
+      ${bottomNav("menu")}
 
     </div>
   `;
@@ -1595,62 +1498,104 @@ function goBack() {
 }
 
 /* =========================================================
-   START APP
+   COUNTDOWN
    ========================================================= */
 
-function startApp() {
-  showHome();
+function startCountdown() {
+
+  const element =
+    document.querySelector(".time-left");
+
+  if (!element) return;
+
+  const date =
+    element.dataset.date;
+
+  const time =
+    element.dataset.time;
+
+  if (!date) return;
+
+  const target =
+    new Date(`${date} ${time || "00:00"}`);
+
+  if (isNaN(target.getTime())) {
+    element.querySelector(".countdown").textContent =
+      "Schedule available";
+    return;
+  }
+
+  function update() {
+
+    const diff =
+      target.getTime() -
+      Date.now();
+
+    if (diff <= 0) {
+
+      element.querySelector(
+        ".countdown"
+      ).textContent =
+        "Match Started";
+
+      return;
+    }
+
+    const days =
+      Math.floor(
+        diff / 86400000
+      );
+
+    const hours =
+      Math.floor(
+        (diff % 86400000) /
+        3600000
+      );
+
+    const minutes =
+      Math.floor(
+        (diff % 3600000) /
+        60000
+      );
+
+    const seconds =
+      Math.floor(
+        (diff % 60000) /
+        1000
+      );
+
+    element.querySelector(
+      ".countdown"
+    ).textContent =
+      `${days}d ${hours}h ${minutes}m ${seconds}s`;
+  }
+
+  update();
+
+  setInterval(update, 1000);
 }
 
 /* =========================================================
    GLOBAL FUNCTIONS
    ========================================================= */
 
-window.showHome =
-  showHome;
-
-window.showTournaments =
-  showTournaments;
-
-window.showTournamentDetails =
-  showTournamentDetails;
-
-window.joinTournament =
-  joinTournament;
-
-window.showMatches =
-  showMatches;
-
-window.showWallet =
-  showWallet;
-
-window.showNotifications =
-  showNotifications;
-
-window.showMenu =
-  showMenu;
-
-window.showProfile =
-  showProfile;
-
-window.addDemoMoney =
-  addDemoMoney;
-
-window.goBack =
-  goBack;
+window.showHome = showHome;
+window.showContests = showContests;
+window.setContestTab = setContestTab;
+window.showContestDetails = showContestDetails;
+window.joinTournament = joinTournament;
+window.showMyEntry = showMyEntry;
+window.showMyMatches = showMyMatches;
+window.showWallet = showWallet;
+window.showEarn = showEarn;
+window.showLeaderboard = showLeaderboard;
+window.showNotifications = showNotifications;
+window.showProfile = showProfile;
+window.showMenu = showMenu;
+window.goBack = goBack;
 
 /* =========================================================
-   RUN APP
+   START
    ========================================================= */
 
-if (
-  document.readyState ===
-  "loading"
-) {
-  document.addEventListener(
-    "DOMContentLoaded",
-    startApp
-  );
-} else {
-  startApp();
-}
+showHome();
