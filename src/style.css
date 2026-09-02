@@ -1,571 +1,1737 @@
+/* =========================================================
+   TRUSTED OP
+   PREMIUM GAMING TOURNAMENT UI
+   ========================================================= */
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  }
+}
+
+:root {
+  --bg: #050a12;
+  --bg2: #08111d;
+  --card: #0d1827;
+  --card2: #111f31;
+  --border: rgba(255,255,255,.09);
+
+  --red: #f21d2f;
+  --red2: #ff3b30;
+
+  --blue: #1488ff;
+  --green: #18d879;
+  --purple: #8c48ff;
+
+  --text: #ffffff;
+  --muted: #8e9aaa;
+}
 
 html,
 body {
-width: 100%;
-min-height: 100%;
+  width: 100%;
+  min-height: 100%;
+  background: #02060b;
+  color: var(--text);
+  font-family:
+    Inter,
+    Arial,
+    Helvetica,
+    sans-serif;
 }
 
 body {
-font-family: Arial, Helvetica, sans-serif;
-background: #050505;
-color: #ffffff;
+  min-height: 100vh;
 }
 
-button {
-font-family: inherit;
-border: 0;
-cursor: pointer;
+/* =========================
+   APP
+========================= */
+
+.app-shell {
+  width: 100%;
+  max-width: 520px;
+  min-height: 100vh;
+  margin: auto;
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(20, 94, 180, .12),
+      transparent 35%
+    ),
+    var(--bg);
+  padding-bottom: 90px;
+  overflow-x: hidden;
 }
 
-.app {
-width: 100%;
-max-width: 600px;
-min-height: 100vh;
-margin: 0 auto;
-padding-bottom: 85px;
-background: #050505;
+/* =========================
+   SPLASH
+========================= */
+
+.splash-screen {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(240,20,40,.20),
+      transparent 38%
+    ),
+    #020305;
 }
 
-.hidden {
-display: none !important;
+.splash-logo {
+  width: 190px;
+  height: 190px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(255,255,255,.08),
+      transparent 65%
+    );
+
+  animation: logoPulse 1.8s infinite;
 }
 
-/* ================================
-HEADER
-================================ */
+.logo-shield {
+  width: 145px;
+  height: 145px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+  border: 3px solid var(--red);
+  border-radius: 35% 35% 45% 45%;
+
+  transform: rotate(-3deg);
+
+  font-size: 24px;
+  font-weight: 900;
+  font-style: italic;
+
+  text-align: center;
+
+  box-shadow:
+    0 0 20px rgba(255,0,0,.45),
+    inset 0 0 20px rgba(255,0,0,.15);
+}
+
+.logo-shield span,
+.mini-logo span,
+.splash-title span {
+  color: var(--red);
+}
+
+.splash-title {
+  margin-top: 25px;
+  font-size: 27px;
+  font-weight: 800;
+}
+
+.splash-subtitle {
+  color: #9ba4b2;
+  letter-spacing: 3px;
+  font-size: 11px;
+  margin-top: 5px;
+}
+
+.loader {
+  width: 28px;
+  height: 28px;
+  margin-top: 40px;
+
+  border: 3px solid #222d3a;
+  border-top-color: var(--red);
+
+  border-radius: 50%;
+
+  animation: spin .8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes logoPulse {
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+/* =========================
+   AUTH
+========================= */
+
+.auth-page {
+  min-height: 100vh;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: 20px;
+
+  background:
+    radial-gradient(
+      circle at top,
+      rgba(220,0,20,.16),
+      transparent 40%
+    ),
+    var(--bg);
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 410px;
+  padding: 28px 20px;
+
+  text-align: center;
+}
+
+.auth-logo {
+  margin-bottom: 25px;
+}
+
+.mini-logo {
+  font-size: 29px;
+  font-weight: 900;
+  font-style: italic;
+}
+
+.auth-card h1 {
+  font-size: 23px;
+}
+
+.muted {
+  color: var(--muted);
+  margin-top: 5px;
+  font-size: 13px;
+}
+
+.auth-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+
+  background: #172231;
+
+  padding: 3px;
+  border-radius: 7px;
+
+  margin: 28px 0 18px;
+}
+
+.auth-tabs button {
+  border: 0;
+  background: transparent;
+  color: white;
+
+  padding: 11px;
+  border-radius: 5px;
+}
+
+.auth-tabs .active {
+  background: var(--red);
+}
+
+.input-box {
+  height: 49px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 9px;
+
+  background: #0d1724;
+  border: 1px solid var(--border);
+
+  border-radius: 6px;
+
+  padding: 0 13px;
+
+  margin-bottom: 12px;
+}
+
+.input-box input {
+  flex: 1;
+
+  background: transparent;
+  border: 0;
+  outline: none;
+
+  color: white;
+  font-size: 14px;
+}
+
+.input-box input::placeholder {
+  color: #647182;
+}
+
+.eye {
+  color: #788697;
+}
+
+.forgot {
+  text-align: right;
+  color: #ff3547;
+  font-size: 11px;
+  margin: 2px 0 17px;
+}
+
+.primary-btn,
+.join-btn {
+  width: 100%;
+  border: 0;
+
+  background:
+    linear-gradient(
+      90deg,
+      #e91828,
+      #ff2838
+    );
+
+  color: white;
+
+  padding: 14px;
+
+  border-radius: 7px;
+
+  font-weight: 800;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 7px 20px rgba(242,29,47,.18);
+}
+
+.or {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  color: #758092;
+
+  font-size: 11px;
+
+  margin: 22px 0 15px;
+}
+
+.or span {
+  height: 1px;
+  background: #24303e;
+  flex: 1;
+}
+
+.social-row {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.social-row button {
+  width: 43px;
+  height: 40px;
+
+  border: 1px solid var(--border);
+  background: #101c2a;
+
+  color: white;
+
+  border-radius: 6px;
+
+  font-size: 18px;
+}
+
+.register-text {
+  color: #768395;
+  font-size: 12px;
+  margin-top: 23px;
+}
+
+.register-text span {
+  color: #ff3040;
+  cursor: pointer;
+}
+
+/* =========================
+   HEADER
+========================= */
 
 .top-header {
-height: 78px;
-display: flex;
-align-items: center;
-justify-content: space-between;
-padding: 12px 18px;
-background: #050505;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 17px 15px 12px;
 }
 
-.brand {
-display: flex;
-align-items: center;
-gap: 12px;
+.profile-area {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-.app-logo {
-width: 52px;
-height: 52px;
-object-fit: contain;
-border-radius: 50%;
+.avatar {
+  width: 38px;
+  height: 38px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  border-radius: 50%;
+
+  background:
+    linear-gradient(
+      135deg,
+      #f4a261,
+      #1e5c9c
+    );
+
+  font-size: 20px;
 }
 
-.brand h1 {
-font-size: 22px;
-font-weight: 900;
-letter-spacing: 1px;
+.avatar.large {
+  width: 55px;
+  height: 55px;
+}
+
+.profile-area small,
+.menu-profile small {
+  display: block;
+  color: #8490a0;
+  font-size: 10px;
+}
+
+.profile-area strong {
+  display: block;
+  font-size: 14px;
+  margin-top: 3px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.coin {
+  background: #172434;
+  border: 1px solid #26374b;
+  border-radius: 20px;
+
+  padding: 7px 10px;
+
+  font-size: 11px;
+  font-weight: 700;
 }
 
 .notification-btn {
-width: 42px;
-height: 42px;
-border-radius: 50%;
-background: #111111;
-color: #ffffff;
-font-size: 21px;
+  width: 36px;
+  height: 36px;
+
+  border-radius: 50%;
+
+  background: #111d2a;
+  border: 1px solid var(--border);
+
+  color: white;
+
+  position: relative;
 }
 
-/* ================================
-PROMOTION
-================================ */
+.notification-btn span {
+  position: absolute;
 
-.promotion-container {
-padding: 8px 14px 14px;
+  width: 7px;
+  height: 7px;
+
+  right: 7px;
+  top: 6px;
+
+  border-radius: 50%;
+
+  background: var(--red);
 }
 
-.promotion-card {
-position: relative;
-width: 100%;
-height: 190px;
-overflow: hidden;
-border-radius: 18px;
-border: 1px solid #8b00ff;
-background: #111111;
+/* =========================
+   BANNER
+========================= */
+
+.withdraw-banner {
+  margin: 0 14px 10px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #12351f,
+      #0b2518
+    );
+
+  border: 1px solid rgba(20,210,100,.15);
+
+  border-radius: 5px;
+
+  padding: 7px;
+
+  text-align: center;
+
+  color: #b4c3bc;
+
+  font-size: 9px;
 }
 
-.promotion-image {
-width: 100%;
-height: 100%;
-object-fit: cover;
+.hero-banner {
+  min-height: 130px;
+
+  margin: 10px 14px 20px;
+
+  border-radius: 9px;
+
+  padding: 20px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  overflow: hidden;
+
+  background:
+    radial-gradient(
+      circle at right,
+      #e6203d,
+      #661321 28%,
+      #150c12 70%
+    );
+
+  border: 1px solid rgba(255,255,255,.1);
 }
 
-.promotion-card::after {
-content: "";
-position: absolute;
-inset: 0;
-background: linear-gradient(
-90deg,
-rgba(0, 0, 0, 0.78),
-rgba(0, 0, 0, 0.15)
-);
+.hero-banner small {
+  font-size: 9px;
+  color: white;
 }
 
-.promotion-overlay {
-position: absolute;
-inset: 0;
-z-index: 2;
-display: flex;
-align-items: center;
-justify-content: space-between;
-padding: 20px;
+.hero-banner h2 {
+  font-size: 23px;
+  line-height: .95;
+  margin: 4px 0 12px;
 }
 
-.promo-badge {
-color: #ffffff;
-font-size: 10px;
-font-weight: 900;
-letter-spacing: 1px;
+.hero-banner button {
+  border: 0;
+  border-radius: 4px;
+
+  padding: 6px 10px;
+
+  background: white;
+  color: black;
+
+  font-size: 9px;
+  font-weight: 800;
 }
 
-.promotion-overlay h2 {
-margin-top: 7px;
-font-size: 28px;
-font-weight: 900;
+.instagram-icon {
+  font-size: 85px;
+  opacity: .9;
 }
 
-.promotion-overlay p {
-margin-top: 6px;
-color: #eeeeee;
-font-size: 12px;
+/* =========================
+   SECTION
+========================= */
+
+.section {
+  padding: 0 14px;
+  margin-bottom: 22px;
 }
 
-.promo-button {
-padding: 11px 15px;
-border-radius: 9px;
-background: #ffd000;
-color: #000000;
-font-size: 11px;
-font-weight: 900;
+.section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 12px;
 }
 
-/* ================================
-HOME TOURNAMENT CARDS
-================================ */
-
-.matches-container {
-display: flex;
-flex-direction: column;
-gap: 14px;
-padding: 0 14px;
+.section-heading h2 {
+  font-size: 15px;
 }
 
-.match-card {
-width: 100%;
-overflow: hidden;
-border-radius: 17px;
-background: #0d0d0d;
-border: 1px solid #333333;
-cursor: pointer;
-transition: transform 0.15s ease;
+.section-heading button {
+  background: transparent;
+  border: 0;
+
+  color: #3d91ff;
+
+  font-size: 10px;
 }
 
-.match-card:active {
-transform: scale(0.98);
+.match-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
 }
 
-.match-image-wrapper {
-position: relative;
-width: 100%;
-height: 190px;
-overflow: hidden;
+.stat-card {
+  min-height: 78px;
+
+  padding: 9px;
+
+  border-radius: 8px;
+
+  background: var(--card);
+
+  border: 1px solid var(--border);
 }
 
-.match-image {
-width: 100%;
-height: 100%;
-object-fit: cover;
-display: block;
+.stat-card div {
+  font-size: 16px;
 }
 
-.match-content {
-padding: 13px 15px 15px;
+.stat-card strong {
+  display: block;
+
+  font-size: 18px;
+
+  margin-top: 4px;
 }
 
-.match-title-row h3 {
-font-size: 18px;
-font-weight: 900;
-letter-spacing: 0.5px;
+.stat-card small {
+  font-size: 7px;
+  color: #7d8a9a;
 }
 
-/* ================================
-PAGES
-================================ */
-
-.app-page {
-padding: 15px;
+.stat-card.green {
+  border-bottom: 2px solid var(--green);
 }
 
-.app-page h2 {
-font-size: 23px;
-margin-bottom: 18px;
+.stat-card.blue {
+  border-bottom: 2px solid var(--blue);
 }
 
-.back-button {
-display: inline-flex;
-align-items: center;
-gap: 5px;
-margin-bottom: 14px;
-padding: 10px 14px;
-border-radius: 9px;
-background: #151515;
-color: #ffffff;
-font-size: 13px;
-font-weight: 700;
+.stat-card.purple {
+  border-bottom: 2px solid var(--purple);
 }
 
-/* ================================
-MATCH DETAILS CARD
-================================ */
-
-.details-card {
-overflow: hidden;
-border-radius: 18px;
-background: #101010;
-border: 1px solid #303030;
+.game-tabs {
+  display: flex;
+  background: #101b29;
+  border-radius: 6px;
 }
 
-.details-image {
-width: 100%;
-height: 210px;
-object-fit: cover;
-display: block;
+.game-tabs button {
+  border: 0;
+  background: transparent;
+  color: #6e7a8b;
+
+  padding: 6px 9px;
+
+  font-size: 8px;
 }
 
-.details-body {
-padding: 18px;
+.game-tabs .active {
+  background: #1568d8;
+  color: white;
+  border-radius: 5px;
 }
 
-.details-title {
-font-size: 24px;
-font-weight: 900;
-margin-bottom: 17px;
+/* =========================
+   TOURNAMENTS
+========================= */
+
+.tournament-grid {
+  display: grid;
+
+  grid-template-columns: repeat(2, 1fr);
+
+  gap: 10px;
 }
 
-.details-grid {
-display: grid;
-grid-template-columns: repeat(2, 1fr);
-gap: 10px;
+.tournament-card {
+  overflow: hidden;
+
+  background: var(--card);
+
+  border: 1px solid var(--border);
+
+  border-radius: 8px;
+
+  cursor: pointer;
+
+  transition: .2s;
 }
 
-.detail-item {
-padding: 14px;
-border-radius: 12px;
-background: #171717;
-border: 1px solid #292929;
+.tournament-card:active {
+  transform: scale(.97);
 }
 
-.detail-label {
-display: block;
-color: #888888;
-font-size: 10px;
-margin-bottom: 6px;
-text-transform: uppercase;
+.tournament-image {
+  height: 105px;
+
+  background-size: cover;
+  background-position: center;
+
+  position: relative;
 }
 
-.detail-value {
-display: block;
-font-size: 16px;
-font-weight: 900;
+.tournament-image::after {
+  content: "";
+
+  position: absolute;
+  inset: 0;
+
+  background:
+    linear-gradient(
+      transparent 35%,
+      rgba(0,0,0,.85)
+    );
 }
 
-.join-now {
-width: 100%;
-margin-top: 16px;
-padding: 14px;
-border-radius: 11px;
-background: #ffd000;
-color: #000000;
-font-size: 14px;
-font-weight: 900;
+.live-dot {
+  position: absolute;
+  z-index: 2;
+
+  top: 7px;
+  right: 7px;
+
+  background: #0b9c57;
+
+  border-radius: 3px;
+
+  padding: 3px 5px;
+
+  font-size: 7px;
 }
 
-/* ================================
-MATCH SCHEDULE
-================================ */
+.game-title {
+  position: absolute;
+  z-index: 2;
 
-.schedule-card {
-padding: 18px;
-border-radius: 18px;
-background: #101010;
-border: 1px solid #303030;
+  bottom: 8px;
+  left: 8px;
+
+  font-size: 14px;
+  font-weight: 900;
+  font-style: italic;
 }
 
-.schedule-title {
-font-size: 23px;
-font-weight: 900;
-margin-bottom: 5px;
+.tournament-info {
+  padding: 8px;
 }
 
-.schedule-subtitle {
-color: #888888;
-font-size: 12px;
-margin-bottom: 18px;
+.tournament-info h3 {
+  font-size: 9px;
+  margin-bottom: 8px;
 }
 
-.schedule-list {
-display: flex;
-flex-direction: column;
-gap: 10px;
+.card-row {
+  display: flex;
+  justify-content: space-between;
+
+  font-size: 8px;
+
+  margin: 5px 0;
 }
 
-.schedule-row {
-display: flex;
-align-items: center;
-justify-content: space-between;
-gap: 15px;
-padding: 14px;
-border-radius: 11px;
-background: #171717;
-border: 1px solid #292929;
+.card-row span {
+  color: #788596;
 }
 
-.schedule-row span:first-child {
-color: #888888;
-font-size: 12px;
+.green-text {
+  color: var(--green) !important;
 }
 
-.schedule-row span:last-child {
-font-size: 13px;
-font-weight: 800;
-text-align: right;
+.slots {
+  margin-top: 7px;
+
+  font-size: 7px;
+
+  color: #36a0ff;
 }
 
-.rules-box {
-margin-top: 15px;
-padding: 15px;
-border-radius: 12px;
-background: #171717;
-border: 1px solid #292929;
+/* =========================
+   BOTTOM NAV
+========================= */
+
+.bottom-nav {
+  position: fixed;
+
+  bottom: 0;
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  width: 100%;
+  max-width: 520px;
+
+  height: 67px;
+
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+
+  background:
+    rgba(6,14,24,.97);
+
+  backdrop-filter: blur(12px);
+
+  border-top: 1px solid var(--border);
+
+  z-index: 50;
 }
 
-.rules-box h3 {
-margin-bottom: 9px;
-font-size: 15px;
+.bottom-nav button {
+  border: 0;
+  background: transparent;
+
+  color: #718093;
+
+  font-size: 9px;
+
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
+  align-items: center;
+
+  gap: 5px;
 }
 
-.rules-box p {
-color: #bbbbbb;
-font-size: 12px;
-line-height: 1.7;
+.bottom-nav button span {
+  font-size: 19px;
 }
 
-/* ================================
-WALLET
-================================ */
+.bottom-nav button.active {
+  color: #2b91ff;
+}
+
+/* =========================
+   PAGE HEADER
+========================= */
+
+.page-header {
+  height: 61px;
+
+  padding: 0 15px;
+
+  display: grid;
+  grid-template-columns: 40px 1fr 40px;
+
+  align-items: center;
+
+  border-bottom: 1px solid rgba(255,255,255,.04);
+}
+
+.page-header button {
+  border: 0;
+  background: transparent;
+  color: white;
+
+  font-size: 29px;
+}
+
+.page-header h2 {
+  text-align: center;
+  font-size: 14px;
+}
+
+/* =========================
+   DETAILS
+========================= */
+
+.detail-hero {
+  height: 205px;
+
+  margin: 10px 14px;
+
+  background-size: cover;
+  background-position: center;
+
+  border-radius: 9px;
+
+  overflow: hidden;
+}
+
+.detail-overlay {
+  height: 100%;
+
+  display: flex;
+  justify-content: flex-end;
+  flex-direction: column;
+
+  padding: 15px;
+
+  background:
+    linear-gradient(
+      transparent,
+      rgba(0,0,0,.9)
+    );
+}
+
+.detail-overlay h1 {
+  font-size: 20px;
+  font-style: italic;
+}
+
+.detail-overlay span {
+  color: #ff3347;
+  font-size: 9px;
+  margin-top: 6px;
+}
+
+.price-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 8px;
+
+  margin: 0 14px 12px;
+}
+
+.price-grid > div {
+  background: var(--card);
+
+  border: 1px solid var(--border);
+
+  border-radius: 6px;
+
+  padding: 10px;
+
+  text-align: center;
+}
+
+.price-grid small {
+  display: block;
+
+  color: #788596;
+
+  font-size: 7px;
+
+  margin-bottom: 5px;
+}
+
+.price-grid strong {
+  font-size: 14px;
+}
+
+.details-box,
+.rules {
+  margin: 10px 14px;
+
+  background: var(--card);
+
+  border: 1px solid var(--border);
+
+  border-radius: 8px;
+
+  padding: 12px;
+}
+
+.details-box div {
+  display: flex;
+  align-items: center;
+
+  padding: 8px 0;
+
+  border-bottom: 1px solid rgba(255,255,255,.04);
+
+  font-size: 11px;
+}
+
+.details-box div:last-child {
+  border: 0;
+}
+
+.details-box span {
+  color: #8793a2;
+  margin-left: 8px;
+}
+
+.details-box b {
+  margin-left: auto;
+  font-size: 10px;
+}
+
+.rules h2 {
+  font-size: 13px;
+  margin-bottom: 9px;
+}
+
+.rules p {
+  font-size: 9px;
+  color: #8c98a7;
+  margin: 6px 0;
+}
+
+.join-btn {
+  width: calc(100% - 28px);
+
+  margin: 8px 14px 20px;
+}
+
+/* =========================
+   MATCHES
+========================= */
+
+.match-tabs,
+.leader-tabs {
+  display: flex;
+
+  margin: 12px 14px;
+
+  background: #111c29;
+
+  border-radius: 7px;
+
+  overflow: hidden;
+}
+
+.match-tabs button,
+.leader-tabs button {
+  flex: 1;
+
+  border: 0;
+
+  padding: 10px 5px;
+
+  background: transparent;
+
+  color: #738092;
+
+  font-size: 9px;
+}
+
+.match-tabs .active,
+.leader-tabs .active {
+  background: var(--red);
+  color: white;
+}
+
+.my-match-list {
+  padding: 0 14px;
+}
+
+.my-match {
+  background: var(--card);
+
+  border: 1px solid var(--border);
+
+  border-radius: 8px;
+
+  padding: 12px;
+
+  margin-bottom: 10px;
+}
+
+.match-title {
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.match-title span {
+  float: right;
+
+  color: #36dd8a;
+
+  font-size: 7px;
+}
+
+.my-match p {
+  font-size: 9px;
+  color: #788596;
+  margin-top: 9px;
+}
+
+.my-match b {
+  color: white;
+}
+
+.match-bottom {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  margin-top: 12px;
+
+  font-size: 8px;
+
+  color: #8390a0;
+}
+
+.match-bottom button {
+  margin-left: auto;
+
+  background: #15263b;
+
+  border: 1px solid #28425e;
+
+  color: white;
+
+  padding: 6px 8px;
+
+  border-radius: 4px;
+
+  font-size: 7px;
+}
+
+/* =========================
+   WALLET
+========================= */
 
 .wallet-card {
-padding: 25px;
-border-radius: 17px;
-background: #111111;
-border: 1px solid #333333;
+  margin: 16px 14px;
+
+  min-height: 155px;
+
+  padding: 22px;
+
+  position: relative;
+
+  overflow: hidden;
+
+  border-radius: 10px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #164fa9,
+      #102c63
+    );
+
+  box-shadow:
+    0 12px 30px rgba(0,0,0,.25);
 }
 
-.wallet-card span {
-display: block;
-color: #999999;
-font-size: 12px;
-margin-bottom: 8px;
+.wallet-card small {
+  font-size: 9px;
 }
 
-.wallet-card strong {
-font-size: 30px;
+.wallet-card h1 {
+  margin-top: 12px;
+  font-size: 30px;
 }
 
-/* ================================
-WINNERS
-================================ */
+.wallet-icon {
+  position: absolute;
 
-.empty-page {
-padding: 30px 15px;
-text-align: center;
-color: #888888;
-background: #111111;
-border-radius: 15px;
+  right: 25px;
+  bottom: 18px;
+
+  font-size: 55px;
 }
 
-/* ================================
-PROFILE
-================================ */
+.wallet-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
 
-.profile-header {
-display: flex;
-align-items: center;
-gap: 14px;
-padding: 18px;
-margin-bottom: 15px;
-border-radius: 16px;
-background: #111111;
-border: 1px solid #292929;
+  gap: 9px;
+
+  padding: 0 14px;
+}
+
+.wallet-actions button {
+  border: 0;
+
+  padding: 12px;
+
+  border-radius: 6px;
+
+  color: white;
+
+  background: #13a65e;
+
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.wallet-actions button:last-child {
+  background: #1462c6;
+}
+
+.transaction-section {
+  padding: 18px 14px;
+}
+
+.transaction {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  background: var(--card);
+
+  border-bottom: 1px solid rgba(255,255,255,.04);
+
+  padding: 12px 7px;
+}
+
+.transaction-icon {
+  width: 30px;
+  height: 30px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background: #142336;
+
+  border-radius: 6px;
+}
+
+.transaction strong {
+  display: block;
+  font-size: 9px;
+}
+
+.transaction small {
+  display: block;
+  color: #718092;
+  font-size: 7px;
+  margin-top: 3px;
+}
+
+.transaction-right {
+  margin-left: auto;
+  text-align: right;
+}
+
+.transaction-right strong {
+  color: var(--green);
+}
+
+/* =========================
+   EARN
+========================= */
+
+.earn-banner {
+  margin: 15px 14px;
+
+  min-height: 145px;
+
+  padding: 20px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  border-radius: 10px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #4528a0,
+      #24164f
+    );
+}
+
+.earn-banner small {
+  font-size: 9px;
+}
+
+.earn-banner h2 {
+  font-size: 17px;
+  margin-top: 8px;
+}
+
+.gift {
+  font-size: 70px;
+}
+
+.referral-card {
+  margin: 0 14px;
+
+  padding: 15px;
+
+  border-radius: 8px;
+
+  background: var(--card);
+
+  border: 1px solid var(--border);
+}
+
+.referral-card small {
+  color: #758294;
+  font-size: 8px;
+}
+
+.ref-code {
+  display: flex;
+
+  align-items: center;
+
+  margin-top: 8px;
+
+  background: #09121d;
+
+  padding: 8px;
+
+  border-radius: 5px;
+}
+
+.ref-code strong {
+  font-size: 11px;
+}
+
+.ref-code button {
+  margin-left: auto;
+
+  background: #1269cf;
+
+  border: 0;
+
+  color: white;
+
+  padding: 6px 10px;
+
+  border-radius: 4px;
+
+  font-size: 7px;
+}
+
+.referral-card p {
+  color: #778596;
+
+  font-size: 8px;
+
+  margin-top: 10px;
+}
+
+.share-btn {
+  width: 100%;
+
+  margin-top: 9px;
+
+  border: 0;
+
+  background: #1269cf;
+
+  color: white;
+
+  padding: 10px;
+
+  border-radius: 5px;
+
+  font-size: 9px;
+}
+
+.earn-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+
+  gap: 8px;
+
+  padding: 14px;
+}
+
+.earn-stats div {
+  background: var(--card);
+
+  border: 1px solid var(--border);
+
+  border-radius: 7px;
+
+  padding: 14px;
+}
+
+.earn-stats small {
+  display: block;
+
+  color: #758294;
+
+  font-size: 8px;
+}
+
+.earn-stats strong {
+  display: block;
+
+  margin-top: 6px;
+
+  color: var(--green);
+}
+
+/* =========================
+   LEADERBOARD
+========================= */
+
+.leaderboard {
+  padding: 0 14px;
+}
+
+.player-row {
+  display: flex;
+
+  align-items: center;
+
+  gap: 9px;
+
+  background: var(--card);
+
+  border-bottom: 1px solid rgba(255,255,255,.04);
+
+  padding: 11px 8px;
+}
+
+.rank {
+  width: 25px;
+
+  text-align: center;
+
+  font-size: 10px;
+}
+
+.player-avatar {
+  width: 32px;
+  height: 32px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #17283c;
+
+  border-radius: 50%;
+}
+
+.player-info {
+  flex: 1;
+}
+
+.player-info strong {
+  display: block;
+  font-size: 10px;
+}
+
+.player-info small {
+  display: block;
+
+  color: #718092;
+
+  font-size: 7px;
+
+  margin-top: 3px;
+}
+
+.player-row > strong {
+  font-size: 9px;
+}
+
+.leaderboard-btn {
+  width: calc(100% - 28px);
+
+  margin: 18px 14px;
+
+  padding: 12px;
+
+  border: 1px solid #1258a8;
+
+  background: #092b52;
+
+  color: #3ca0ff;
+
+  border-radius: 6px;
+
+  font-size: 9px;
+}
+
+/* =========================
+   NOTIFICATIONS
+========================= */
+
+.notification-list {
+  padding: 5px 14px;
+}
+
+.notification-item {
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 13px 7px;
+
+  border-bottom: 1px solid rgba(255,255,255,.05);
+}
+
+.notification-icon {
+  width: 34px;
+  height: 34px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background: #142338;
+
+  border-radius: 7px;
+}
+
+.notification-item > div:nth-child(2) {
+  flex: 1;
+}
+
+.notification-item strong {
+  display: block;
+  font-size: 9px;
+}
+
+.notification-item p {
+  color: #748293;
+  font-size: 7px;
+  margin-top: 4px;
+}
+
+.notification-item > small {
+  color: #657384;
+  font-size: 7px;
+}
+
+.mark-read {
+  width: calc(100% - 28px);
+
+  margin: 20px 14px;
+
+  padding: 12px;
+
+  background: var(--red);
+
+  border: 0;
+
+  color: white;
+
+  border-radius: 6px;
+
+  font-size: 9px;
+  font-weight: 800;
+}
+
+/* =========================
+   MENU
+========================= */
+
+.menu-profile {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  margin: 16px 14px;
+
+  padding: 15px;
+
+  background: var(--card);
+
+  border: 1px solid var(--border);
+
+  border-radius: 8px;
+}
+
+.menu-profile strong {
+  display: block;
+  font-size: 13px;
+}
+
+.menu-list {
+  padding: 0 14px;
+}
+
+.menu-list button {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 14px 12px;
+
+  margin-bottom: 7px;
+
+  background: var(--card);
+
+  border: 1px solid var(--border);
+
+  border-radius: 7px;
+
+  color: white;
+
+  text-align: left;
+
+  font-size: 10px;
+}
+
+.menu-list button span {
+  width: 24px;
+  text-align: center;
+}
+
+.menu-list button b {
+  margin-left: auto;
+  color: #7a8797;
+}
+
+.menu-list .logout {
+  color: #ff3948;
+}
+
+/* =========================
+   PROFILE
+========================= */
+
+.profile-card {
+  text-align: center;
+
+  margin: 25px 14px;
+
+  padding: 25px;
+
+  background: var(--card);
+
+  border: 1px solid var(--border);
+
+  border-radius: 9px;
 }
 
 .profile-avatar {
-width: 54px;
-height: 54px;
-display: flex;
-align-items: center;
-justify-content: center;
-border-radius: 50%;
-background: #ffd000;
-color: #000000;
-font-size: 25px;
+  width: 80px;
+  height: 80px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  margin: auto;
+
+  border-radius: 50%;
+
+  background: #18314d;
+
+  font-size: 38px;
 }
 
-.profile-header h2 {
-margin: 0;
-font-size: 18px;
+.profile-card h2 {
+  margin-top: 12px;
+  font-size: 17px;
 }
 
-.profile-header span {
-display: block;
-margin-top: 4px;
-color: #888888;
-font-size: 11px;
+.profile-card p {
+  color: #778495;
+  font-size: 9px;
+  margin-top: 4px;
 }
 
-.profile-menu {
-display: flex;
-flex-direction: column;
-gap: 2px;
-overflow: hidden;
-border-radius: 15px;
-background: #111111;
-border: 1px solid #292929;
+.profile-form {
+  padding: 0 14px;
 }
 
-.profile-menu button {
-display: flex;
-align-items: center;
-gap: 13px;
-width: 100%;
-min-height: 54px;
-padding: 0 16px;
-background: transparent;
-color: #ffffff;
-text-align: left;
-border-bottom: 1px solid #242424;
+.profile-form label {
+  display: block;
+
+  color: #788697;
+
+  font-size: 9px;
+
+  margin: 12px 0 6px;
 }
 
-.profile-menu button:last-child {
-border-bottom: 0;
+.profile-form input {
+  width: 100%;
+
+  padding: 12px;
+
+  background: var(--card);
+
+  border: 1px solid var(--border);
+
+  border-radius: 6px;
+
+  color: white;
+
+  outline: none;
 }
 
-.profile-menu button span {
-flex: 1;
-font-size: 13px;
+.profile-form .primary-btn {
+  margin-top: 20px;
 }
 
-.profile-menu button b {
-color: #888888;
-font-size: 20px;
+/* =========================
+   TOAST
+========================= */
+
+.toast {
+  position: fixed;
+
+  left: 50%;
+  bottom: 85px;
+
+  transform:
+    translate(-50%, 20px);
+
+  opacity: 0;
+
+  z-index: 100;
+
+  background: #172334;
+
+  border: 1px solid #2c3e55;
+
+  color: white;
+
+  padding: 11px 16px;
+
+  border-radius: 7px;
+
+  font-size: 10px;
+
+  transition: .3s;
 }
 
-/* ================================
-BOTTOM NAVIGATION
-================================ */
+.toast.show {
+  opacity: 1;
 
-.bottom-nav {
-position: fixed;
-z-index: 100;
-left: 50%;
-bottom: 0;
-transform: translateX(-50%);
-
-width: 100%;
-max-width: 600px;
-height: 72px;
-
-display: grid;
-grid-template-columns: repeat(4, 1fr);
-
-background: rgba(10, 10, 10, 0.98);
-border-top: 1px solid #252525;
+  transform:
+    translate(-50%, 0);
 }
 
-.nav-item {
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
-gap: 4px;
+/* =========================
+   DESKTOP
+========================= */
 
-background: transparent;
-color: #888888;
-}
+@media (min-width: 700px) {
 
-.nav-item span {
-font-size: 22px;
-line-height: 1;
-}
+  body {
+    background:
+      radial-gradient(
+        circle at center,
+        #101c2d,
+        #02050a 65%
+      );
+  }
 
-.nav-item small {
-font-size: 10px;
-font-weight: 700;
-}
+  .app-shell {
+    min-height: 100vh;
 
-.nav-item.active {
-color: #ffd000;
-}
+    box-shadow:
+      0 0 60px rgba(0,0,0,.5);
+  }
 
-/* ================================
-MOBILE
-================================ */
-
-@media (max-width: 480px) {
-
-.top-header {
-height: 72px;
-padding: 10px 14px;
-}
-
-.app-logo {
-width: 46px;
-height: 46px;
-}
-
-.brand h1 {
-font-size: 19px;
-}
-
-.promotion-card {
-height: 175px;
-}
-
-.promotion-overlay h2 {
-font-size: 23px;
-}
-
-.promotion-overlay p {
-font-size: 10px;
-}
-
-.match-image-wrapper {
-height: 175px;
-}
-
-.details-image {
-height: 180px;
-}
-
-.details-title {
-font-size: 21px;
-}
-
-.detail-item {
-padding: 12px;
-}
-
-.detail-value {
-font-size: 14px;
-}
+  .bottom-nav {
+    border-radius: 12px 12px 0 0;
+  }
 }
