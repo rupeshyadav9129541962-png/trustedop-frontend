@@ -120,7 +120,40 @@ try {
 }
 
 let currentPage = "home";
+onValue(ref(db, "tournaments"), (snapshot) => {
+  const data = snapshot.val() || {};
 
+  tournaments = Object.entries(data).map(([id, item]) => ({
+    id,
+    title: item.name || item.title || "Tournament",
+    image: item.image || "",
+    game: "FREE FIRE",
+    type: item.mode || item.type || "Squad",
+    prize: Number(item.prizePool ?? item.prize ?? 0),
+    perKill: Number(item.perKill ?? 0),
+    entry: Number(item.entryFee ?? item.entry ?? 0),
+    slots: Number(item.slots ?? 0),
+    joined: Number(item.joined ?? 0),
+    map: item.map || "",
+    date: item.date || "",
+    time: item.time || "",
+    status: String(item.status || "Upcoming").toUpperCase(),
+    rules: Array.isArray(item.rules)
+      ? item.rules
+      : String(item.rules || "")
+          .split("\n")
+          .map(s => s.trim())
+          .filter(Boolean)
+  }));
+
+  if (currentPage === "home") {
+    showHome();
+  }
+
+  if (currentPage === "tournaments") {
+    showTournaments();
+  }
+});
 /* =========================================================
    HELPERS
    ========================================================= */
