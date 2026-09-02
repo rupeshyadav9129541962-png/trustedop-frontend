@@ -1,187 +1,265 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en"><head>
+  <meta charset="UTF-8"><meta
+name="viewport"
+content="width=device-width, initial-scale=1.0"
 
-<head>
-  <meta charset="UTF-8">
+«»
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
+  <title>Trusted OP</title>  <link rel="stylesheet" href="./src/style.css">
+</head><body>  <div class="app"><!-- HEADER -->
+<header class="top-header">
+
+  <div class="brand">
+
+    <img
+      src="./Image/file_000000001d9071fb89ee875444fe92f4.png"
+      alt="Trusted OP"
+      class="app-logo"
+    >
+
+    <h1>TRUSTED OP</h1>
+
+  </div>
+
+  <button class="notification-btn">
+    🔔
+  </button>
+
+</header>
+
+
+<!-- HOME PAGE -->
+<main id="homePage">
+
+  <section
+    id="promotionContainer"
+    class="promotion-container"
+  ></section>
+
+  <section
+    id="matchesContainer"
+    class="matches-container"
+  ></section>
+
+</main>
+
+
+<!-- MATCH DETAILS PAGE -->
+<main
+  id="matchDetailsPage"
+  class="app-page hidden"
+>
+
+  <button
+    class="back-button"
+    onclick="showPage('home')"
   >
+    ← Back
+  </button>
 
-  <title>Trusted OP</title>
+  <div id="matchDetailsContainer"></div>
 
-  <link rel="stylesheet" href="./src/style.css">
-</head>
-
-<body>
-
-  <!-- APP -->
-  <div class="app">
-
-    <!-- HEADER -->
-    <header class="top-header">
-
-      <div class="brand">
-
-        <img
-          src="./Image/file_000000001d9071fb89ee875444fe92f4.png"
-          alt="Trusted OP"
-          class="app-logo"
-        >
-
-        <h1>TRUSTED OP</h1>
-
-      </div>
-
-      <button class="notification-btn">
-        🔔
-      </button>
-
-    </header>
+</main>
 
 
-    <!-- HOME / LOBBY -->
-    <main id="homePage">
+<!-- FULL MATCH SCHEDULE PAGE -->
+<main
+  id="schedulePage"
+  class="app-page hidden"
+>
 
-      <!-- PROMOTION -->
-      <section
-        id="promotionContainer"
-        class="promotion-container"
-      ></section>
+  <button
+    class="back-button"
+    onclick="goBackToMatch()"
+  >
+    ← Back
+  </button>
 
+  <div id="scheduleContainer"></div>
 
-      <!-- TOURNAMENT CARDS -->
-      <section
-        id="matchesContainer"
-        class="matches-container"
-      ></section>
-
-    </main>
-
-
-    <!-- WALLET PAGE -->
-    <main
-      id="walletPage"
-      class="app-page hidden"
-    >
-
-      <h2>Wallet</h2>
-
-      <div class="wallet-card">
-        <span>Available Balance</span>
-        <strong>₹0</strong>
-      </div>
-
-    </main>
+</main>
 
 
-    <!-- WINNERS PAGE -->
-    <main
-      id="winnersPage"
-      class="app-page hidden"
-    >
+<!-- WALLET PAGE -->
+<main
+  id="walletPage"
+  class="app-page hidden"
+>
 
-      <h2>🏆 Winners</h2>
+  <h2>Wallet</h2>
 
-      <div class="empty-page">
-        Winners will appear here.
-      </div>
+  <div class="wallet-card">
 
-    </main>
+    <span>
+      Available Balance
+    </span>
 
+    <strong>
+      ₹0
+    </strong>
 
-    <!-- PROFILE PAGE -->
-    <main
-      id="profilePage"
-      class="app-page hidden"
-    >
+  </div>
 
-      <div class="profile-header">
-
-        <div class="profile-avatar">
-          👤
-        </div>
-
-        <div>
-          <h2 id="profileUserName">
-            User Name
-          </h2>
-
-          <span>
-            Welcome to Trusted OP
-          </span>
-        </div>
-
-      </div>
+</main>
 
 
-      <div class="profile-menu">
+<!-- WINNERS PAGE -->
+<main
+  id="winnersPage"
+  class="app-page hidden"
+>
 
-        <button>👤 <span>My Profile</span> <b>›</b></button>
+  <h2>
+    🏆 Winners
+  </h2>
 
-        <button>💰 <span>Wallet</span> <b>›</b></button>
+  <div class="empty-page">
+    Winners will appear here.
+  </div>
 
-        <button>🔐 <span>Change Password</span> <b>›</b></button>
-
-        <button>📋 <span>My Wallet History</span> <b>›</b></button>
-
-        <button>🏆 <span>Top Players</span> <b>›</b></button>
-
-        <button>⚔️ <span>My Challenge</span> <b>›</b></button>
-
-        <button>🎧 <span>Customer Support</span> <b>›</b></button>
-
-        <button>📤 <span>Share App</span> <b>›</b></button>
-
-      </div>
-
-    </main>
+</main>
 
 
-    <!-- BOTTOM NAVIGATION -->
-    <nav class="bottom-nav">
+<!-- PROFILE PAGE -->
+<main
+  id="profilePage"
+  class="app-page hidden"
+>
 
-      <button
-        class="nav-item active"
-        data-page="home"
-      >
-        <span>⌂</span>
-        <small>Home</small>
-      </button>
+  <div class="profile-header">
 
-      <button
-        class="nav-item"
-        data-page="wallet"
-      >
-        <span>▣</span>
-        <small>Wallet</small>
-      </button>
+    <div class="profile-avatar">
+      👤
+    </div>
 
-      <button
-        class="nav-item"
-        data-page="winners"
-      >
-        <span>🏆</span>
-        <small>Winners</small>
-      </button>
+    <div>
 
-      <button
-        class="nav-item"
-        data-page="profile"
-      >
-        <span>●</span>
-        <small>Profile</small>
-      </button>
+      <h2 id="profileUserName">
+        User Name
+      </h2>
 
-    </nav>
+      <span>
+        Welcome to Trusted OP
+      </span>
+
+    </div>
 
   </div>
 
 
-  <!-- JAVASCRIPT -->
-  <script src="./src/main.js"></script>
+  <div class="profile-menu">
 
-</body>
+    <button>
+      👤
+      <span>My Profile</span>
+      <b>›</b>
+    </button>
 
-</html>
+    <button>
+      💰
+      <span>Wallet</span>
+      <b>›</b>
+    </button>
+
+    <button>
+      🔐
+      <span>Change Password</span>
+      <b>›</b>
+    </button>
+
+    <button>
+      📋
+      <span>My Wallet History</span>
+      <b>›</b>
+    </button>
+
+    <button>
+      🏆
+      <span>Top Players</span>
+      <b>›</b>
+    </button>
+
+    <button>
+      ⚔️
+      <span>My Challenge</span>
+      <b>›</b>
+    </button>
+
+    <button>
+      🎧
+      <span>Customer Support</span>
+      <b>›</b>
+    </button>
+
+    <button>
+      📤
+      <span>Share App</span>
+      <b>›</b>
+    </button>
+
+  </div>
+
+</main>
+
+
+<!-- BOTTOM NAVIGATION -->
+<nav class="bottom-nav">
+
+  <button
+    class="nav-item active"
+    data-page="home"
+  >
+
+    <span>⌂</span>
+
+    <small>
+      Home
+    </small>
+
+  </button>
+
+
+  <button
+    class="nav-item"
+    data-page="wallet"
+  >
+
+    <span>▣</span>
+
+    <small>
+      Wallet
+    </small>
+
+  </button>
+
+
+  <button
+    class="nav-item"
+    data-page="winners"
+  >
+
+    <span>🏆</span>
+
+    <small>
+      Winners
+    </small>
+
+  </button>
+
+
+  <button
+    class="nav-item"
+    data-page="profile"
+  >
+
+    <span>●</span>
+
+    <small>
+      Profile
+    </small>
+
+  </button>
+
+</nav>
+
+  </div>  <!-- MAIN JAVASCRIPT -->  <script src="./src/main.js"></script></body></html>
