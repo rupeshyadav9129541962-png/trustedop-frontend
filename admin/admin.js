@@ -106,6 +106,7 @@ function showLogin(error = "") {
 
           <div class="form-group">
             <label>ADMIN EMAIL</label>
+
             <input
               id="adminEmail"
               class="form-input"
@@ -117,6 +118,7 @@ function showLogin(error = "") {
 
           <div class="form-group">
             <label>PASSWORD</label>
+
             <input
               id="adminPassword"
               class="form-input"
@@ -145,14 +147,19 @@ function showLogin(error = "") {
 async function adminLogin(event) {
   event.preventDefault();
 
-  const email = document.getElementById("adminEmail").value.trim();
-  const password = document.getElementById("adminPassword").value;
+  const email =
+    document.getElementById("adminEmail").value.trim();
 
-  const errorBox = document.getElementById("loginError");
+  const password =
+    document.getElementById("adminPassword").value;
+
+  const errorBox =
+    document.getElementById("loginError");
 
   errorBox.style.display = "none";
 
   try {
+
     await signInWithEmailAndPassword(
       auth,
       email,
@@ -160,7 +167,9 @@ async function adminLogin(event) {
     );
 
     toast("Login successful");
+
   } catch (error) {
+
     console.error(error);
 
     errorBox.textContent =
@@ -175,20 +184,34 @@ async function adminLogin(event) {
 /* ================= ADMIN LAYOUT ================= */
 
 function renderAdminShell() {
+
   app.innerHTML = `
     <div class="admin-shell">
 
-      <aside class="admin-sidebar" id="adminSidebar">
+      <aside
+        class="admin-sidebar"
+        id="adminSidebar"
+      >
 
         <div class="admin-brand">
 
           <div class="admin-brand-logo">
-            <img src="${LOGO}" alt="TRUSTED OP">
+            <img
+              src="${LOGO}"
+              alt="TRUSTED OP"
+            >
           </div>
 
           <div class="admin-brand-text">
-            <strong>TRUSTED OP</strong>
-            <small>ADMIN PANEL</small>
+
+            <strong>
+              TRUSTED OP
+            </strong>
+
+            <small>
+              ADMIN PANEL
+            </small>
+
           </div>
 
         </div>
@@ -249,7 +272,10 @@ function renderAdminShell() {
             <span>Settings</span>
           </button>
 
-          <button class="sidebar-logout" id="logoutBtn">
+          <button
+            class="sidebar-logout"
+            id="logoutBtn"
+          >
             <span class="sidebar-icon">🚪</span>
             <span>Logout</span>
           </button>
@@ -272,6 +298,7 @@ function renderAdminShell() {
             </button>
 
             <div>
+
               <h1 id="pageTitle">
                 Dashboard
               </h1>
@@ -279,6 +306,7 @@ function renderAdminShell() {
               <p id="pageSubtitle">
                 TRUSTED OP administration
               </p>
+
             </div>
 
           </div>
@@ -294,6 +322,7 @@ function renderAdminShell() {
             </button>
 
             <div class="admin-user">
+
               <div class="admin-user-avatar">
                 👤
               </div>
@@ -301,13 +330,17 @@ function renderAdminShell() {
               <span id="adminEmailLabel">
                 Admin
               </span>
+
             </div>
 
           </div>
 
         </header>
 
-        <section class="admin-content" id="adminContent">
+        <section
+          class="admin-content"
+          id="adminContent"
+        >
         </section>
 
       </main>
@@ -319,28 +352,49 @@ function renderAdminShell() {
 
   setupNavigation();
 
-  document.getElementById("logoutBtn")
-    .addEventListener("click", async () => {
-      await signOut(auth);
-      toast("Logged out");
-    });
+  document
+    .getElementById("logoutBtn")
+    .addEventListener(
+      "click",
+      async () => {
 
-  document.getElementById("refreshBtn")
-    .addEventListener("click", () => {
-      loadPage(currentPage);
-      toast("Refreshing...");
-    });
+        await signOut(auth);
 
-  document.getElementById("mobileMenuBtn")
-    .addEventListener("click", () => {
-      document
-        .getElementById("adminSidebar")
-        .classList.toggle("open");
-    });
+        toast("Logged out");
+      }
+    );
 
-  const email = auth.currentUser?.email || "Admin";
+  document
+    .getElementById("refreshBtn")
+    .addEventListener(
+      "click",
+      () => {
 
-  document.getElementById("adminEmailLabel")
+        loadPage(currentPage);
+
+        toast("Refreshing...");
+      }
+    );
+
+  document
+    .getElementById("mobileMenuBtn")
+    .addEventListener(
+      "click",
+      () => {
+
+        document
+          .getElementById("adminSidebar")
+          .classList.toggle("open");
+
+      }
+    );
+
+  const email =
+    auth.currentUser?.email ||
+    "Admin";
+
+  document
+    .getElementById("adminEmailLabel")
     .textContent = email;
 
   loadTournamentsRealtime();
@@ -351,30 +405,41 @@ function renderAdminShell() {
 /* ================= NAVIGATION ================= */
 
 function setupNavigation() {
+
   document
-    .querySelectorAll(".sidebar-menu button[data-page]")
+    .querySelectorAll(
+      ".sidebar-menu button[data-page]"
+    )
     .forEach(button => {
 
-      button.addEventListener("click", () => {
+      button.addEventListener(
+        "click",
+        () => {
 
-        const page = button.dataset.page;
+          const page =
+            button.dataset.page;
 
-        currentPage = page;
+          currentPage = page;
 
-        document
-          .querySelectorAll(".sidebar-menu button")
-          .forEach(btn =>
-            btn.classList.remove("active")
-          );
+          document
+            .querySelectorAll(
+              ".sidebar-menu button"
+            )
+            .forEach(btn =>
+              btn.classList.remove("active")
+            );
 
-        button.classList.add("active");
+          button.classList.add("active");
 
-        document
-          .getElementById("adminSidebar")
-          .classList.remove("open");
+          document
+            .getElementById(
+              "adminSidebar"
+            )
+            .classList.remove("open");
 
-        loadPage(page);
-      });
+          loadPage(page);
+        }
+      );
 
     });
 }
@@ -384,24 +449,75 @@ function loadPage(page) {
   currentPage = page;
 
   const titles = {
-    dashboard: ["Dashboard", "TRUSTED OP overview"],
-    users: ["Users", "Manage registered users"],
-    tournaments: ["Tournaments", "Create and manage tournaments"],
-    entries: ["Entries", "Tournament entry records"],
-    results: ["Results", "Manage tournament results"],
-    wallet: ["Wallet & Transactions", "Manage wallet activity"],
-    players: ["Top Players", "Player performance"],
-    notifications: ["Notifications", "Send announcements"],
-    reports: ["Reports", "Platform reports"],
-    settings: ["Settings", "Admin settings"]
+
+    dashboard: [
+      "Dashboard",
+      "TRUSTED OP overview"
+    ],
+
+    users: [
+      "Users",
+      "Manage registered users"
+    ],
+
+    tournaments: [
+      "Tournaments",
+      "Create and manage tournaments"
+    ],
+
+    entries: [
+      "Entries",
+      "Tournament entry records"
+    ],
+
+    results: [
+      "Results",
+      "Manage tournament results"
+    ],
+
+    wallet: [
+      "Wallet & Transactions",
+      "Manage wallet activity"
+    ],
+
+    players: [
+      "Top Players",
+      "Player performance"
+    ],
+
+    notifications: [
+      "Notifications",
+      "Send announcements"
+    ],
+
+    reports: [
+      "Reports",
+      "Platform reports"
+    ],
+
+    settings: [
+      "Settings",
+      "Admin settings"
+    ]
+
   };
 
-  const info = titles[page] || titles.dashboard;
+  const info =
+    titles[page] ||
+    titles.dashboard;
 
-  document.getElementById("pageTitle").textContent = info[0];
-  document.getElementById("pageSubtitle").textContent = info[1];
+  document
+    .getElementById("pageTitle")
+    .textContent = info[0];
 
-  const content = document.getElementById("adminContent");
+  document
+    .getElementById("pageSubtitle")
+    .textContent = info[1];
+
+  const content =
+    document.getElementById(
+      "adminContent"
+    );
 
   if (page === "dashboard") {
     showDashboard(content);
@@ -452,73 +568,106 @@ function loadPage(page) {
 
 function loadTournamentsRealtime() {
 
-  const tournamentsRef = ref(db, "tournaments");
+  const tournamentsRef =
+    ref(db, "tournaments");
 
   if (unsubscribeTournaments) {
     unsubscribeTournaments();
   }
 
-  unsubscribeTournaments = onValue(
-    tournamentsRef,
-    snapshot => {
+  unsubscribeTournaments =
+    onValue(
+      tournamentsRef,
+      snapshot => {
 
-      tournaments = snapshot.val() || {};
+        tournaments =
+          snapshot.val() || {};
 
-      if (
-        currentPage === "dashboard" ||
-        currentPage === "tournaments"
-      ) {
-        loadPage(currentPage);
+        if (
+          currentPage === "dashboard" ||
+          currentPage === "tournaments"
+        ) {
+
+          loadPage(
+            currentPage
+          );
+
+        }
+
+      },
+      error => {
+
+        console.error(
+          "Tournament database error:",
+          error
+        );
+
       }
-
-    },
-    error => {
-      console.error(
-        "Tournament database error:",
-        error
-      );
-    }
-  );
+    );
 }
 
 /* ================= DASHBOARD ================= */
 
 async function showDashboard(content) {
 
-  const tournamentList = Object.values(tournaments);
+  const tournamentList =
+    Object.values(tournaments);
 
   let usersCount = 0;
   let entriesCount = 0;
 
   try {
 
-    const usersSnap = await get(ref(db, "users"));
+    const usersSnap =
+      await get(
+        ref(db, "users")
+      );
 
     if (usersSnap.exists()) {
+
       usersCount =
-        Object.keys(usersSnap.val()).length;
+        Object.keys(
+          usersSnap.val()
+        ).length;
+
     }
 
     const entriesSnap =
-      await get(ref(db, "entries"));
+      await get(
+        ref(db, "entries")
+      );
 
     if (entriesSnap.exists()) {
+
       entriesCount =
-        Object.keys(entriesSnap.val()).length;
+        Object.keys(
+          entriesSnap.val()
+        ).length;
+
     }
 
   } catch (error) {
+
     console.error(error);
+
   }
 
   const liveCount =
     tournamentList.filter(
-      t => String(t.status).toLowerCase() === "live"
+      t =>
+        String(
+          t.status
+        ).toLowerCase() ===
+        "live"
     ).length;
 
   const upcomingCount =
     tournamentList.filter(
-      t => String(t.status).toLowerCase() === "upcoming"
+      t =>
+        String(
+          t.status
+        ).toLowerCase() ===
+        "upcoming"
     ).length;
 
   content.innerHTML = `
@@ -526,53 +675,91 @@ async function showDashboard(content) {
     <div class="dashboard-grid">
 
       <div class="dashboard-card">
+
         <div class="dashboard-card-top">
-          <div class="dashboard-card-icon">👥</div>
+          <div class="dashboard-card-icon">
+            👥
+          </div>
         </div>
-        <div class="dashboard-card-label">TOTAL USERS</div>
-        <div class="dashboard-card-number">${usersCount}</div>
+
+        <div class="dashboard-card-label">
+          TOTAL USERS
+        </div>
+
+        <div class="dashboard-card-number">
+          ${usersCount}
+        </div>
+
         <div class="dashboard-card-change">
           Registered users
         </div>
+
       </div>
 
       <div class="dashboard-card">
+
         <div class="dashboard-card-top">
-          <div class="dashboard-card-icon">🏆</div>
+          <div class="dashboard-card-icon">
+            🏆
+          </div>
         </div>
-        <div class="dashboard-card-label">TOURNAMENTS</div>
+
+        <div class="dashboard-card-label">
+          TOURNAMENTS
+        </div>
+
         <div class="dashboard-card-number">
           ${tournamentList.length}
         </div>
+
         <div class="dashboard-card-change">
           ${upcomingCount} upcoming
         </div>
+
       </div>
 
       <div class="dashboard-card">
+
         <div class="dashboard-card-top">
-          <div class="dashboard-card-icon">🔴</div>
+          <div class="dashboard-card-icon">
+            🔴
+          </div>
         </div>
-        <div class="dashboard-card-label">LIVE MATCHES</div>
+
+        <div class="dashboard-card-label">
+          LIVE MATCHES
+        </div>
+
         <div class="dashboard-card-number">
           ${liveCount}
         </div>
+
         <div class="dashboard-card-change">
           Currently live
         </div>
+
       </div>
 
       <div class="dashboard-card">
+
         <div class="dashboard-card-top">
-          <div class="dashboard-card-icon">📝</div>
+          <div class="dashboard-card-icon">
+            📝
+          </div>
         </div>
-        <div class="dashboard-card-label">ENTRIES</div>
+
+        <div class="dashboard-card-label">
+          ENTRIES
+        </div>
+
         <div class="dashboard-card-number">
           ${entriesCount}
         </div>
+
         <div class="dashboard-card-change">
           Tournament entries
         </div>
+
       </div>
 
     </div>
@@ -582,14 +769,26 @@ async function showDashboard(content) {
       <div class="admin-panel-header">
 
         <div>
-          <h2>Recent Tournaments</h2>
-          <p>Latest tournaments in TRUSTED OP</p>
+
+          <h2>
+            Recent Tournaments
+          </h2>
+
+          <p>
+            Latest tournaments in TRUSTED OP
+          </p>
+
         </div>
 
         <div class="panel-actions">
-          <button class="btn btn-primary" id="dashboardTournamentBtn">
+
+          <button
+            class="btn btn-primary"
+            id="dashboardTournamentBtn"
+          >
             + Add Tournament
           </button>
+
         </div>
 
       </div>
@@ -597,17 +796,22 @@ async function showDashboard(content) {
       ${
         tournamentList.length
           ? `
+
             <div class="table-wrap">
+
               <table class="admin-table">
 
                 <thead>
+
                   <tr>
                     <th>NAME</th>
+                    <th>GAME</th>
                     <th>ENTRY</th>
                     <th>PRIZE</th>
                     <th>SLOTS</th>
                     <th>STATUS</th>
                   </tr>
+
                 </thead>
 
                 <tbody>
@@ -620,7 +824,9 @@ async function showDashboard(content) {
                 </tbody>
 
               </table>
+
             </div>
+
           `
           : emptyHTML(
               "🏆",
@@ -633,12 +839,27 @@ async function showDashboard(content) {
   `;
 
   document
-    .getElementById("dashboardTournamentBtn")
-    ?.addEventListener("click", () => {
-      currentPage = "tournaments";
-      loadPage("tournaments");
-      setTimeout(openTournamentModal, 100);
-    });
+    .getElementById(
+      "dashboardTournamentBtn"
+    )
+    ?.addEventListener(
+      "click",
+      () => {
+
+        currentPage =
+          "tournaments";
+
+        loadPage(
+          "tournaments"
+        );
+
+        setTimeout(
+          openTournamentModal,
+          100
+        );
+
+      }
+    );
 }
 
 /* ================= TOURNAMENT ROW ================= */
@@ -646,12 +867,26 @@ async function showDashboard(content) {
 function tournamentRow(t) {
 
   return `
+
     <tr>
 
       <td>
+
         <strong>
-          ${escapeHTML(t.name || "Unnamed Tournament")}
+          ${escapeHTML(
+            t.name ||
+            "Unnamed Tournament"
+          )}
         </strong>
+
+      </td>
+
+      <td>
+        ${escapeHTML(
+          t.game ||
+          t.category ||
+          "BR Survival"
+        )}
       </td>
 
       <td>
@@ -663,9 +898,11 @@ function tournamentRow(t) {
       </td>
 
       <td>
+
         ${Number(t.joined || 0)}
         /
         ${Number(t.slots || 0)}
+
       </td>
 
       <td>
@@ -679,22 +916,35 @@ function tournamentRow(t) {
 function statusHTML(status) {
 
   const value =
-    String(status || "Upcoming").toLowerCase();
+    String(
+      status ||
+      "Upcoming"
+    ).toLowerCase();
 
-  let className = "status-upcoming";
+  let className =
+    "status-upcoming";
 
   if (value === "live") {
-    className = "status-live";
+    className =
+      "status-live";
   }
 
   if (value === "completed") {
-    className = "status-completed";
+    className =
+      "status-completed";
   }
 
   return `
-    <span class="status ${className}">
-      ${escapeHTML(status || "Upcoming")}
+
+    <span
+      class="status ${className}"
+    >
+      ${escapeHTML(
+        status ||
+        "Upcoming"
+      )}
     </span>
+
   `;
 }
 
@@ -702,7 +952,10 @@ function statusHTML(status) {
 
 function showTournaments(content) {
 
-  const list = Object.entries(tournaments);
+  const list =
+    Object.entries(
+      tournaments
+    );
 
   content.innerHTML = `
 
@@ -711,8 +964,15 @@ function showTournaments(content) {
       <div class="admin-panel-header">
 
         <div>
-          <h2>All Tournaments</h2>
-          <p>Create, edit and delete tournaments</p>
+
+          <h2>
+            All Tournaments
+          </h2>
+
+          <p>
+            Create, edit and delete tournaments
+          </p>
+
         </div>
 
         <div class="panel-actions">
@@ -738,18 +998,24 @@ function showTournaments(content) {
       ${
         list.length
           ? `
+
             <div
               class="tournament-admin-grid"
               id="tournamentGrid"
             >
 
               ${list
-                .map(([id, tournament]) =>
-                  tournamentCard(id, tournament)
+                .map(
+                  ([id, tournament]) =>
+                    tournamentCard(
+                      id,
+                      tournament
+                    )
                 )
                 .join("")}
 
             </div>
+
           `
           : emptyHTML(
               "🏆",
@@ -762,14 +1028,18 @@ function showTournaments(content) {
   `;
 
   document
-    .getElementById("addTournamentBtn")
+    .getElementById(
+      "addTournamentBtn"
+    )
     ?.addEventListener(
       "click",
       openTournamentModal
     );
 
   document
-    .getElementById("tournamentSearch")
+    .getElementById(
+      "tournamentSearch"
+    )
     ?.addEventListener(
       "input",
       event => {
@@ -786,7 +1056,8 @@ function showTournaments(content) {
           .forEach(card => {
 
             const name =
-              card.dataset.name || "";
+              card.dataset.name ||
+              "";
 
             card.style.display =
               name.includes(query)
@@ -805,11 +1076,20 @@ function tournamentCard(id, t) {
     t.image ||
     "../images/br-survival.jpg";
 
+  const game =
+    t.game ||
+    t.category ||
+    t.gameType ||
+    "BR Survival";
+
   return `
+
     <div
       class="admin-tournament-card"
       data-name="${escapeHTML(
-        String(t.name || "").toLowerCase()
+        String(
+          t.name || ""
+        ).toLowerCase()
       )}"
     >
 
@@ -817,7 +1097,10 @@ function tournamentCard(id, t) {
 
         <img
           src="${escapeHTML(image)}"
-          alt="${escapeHTML(t.name || "Tournament")}"
+          alt="${escapeHTML(
+            t.name ||
+            "Tournament"
+          )}"
           onerror="this.style.display='none'"
         >
 
@@ -826,39 +1109,87 @@ function tournamentCard(id, t) {
       <div class="admin-tournament-body">
 
         <h3>
-          ${escapeHTML(t.name || "Unnamed Tournament")}
+          ${escapeHTML(
+            t.name ||
+            "Unnamed Tournament"
+          )}
         </h3>
 
         <p>
-          ${escapeHTML(t.mode || "Free Fire")}
+
+          🎮 ${escapeHTML(game)}
+
           •
-          ${escapeHTML(t.map || "Bermuda")}
+
+          ${escapeHTML(
+            t.mode ||
+            "Solo"
+          )}
+
+          •
+
+          ${escapeHTML(
+            t.map ||
+            "Bermuda"
+          )}
+
         </p>
 
         <div class="admin-tournament-meta">
 
           <div class="admin-meta-box">
-            <small>ENTRY</small>
-            <strong>${money(t.entryFee)}</strong>
-          </div>
 
-          <div class="admin-meta-box">
-            <small>PRIZE</small>
-            <strong>${money(t.prizePool)}</strong>
-          </div>
+            <small>
+              ENTRY
+            </small>
 
-          <div class="admin-meta-box">
-            <small>SLOTS</small>
             <strong>
+              ${money(t.entryFee)}
+            </strong>
+
+          </div>
+
+          <div class="admin-meta-box">
+
+            <small>
+              PRIZE
+            </small>
+
+            <strong>
+              ${money(t.prizePool)}
+            </strong>
+
+          </div>
+
+          <div class="admin-meta-box">
+
+            <small>
+              SLOTS
+            </small>
+
+            <strong>
+
               ${Number(t.joined || 0)}
               /
               ${Number(t.slots || 0)}
+
             </strong>
+
           </div>
 
           <div class="admin-meta-box">
-            <small>STATUS</small>
-            <strong>${escapeHTML(t.status || "Upcoming")}</strong>
+
+            <small>
+              STATUS
+            </small>
+
+            <strong>
+              ${escapeHTML(
+                t.status ||
+                "Upcoming"
+              )}
+            </strong>
+
           </div>
 
         </div>
@@ -896,13 +1227,25 @@ function openTournamentModal(id = null) {
       ? tournaments[id]
       : {};
 
-  const isEdit = Boolean(id);
+  const isEdit =
+    Boolean(id);
 
-  const modal = document.createElement("div");
+  const modal =
+    document.createElement(
+      "div"
+    );
 
-  modal.className = "modal-overlay show";
+  modal.className =
+    "modal-overlay show";
 
-  modal.id = "tournamentModal";
+  modal.id =
+    "tournamentModal";
+
+  const currentGame =
+    tournament.game ||
+    tournament.category ||
+    tournament.gameType ||
+    "BR Survival";
 
   modal.innerHTML = `
 
@@ -911,7 +1254,11 @@ function openTournamentModal(id = null) {
       <div class="modal-header">
 
         <h2>
-          ${isEdit ? "Edit Tournament" : "Add Tournament"}
+          ${
+            isEdit
+              ? "Edit Tournament"
+              : "Add Tournament"
+          }
         </h2>
 
         <button
@@ -929,71 +1276,196 @@ function openTournamentModal(id = null) {
 
           <div class="form-grid">
 
+            <!-- TOURNAMENT NAME -->
+
             <div class="form-group full">
-              <label>TOURNAMENT NAME</label>
+
+              <label>
+                TOURNAMENT NAME
+              </label>
+
               <input
                 class="form-input"
                 id="tName"
-                value="${escapeHTML(tournament.name || "")}"
+                value="${escapeHTML(
+                  tournament.name ||
+                  ""
+                )}"
                 placeholder="Example: BR FULL MAP"
                 required
               >
+
             </div>
 
+            <!-- GAME -->
+
+            <div class="form-group full">
+
+              <label>
+                GAME
+              </label>
+
+              <select
+                class="form-select"
+                id="tGame"
+                required
+              >
+
+                <option
+                  value="BR Survival"
+                  ${
+                    currentGame ===
+                    "BR Survival"
+                      ? "selected"
+                      : ""
+                  }
+                >
+                  BR Survival
+                </option>
+
+                <option
+                  value="Per Kill"
+                  ${
+                    currentGame ===
+                    "Per Kill"
+                      ? "selected"
+                      : ""
+                  }
+                >
+                  Per Kill
+                </option>
+
+                <option
+                  value="Clash Squad 1v1"
+                  ${
+                    currentGame ===
+                    "Clash Squad 1v1"
+                      ? "selected"
+                      : ""
+                  }
+                >
+                  Clash Squad 1v1
+                </option>
+
+                <option
+                  value="Lone Wolf 1v1"
+                  ${
+                    currentGame ===
+                    "Lone Wolf 1v1"
+                      ? "selected"
+                      : ""
+                  }
+                >
+                  Lone Wolf 1v1
+                </option>
+
+              </select>
+
+            </div>
+
+            <!-- ENTRY -->
+
             <div class="form-group">
-              <label>ENTRY FEE</label>
+
+              <label>
+                ENTRY FEE
+              </label>
+
               <input
                 class="form-input"
                 id="tEntry"
                 type="number"
                 min="0"
-                value="${Number(tournament.entryFee || 0)}"
+                value="${Number(
+                  tournament.entryFee ||
+                  0
+                )}"
                 placeholder="50"
                 required
               >
+
             </div>
 
+            <!-- PRIZE -->
+
             <div class="form-group">
-              <label>PRIZE POOL</label>
+
+              <label>
+                PRIZE POOL
+              </label>
+
               <input
                 class="form-input"
                 id="tPrize"
                 type="number"
                 min="0"
-                value="${Number(tournament.prizePool || 0)}"
+                value="${Number(
+                  tournament.prizePool ||
+                  0
+                )}"
                 placeholder="5000"
                 required
               >
+
             </div>
 
+            <!-- PER KILL -->
+
             <div class="form-group">
-              <label>PER KILL</label>
+
+              <label>
+                PER KILL
+              </label>
+
               <input
                 class="form-input"
                 id="tPerKill"
                 type="number"
                 min="0"
-                value="${Number(tournament.perKill || 0)}"
+                value="${Number(
+                  tournament.perKill ||
+                  0
+                )}"
                 placeholder="5"
               >
+
             </div>
 
+            <!-- SLOTS -->
+
             <div class="form-group">
-              <label>TOTAL SLOTS</label>
+
+              <label>
+                TOTAL SLOTS
+              </label>
+
               <input
                 class="form-input"
                 id="tSlots"
                 type="number"
                 min="1"
-                value="${Number(tournament.slots || 50)}"
+                value="${Number(
+                  tournament.slots ||
+                  50
+                )}"
                 placeholder="50"
                 required
               >
+
             </div>
 
+            <!-- MAP -->
+
             <div class="form-group">
-              <label>MAP</label>
-              <select class="form-select" id="tMap">
+
+              <label>
+                MAP
+              </label>
+
+              <select
+                class="form-select"
+                id="tMap"
+              >
 
                 ${selectOption(
                   "Bermuda",
@@ -1016,11 +1488,21 @@ function openTournamentModal(id = null) {
                 )}
 
               </select>
+
             </div>
 
+            <!-- MODE -->
+
             <div class="form-group">
-              <label>MODE</label>
-              <select class="form-select" id="tMode">
+
+              <label>
+                MODE
+              </label>
+
+              <select
+                class="form-select"
+                id="tMode"
+              >
 
                 ${selectOption(
                   "Solo",
@@ -1043,57 +1525,108 @@ function openTournamentModal(id = null) {
                 )}
 
               </select>
+
             </div>
 
+            <!-- DATE -->
+
             <div class="form-group">
-              <label>DATE</label>
+
+              <label>
+                DATE
+              </label>
+
               <input
                 class="form-input"
                 id="tDate"
                 type="date"
-                value="${escapeHTML(tournament.date || "")}"
+                value="${escapeHTML(
+                  tournament.date ||
+                  ""
+                )}"
                 required
               >
+
             </div>
 
+            <!-- TIME -->
+
             <div class="form-group">
-              <label>TIME</label>
+
+              <label>
+                TIME
+              </label>
+
               <input
                 class="form-input"
                 id="tTime"
                 type="time"
-                value="${escapeHTML(tournament.time || "")}"
+                value="${escapeHTML(
+                  tournament.time ||
+                  ""
+                )}"
                 required
               >
+
             </div>
 
+            <!-- ROOM ID -->
+
             <div class="form-group">
-              <label>ROOM ID</label>
+
+              <label>
+                ROOM ID
+              </label>
+
               <input
                 class="form-input"
                 id="tRoomId"
-                value="${escapeHTML(tournament.roomId || "")}"
+                value="${escapeHTML(
+                  tournament.roomId ||
+                  ""
+                )}"
                 placeholder="Room ID"
               >
+
             </div>
 
+            <!-- ROOM PASSWORD -->
+
             <div class="form-group">
-              <label>ROOM PASSWORD</label>
+
+              <label>
+                ROOM PASSWORD
+              </label>
+
               <input
                 class="form-input"
                 id="tRoomPassword"
-                value="${escapeHTML(tournament.roomPassword || "")}"
+                value="${escapeHTML(
+                  tournament.roomPassword ||
+                  ""
+                )}"
                 placeholder="Room Password"
               >
+
             </div>
 
+            <!-- STATUS -->
+
             <div class="form-group">
-              <label>STATUS</label>
-              <select class="form-select" id="tStatus">
+
+              <label>
+                STATUS
+              </label>
+
+              <select
+                class="form-select"
+                id="tStatus"
+              >
 
                 ${selectOption(
                   "Upcoming",
-                  tournament.status || "Upcoming"
+                  tournament.status ||
+                  "Upcoming"
                 )}
 
                 ${selectOption(
@@ -1107,26 +1640,51 @@ function openTournamentModal(id = null) {
                 )}
 
               </select>
+
             </div>
 
+            <!-- IMAGE -->
+
             <div class="form-group full">
-              <label>IMAGE URL</label>
+
+              <label>
+                IMAGE URL
+              </label>
+
               <input
                 class="form-input"
                 id="tImage"
                 type="url"
-                value="${escapeHTML(tournament.image || "")}"
+                value="${escapeHTML(
+                  tournament.image ||
+                  ""
+                )}"
                 placeholder="https://example.com/banner.jpg"
               >
+
             </div>
 
+            <!-- RULES -->
+
             <div class="form-group full">
-              <label>RULES</label>
+
+              <label>
+                RULES
+              </label>
+
               <textarea
                 class="form-textarea"
                 id="tRules"
                 placeholder="Tournament rules..."
-              >${escapeHTML(tournament.rules || "")}</textarea>
+              >${escapeHTML(
+                Array.isArray(
+                  tournament.rules
+                )
+                  ? tournament.rules.join("\n")
+                  : tournament.rules ||
+                    ""
+              )}</textarea>
+
             </div>
 
           </div>
@@ -1145,7 +1703,11 @@ function openTournamentModal(id = null) {
               type="submit"
               class="btn btn-primary"
             >
-              ${isEdit ? "Update Tournament" : "Create Tournament"}
+              ${
+                isEdit
+                  ? "Update Tournament"
+                  : "Create Tournament"
+              }
             </button>
 
           </div>
@@ -1157,116 +1719,204 @@ function openTournamentModal(id = null) {
     </div>
   `;
 
-  document.body.appendChild(modal);
+  document.body.appendChild(
+    modal
+  );
 
   document
-    .getElementById("closeTournamentModal")
+    .getElementById(
+      "closeTournamentModal"
+    )
     .addEventListener(
       "click",
       closeTournamentModal
     );
 
   document
-    .getElementById("cancelTournament")
+    .getElementById(
+      "cancelTournament"
+    )
     .addEventListener(
       "click",
       closeTournamentModal
     );
 
   document
-    .getElementById("tournamentForm")
+    .getElementById(
+      "tournamentForm"
+    )
     .addEventListener(
       "submit",
-      event => saveTournament(event, id)
+      event =>
+        saveTournament(
+          event,
+          id
+        )
     );
 }
 
-function selectOption(value, selected) {
+/* ================= SELECT OPTION ================= */
+
+function selectOption(
+  value,
+  selected
+) {
 
   return `
+
     <option
       value="${escapeHTML(value)}"
       ${
-        String(selected || "").toLowerCase() ===
-        String(value).toLowerCase()
+        String(
+          selected ||
+          ""
+        ).toLowerCase() ===
+        String(
+          value
+        ).toLowerCase()
           ? "selected"
           : ""
       }
     >
       ${escapeHTML(value)}
     </option>
+
   `;
 }
+
+/* ================= CLOSE MODAL ================= */
 
 function closeTournamentModal() {
 
   document
-    .getElementById("tournamentModal")
+    .getElementById(
+      "tournamentModal"
+    )
     ?.remove();
 }
 
-async function saveTournament(event, id) {
+/* ================= SAVE TOURNAMENT ================= */
+
+async function saveTournament(
+  event,
+  id
+) {
 
   event.preventDefault();
+
+  /* ================= GAME FIX ================= */
+
+  const selectedGame =
+    document
+      .getElementById("tGame")
+      .value;
 
   const tournament = {
 
     name:
-      document.getElementById("tName").value.trim(),
+      document
+        .getElementById("tName")
+        .value
+        .trim(),
+
+    /* IMPORTANT:
+       GAME IS NOW SAVED TO FIREBASE
+    */
+
+    game:
+      selectedGame,
 
     entryFee:
       Number(
-        document.getElementById("tEntry").value || 0
+        document
+          .getElementById("tEntry")
+          .value ||
+        0
       ),
 
     prizePool:
       Number(
-        document.getElementById("tPrize").value || 0
+        document
+          .getElementById("tPrize")
+          .value ||
+        0
       ),
 
     perKill:
       Number(
-        document.getElementById("tPerKill").value || 0
+        document
+          .getElementById("tPerKill")
+          .value ||
+        0
       ),
 
     slots:
       Number(
-        document.getElementById("tSlots").value || 0
+        document
+          .getElementById("tSlots")
+          .value ||
+        0
       ),
 
     joined:
       Number(
-        id && tournaments[id]
-          ? tournaments[id].joined || 0
+        id &&
+        tournaments[id]
+          ? tournaments[id].joined ||
+            0
           : 0
       ),
 
     map:
-      document.getElementById("tMap").value,
+      document
+        .getElementById("tMap")
+        .value,
 
     mode:
-      document.getElementById("tMode").value,
+      document
+        .getElementById("tMode")
+        .value,
 
     date:
-      document.getElementById("tDate").value,
+      document
+        .getElementById("tDate")
+        .value,
 
     time:
-      document.getElementById("tTime").value,
+      document
+        .getElementById("tTime")
+        .value,
 
     roomId:
-      document.getElementById("tRoomId").value.trim(),
+      document
+        .getElementById("tRoomId")
+        .value
+        .trim(),
 
     roomPassword:
-      document.getElementById("tRoomPassword").value.trim(),
+      document
+        .getElementById(
+          "tRoomPassword"
+        )
+        .value
+        .trim(),
 
     status:
-      document.getElementById("tStatus").value,
+      document
+        .getElementById("tStatus")
+        .value,
 
     image:
-      document.getElementById("tImage").value.trim(),
+      document
+        .getElementById("tImage")
+        .value
+        .trim(),
 
     rules:
-      document.getElementById("tRules").value.trim(),
+      document
+        .getElementById("tRules")
+        .value
+        .trim(),
 
     updatedAt:
       Date.now()
@@ -1278,25 +1928,39 @@ async function saveTournament(event, id) {
     if (id) {
 
       await update(
-        ref(db, `tournaments/${id}`),
+        ref(
+          db,
+          `tournaments/${id}`
+        ),
         tournament
       );
 
-      toast("Tournament updated successfully");
+      toast(
+        "Tournament updated successfully"
+      );
 
     } else {
 
       const newRef =
-        push(ref(db, "tournaments"));
+        push(
+          ref(
+            db,
+            "tournaments"
+          )
+        );
 
-      tournament.createdAt = Date.now();
+      tournament.createdAt =
+        Date.now();
 
       await set(
         newRef,
         tournament
       );
 
-      toast("Tournament created successfully");
+      toast(
+        "Tournament created successfully"
+      );
+
     }
 
     closeTournamentModal();
@@ -1309,6 +1973,7 @@ async function saveTournament(event, id) {
       "Database error: " +
       error.message
     );
+
   }
 }
 
@@ -1316,13 +1981,17 @@ async function saveTournament(event, id) {
 
 async function deleteTournament(id) {
 
-  const tournament = tournaments[id];
+  const tournament =
+    tournaments[id];
 
   if (!tournament) return;
 
   const confirmed =
     confirm(
-      `Delete "${tournament.name || "this tournament"}"?`
+      `Delete "${
+        tournament.name ||
+        "this tournament"
+      }"?`
     );
 
   if (!confirmed) return;
@@ -1330,10 +1999,15 @@ async function deleteTournament(id) {
   try {
 
     await remove(
-      ref(db, `tournaments/${id}`)
+      ref(
+        db,
+        `tournaments/${id}`
+      )
     );
 
-    toast("Tournament deleted");
+    toast(
+      "Tournament deleted"
+    );
 
   } catch (error) {
 
@@ -1343,6 +2017,7 @@ async function deleteTournament(id) {
       "Delete failed: " +
       error.message
     );
+
   }
 }
 
@@ -1355,7 +2030,9 @@ async function showUsers(content) {
   try {
 
     const snapshot =
-      await get(ref(db, "users"));
+      await get(
+        ref(db, "users")
+      );
 
     users =
       snapshot.exists()
@@ -1378,16 +2055,26 @@ async function showUsers(content) {
       <div class="admin-panel-header">
 
         <div>
-          <h2>Registered Users</h2>
-          <p>Total users: ${list.length}</p>
+
+          <h2>
+            Registered Users
+          </h2>
+
+          <p>
+            Total users:
+            ${list.length}
+          </p>
+
         </div>
 
         <div class="panel-actions">
+
           <input
             class="search-box"
             id="userSearch"
             placeholder="Search user..."
           >
+
         </div>
 
       </div>
@@ -1395,58 +2082,70 @@ async function showUsers(content) {
       ${
         list.length
           ? `
-          <div class="table-wrap">
 
-            <table class="admin-table">
+            <div class="table-wrap">
 
-              <thead>
-                <tr>
-                  <th>USER</th>
-                  <th>EMAIL</th>
-                  <th>BALANCE</th>
-                  <th>STATUS</th>
-                </tr>
-              </thead>
+              <table class="admin-table">
 
-              <tbody id="userTable">
+                <thead>
 
-                ${list
-                  .map(([id, user]) => `
-                    <tr>
+                  <tr>
+                    <th>USER</th>
+                    <th>EMAIL</th>
+                    <th>BALANCE</th>
+                    <th>STATUS</th>
+                  </tr>
 
-                      <td>
-                        ${escapeHTML(
-                          user.name ||
-                          user.username ||
-                          id
-                        )}
-                      </td>
+                </thead>
 
-                      <td>
-                        ${escapeHTML(
-                          user.email || "-"
-                        )}
-                      </td>
+                <tbody id="userTable">
 
-                      <td>
-                        ${money(user.balance)}
-                      </td>
+                  ${list
+                    .map(
+                      ([id, user]) => `
 
-                      <td>
-                        ${statusHTML(
-                          user.status || "Active"
-                        )}
-                      </td>
+                        <tr>
 
-                    </tr>
-                  `)
-                  .join("")}
+                          <td>
+                            ${escapeHTML(
+                              user.name ||
+                              user.username ||
+                              id
+                            )}
+                          </td>
 
-              </tbody>
+                          <td>
+                            ${escapeHTML(
+                              user.email ||
+                              "-"
+                            )}
+                          </td>
 
-            </table>
+                          <td>
+                            ${money(
+                              user.balance
+                            )}
+                          </td>
 
-          </div>
+                          <td>
+                            ${statusHTML(
+                              user.status ||
+                              "Active"
+                            )}
+                          </td>
+
+                        </tr>
+
+                      `
+                    )
+                    .join("")}
+
+                </tbody>
+
+              </table>
+
+            </div>
+
           `
           : emptyHTML(
               "👥",
@@ -1459,7 +2158,9 @@ async function showUsers(content) {
   `;
 
   document
-    .getElementById("userSearch")
+    .getElementById(
+      "userSearch"
+    )
     ?.addEventListener(
       "input",
       event => {
@@ -1469,7 +2170,9 @@ async function showUsers(content) {
             .toLowerCase();
 
         document
-          .querySelectorAll("#userTable tr")
+          .querySelectorAll(
+            "#userTable tr"
+          )
           .forEach(row => {
 
             row.style.display =
@@ -1494,7 +2197,12 @@ async function showEntries(content) {
   try {
 
     const snapshot =
-      await get(ref(db, "entries"));
+      await get(
+        ref(
+          db,
+          "entries"
+        )
+      );
 
     entries =
       snapshot.exists()
@@ -1502,11 +2210,15 @@ async function showEntries(content) {
         : {};
 
   } catch (error) {
+
     console.error(error);
+
   }
 
   const list =
-    Object.entries(entries);
+    Object.entries(
+      entries
+    );
 
   content.innerHTML = `
 
@@ -1515,8 +2227,15 @@ async function showEntries(content) {
       <div class="admin-panel-header">
 
         <div>
-          <h2>Tournament Entries</h2>
-          <p>Manage player tournament entries</p>
+
+          <h2>
+            Tournament Entries
+          </h2>
+
+          <p>
+            Manage player tournament entries
+          </p>
+
         </div>
 
       </div>
@@ -1524,67 +2243,78 @@ async function showEntries(content) {
       ${
         list.length
           ? `
-          <div class="table-wrap">
 
-            <table class="admin-table">
+            <div class="table-wrap">
 
-              <thead>
-                <tr>
-                  <th>PLAYER</th>
-                  <th>TOURNAMENT</th>
-                  <th>ENTRY FEE</th>
-                  <th>DATE</th>
-                  <th>STATUS</th>
-                </tr>
-              </thead>
+              <table class="admin-table">
 
-              <tbody>
+                <thead>
 
-                ${list
-                  .map(([id, entry]) => `
-                    <tr>
+                  <tr>
+                    <th>PLAYER</th>
+                    <th>TOURNAMENT</th>
+                    <th>ENTRY FEE</th>
+                    <th>DATE</th>
+                    <th>STATUS</th>
+                  </tr>
 
-                      <td>
-                        ${escapeHTML(
-                          entry.userName ||
-                          entry.userId ||
-                          "-"
-                        )}
-                      </td>
+                </thead>
 
-                      <td>
-                        ${escapeHTML(
-                          entry.tournamentName ||
-                          entry.tournamentId ||
-                          "-"
-                        )}
-                      </td>
+                <tbody>
 
-                      <td>
-                        ${money(entry.amount)}
-                      </td>
+                  ${list
+                    .map(
+                      ([id, entry]) => `
 
-                      <td>
-                        ${formatDate(
-                          entry.createdAt
-                        )}
-                      </td>
+                        <tr>
 
-                      <td>
-                        ${statusHTML(
-                          entry.status || "Confirmed"
-                        )}
-                      </td>
+                          <td>
+                            ${escapeHTML(
+                              entry.userName ||
+                              entry.userId ||
+                              "-"
+                            )}
+                          </td>
 
-                    </tr>
-                  `)
-                  .join("")}
+                          <td>
+                            ${escapeHTML(
+                              entry.tournamentName ||
+                              entry.tournamentId ||
+                              "-"
+                            )}
+                          </td>
 
-              </tbody>
+                          <td>
+                            ${money(
+                              entry.amount
+                            )}
+                          </td>
 
-            </table>
+                          <td>
+                            ${formatDate(
+                              entry.createdAt
+                            )}
+                          </td>
 
-          </div>
+                          <td>
+                            ${statusHTML(
+                              entry.status ||
+                              "Confirmed"
+                            )}
+                          </td>
+
+                        </tr>
+
+                      `
+                    )
+                    .join("")}
+
+                </tbody>
+
+              </table>
+
+            </div>
+
           `
           : emptyHTML(
               "📝",
@@ -1608,8 +2338,15 @@ function showResults(content) {
       <div class="admin-panel-header">
 
         <div>
-          <h2>Tournament Results</h2>
-          <p>Add and manage match results</p>
+
+          <h2>
+            Tournament Results
+          </h2>
+
+          <p>
+            Add and manage match results
+          </p>
+
         </div>
 
         <div class="panel-actions">
@@ -1645,12 +2382,15 @@ function showResults(content) {
   `;
 
   document
-    .getElementById("addResultBtn")
+    .getElementById(
+      "addResultBtn"
+    )
     ?.addEventListener(
       "click",
-      () => toast(
-        "Result module is ready for database connection."
-      )
+      () =>
+        toast(
+          "Result module is ready for database connection."
+        )
     );
 }
 
@@ -1664,7 +2404,10 @@ async function showWallet(content) {
 
     const snapshot =
       await get(
-        ref(db, "transactions")
+        ref(
+          db,
+          "transactions"
+        )
       );
 
     transactions =
@@ -1673,55 +2416,82 @@ async function showWallet(content) {
         : {};
 
   } catch (error) {
+
     console.error(error);
+
   }
 
   const list =
-    Object.entries(transactions);
+    Object.entries(
+      transactions
+    );
+
+  const credit =
+    list.reduce(
+      (sum, [, t]) =>
+        sum +
+        (
+          t.type === "credit"
+            ? Number(
+                t.amount || 0
+              )
+            : 0
+        ),
+      0
+    );
+
+  const debit =
+    list.reduce(
+      (sum, [, t]) =>
+        sum +
+        (
+          t.type === "debit"
+            ? Number(
+                t.amount || 0
+              )
+            : 0
+        ),
+      0
+    );
 
   content.innerHTML = `
 
     <div class="mini-stats">
 
       <div class="mini-stat">
-        <small>TOTAL TRANSACTIONS</small>
-        <strong>${list.length}</strong>
+
+        <small>
+          TOTAL TRANSACTIONS
+        </small>
+
+        <strong>
+          ${list.length}
+        </strong>
+
       </div>
 
       <div class="mini-stat">
-        <small>CREDIT</small>
+
+        <small>
+          CREDIT
+        </small>
+
         <strong>
-          ${money(
-            list.reduce(
-              (sum, [, t]) =>
-                sum +
-                (
-                  t.type === "credit"
-                    ? Number(t.amount || 0)
-                    : 0
-                ),
-              0
-            )
-          )}
+          ${money(credit)}
         </strong>
+
       </div>
 
       <div class="mini-stat">
-        <small>DEBIT</small>
+
+        <small>
+          DEBIT
+        </small>
+
         <strong>
-          ${money(
-            list.reduce(
-              (sum, [, t]) =>
-                sum +
-                (
-                  t.type === "debit"
-                    ? Number(t.amount || 0)
-                    : 0
-                ),
-              0
-            )
-          )}
+          ${money(debit)}
         </strong>
+
       </div>
 
     </div>
@@ -1731,8 +2501,15 @@ async function showWallet(content) {
       <div class="admin-panel-header">
 
         <div>
-          <h2>Transactions</h2>
-          <p>Wallet activity</p>
+
+          <h2>
+            Transactions
+          </h2>
+
+          <p>
+            Wallet activity
+          </p>
+
         </div>
 
       </div>
@@ -1740,65 +2517,77 @@ async function showWallet(content) {
       ${
         list.length
           ? `
-          <div class="table-wrap">
 
-            <table class="admin-table">
+            <div class="table-wrap">
 
-              <thead>
-                <tr>
-                  <th>USER</th>
-                  <th>TYPE</th>
-                  <th>AMOUNT</th>
-                  <th>DESCRIPTION</th>
-                  <th>DATE</th>
-                </tr>
-              </thead>
+              <table class="admin-table">
 
-              <tbody>
+                <thead>
 
-                ${list
-                  .map(([id, t]) => `
-                    <tr>
+                  <tr>
+                    <th>USER</th>
+                    <th>TYPE</th>
+                    <th>AMOUNT</th>
+                    <th>DESCRIPTION</th>
+                    <th>DATE</th>
+                  </tr>
 
-                      <td>
-                        ${escapeHTML(
-                          t.userName ||
-                          t.userId ||
-                          "-"
-                        )}
-                      </td>
+                </thead>
 
-                      <td>
-                        ${escapeHTML(
-                          t.type || "-"
-                        )}
-                      </td>
+                <tbody>
 
-                      <td>
-                        ${money(t.amount)}
-                      </td>
+                  ${list
+                    .map(
+                      ([id, t]) => `
 
-                      <td>
-                        ${escapeHTML(
-                          t.description || "-"
-                        )}
-                      </td>
+                        <tr>
 
-                      <td>
-                        ${formatDate(
-                          t.createdAt
-                        )}
-                      </td>
+                          <td>
+                            ${escapeHTML(
+                              t.userName ||
+                              t.userId ||
+                              "-"
+                            )}
+                          </td>
 
-                    </tr>
-                  `)
-                  .join("")}
+                          <td>
+                            ${escapeHTML(
+                              t.type ||
+                              "-"
+                            )}
+                          </td>
 
-              </tbody>
+                          <td>
+                            ${money(
+                              t.amount
+                            )}
+                          </td>
 
-            </table>
+                          <td>
+                            ${escapeHTML(
+                              t.description ||
+                              "-"
+                            )}
+                          </td>
 
-          </div>
+                          <td>
+                            ${formatDate(
+                              t.createdAt
+                            )}
+                          </td>
+
+                        </tr>
+
+                      `
+                    )
+                    .join("")}
+
+                </tbody>
+
+              </table>
+
+            </div>
+
           `
           : emptyHTML(
               "💰",
@@ -1822,8 +2611,15 @@ function showPlayers(content) {
       <div class="admin-panel-header">
 
         <div>
-          <h2>Top Players</h2>
-          <p>Leaderboard management</p>
+
+          <h2>
+            Top Players
+          </h2>
+
+          <p>
+            Leaderboard management
+          </p>
+
         </div>
 
       </div>
@@ -1859,8 +2655,15 @@ function showNotifications(content) {
       <div class="admin-panel-header">
 
         <div>
-          <h2>Notifications</h2>
-          <p>Send announcements to users</p>
+
+          <h2>
+            Notifications
+          </h2>
+
+          <p>
+            Send announcements to users
+          </p>
+
         </div>
 
       </div>
@@ -1870,7 +2673,10 @@ function showNotifications(content) {
         <div class="form-grid">
 
           <div class="form-group full">
-            <label>TITLE</label>
+
+            <label>
+              TITLE
+            </label>
 
             <input
               class="form-input"
@@ -1882,7 +2688,10 @@ function showNotifications(content) {
           </div>
 
           <div class="form-group full">
-            <label>MESSAGE</label>
+
+            <label>
+              MESSAGE
+            </label>
 
             <textarea
               class="form-textarea"
@@ -1912,26 +2721,34 @@ function showNotifications(content) {
   `;
 
   document
-    .getElementById("notificationForm")
+    .getElementById(
+      "notificationForm"
+    )
     .addEventListener(
       "submit",
       sendNotification
     );
 }
 
-async function sendNotification(event) {
+async function sendNotification(
+  event
+) {
 
   event.preventDefault();
 
   const title =
     document
-      .getElementById("notificationTitle")
+      .getElementById(
+        "notificationTitle"
+      )
       .value
       .trim();
 
   const message =
     document
-      .getElementById("notificationMessage")
+      .getElementById(
+        "notificationMessage"
+      )
       .value
       .trim();
 
@@ -1939,7 +2756,10 @@ async function sendNotification(event) {
 
     const newRef =
       push(
-        ref(db, "notifications")
+        ref(
+          db,
+          "notifications"
+        )
       );
 
     await set(
@@ -1947,12 +2767,15 @@ async function sendNotification(event) {
       {
         title,
         message,
-        createdAt: Date.now()
+        createdAt:
+          Date.now()
       }
     );
 
     document
-      .getElementById("notificationForm")
+      .getElementById(
+        "notificationForm"
+      )
       .reset();
 
     toast(
@@ -1975,13 +2798,18 @@ async function sendNotification(event) {
 function showReports(content) {
 
   const list =
-    Object.values(tournaments);
+    Object.values(
+      tournaments
+    );
 
   const totalPrize =
     list.reduce(
       (sum, t) =>
         sum +
-        Number(t.prizePool || 0),
+        Number(
+          t.prizePool ||
+          0
+        ),
       0
     );
 
@@ -1990,8 +2818,14 @@ function showReports(content) {
       (sum, t) =>
         sum +
         (
-          Number(t.entryFee || 0) *
-          Number(t.joined || 0)
+          Number(
+            t.entryFee ||
+            0
+          ) *
+          Number(
+            t.joined ||
+            0
+          )
         ),
       0
     );
@@ -2001,24 +2835,39 @@ function showReports(content) {
     <div class="mini-stats">
 
       <div class="mini-stat">
-        <small>TOURNAMENT PRIZE</small>
+
+        <small>
+          TOURNAMENT PRIZE
+        </small>
+
         <strong>
           ${money(totalPrize)}
         </strong>
+
       </div>
 
       <div class="mini-stat">
-        <small>ENTRY COLLECTION</small>
+
+        <small>
+          ENTRY COLLECTION
+        </small>
+
         <strong>
           ${money(totalEntry)}
         </strong>
+
       </div>
 
       <div class="mini-stat">
-        <small>TOURNAMENTS</small>
+
+        <small>
+          TOURNAMENTS
+        </small>
+
         <strong>
           ${list.length}
         </strong>
+
       </div>
 
     </div>
@@ -2028,8 +2877,15 @@ function showReports(content) {
       <div class="admin-panel-header">
 
         <div>
-          <h2>Platform Report</h2>
-          <p>Current tournament statistics</p>
+
+          <h2>
+            Platform Report
+          </h2>
+
+          <p>
+            Current tournament statistics
+          </p>
+
         </div>
 
       </div>
@@ -2065,8 +2921,15 @@ function showSettings(content) {
       <div class="admin-panel-header">
 
         <div>
-          <h2>Settings</h2>
-          <p>TRUSTED OP administration settings</p>
+
+          <h2>
+            Settings
+          </h2>
+
+          <p>
+            TRUSTED OP administration settings
+          </p>
+
         </div>
 
       </div>
@@ -2074,17 +2937,24 @@ function showSettings(content) {
       <div class="form-grid">
 
         <div class="form-group">
-          <label>APP NAME</label>
+
+          <label>
+            APP NAME
+          </label>
 
           <input
             class="form-input"
             value="TRUSTED OP"
             id="settingAppName"
           >
+
         </div>
 
         <div class="form-group">
-          <label>SUPPORT EMAIL</label>
+
+          <label>
+            SUPPORT EMAIL
+          </label>
 
           <input
             class="form-input"
@@ -2092,16 +2962,21 @@ function showSettings(content) {
             placeholder="support@example.com"
             id="settingEmail"
           >
+
         </div>
 
         <div class="form-group full">
-          <label>MAINTENANCE MESSAGE</label>
+
+          <label>
+            MAINTENANCE MESSAGE
+          </label>
 
           <textarea
             class="form-textarea"
             id="settingMessage"
             placeholder="Maintenance message..."
           ></textarea>
+
         </div>
 
       </div>
@@ -2121,7 +2996,9 @@ function showSettings(content) {
   `;
 
   document
-    .getElementById("saveSettingsBtn")
+    .getElementById(
+      "saveSettingsBtn"
+    )
     .addEventListener(
       "click",
       saveSettings
@@ -2132,31 +3009,41 @@ async function saveSettings() {
 
   const appName =
     document
-      .getElementById("settingAppName")
+      .getElementById(
+        "settingAppName"
+      )
       .value
       .trim();
 
   const supportEmail =
     document
-      .getElementById("settingEmail")
+      .getElementById(
+        "settingEmail"
+      )
       .value
       .trim();
 
   const maintenanceMessage =
     document
-      .getElementById("settingMessage")
+      .getElementById(
+        "settingMessage"
+      )
       .value
       .trim();
 
   try {
 
     await set(
-      ref(db, "settings"),
+      ref(
+        db,
+        "settings"
+      ),
       {
         appName,
         supportEmail,
         maintenanceMessage,
-        updatedAt: Date.now()
+        updatedAt:
+          Date.now()
       }
     );
 
@@ -2184,6 +3071,7 @@ function emptyHTML(
 ) {
 
   return `
+
     <div class="admin-empty">
 
       <div class="admin-empty-icon">
@@ -2199,18 +3087,21 @@ function emptyHTML(
       </p>
 
     </div>
+
   `;
 }
 
 /* ================= GLOBAL FUNCTIONS ================= */
 
-window.editTournament = function(id) {
-  openTournamentModal(id);
-};
+window.editTournament =
+  function(id) {
+    openTournamentModal(id);
+  };
 
-window.deleteTournament = function(id) {
-  deleteTournament(id);
-};
+window.deleteTournament =
+  function(id) {
+    deleteTournament(id);
+  };
 
 /* ================= AUTH STATE ================= */
 
@@ -2225,8 +3116,12 @@ onAuthStateChanged(
     } else {
 
       if (unsubscribeTournaments) {
+
         unsubscribeTournaments();
-        unsubscribeTournaments = null;
+
+        unsubscribeTournaments =
+          null;
+
       }
 
       showLogin();
