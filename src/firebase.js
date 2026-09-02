@@ -9,7 +9,7 @@ import {
 } from "firebase/database";
 
 const firebaseConfig = {
-  apiKey: AIzaSyBYGg4tIwZ72iOPkYKD6Fw2PFVWRQMDjoM
+  apiKey: "AIzaSyBYGg4tIwZ72iOPkYKD6Fw2PFVWRQMDjoM",
   authDomain: "trusted-op-new.firebaseapp.com",
   databaseURL: "https://trusted-op-new-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "trusted-op-new",
