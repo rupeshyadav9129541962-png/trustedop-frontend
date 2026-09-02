@@ -6,7 +6,7 @@ const promotions = [
   {
     title: "TRUSTED OP",
     subtitle: "Play Tournament • Win Real Rewards",
-    image: "images/promotion-1.jpg",
+    image: "../Image/file_000000001d9071fb89ee875444fe92f4.png",
     button: "JOIN NOW"
   }
 ];
@@ -22,7 +22,7 @@ const matches = [
     map: "Bermuda",
     date: "Today",
     time: "8:00 PM",
-    image: "images/match-1.jpg",
+    image: "../Image/file_000000003ae071fb8535359ee0b42157.png",
     status: "JOIN NOW"
   },
 
@@ -36,7 +36,7 @@ const matches = [
     map: "Bermuda",
     date: "Today",
     time: "9:00 PM",
-    image: "images/match-2.jpg",
+    image: "../Image/file_0000000070c082119a1f752d3655a033.png",
     status: "JOIN NOW"
   },
 
@@ -50,7 +50,7 @@ const matches = [
     map: "Purgatory",
     date: "Tomorrow",
     time: "8:30 PM",
-    image: "images/match-3.jpg",
+    image: "../Image/file_000000003ae071fb8535359ee0b42157.png",
     status: "JOIN NOW"
   }
 ];
@@ -68,7 +68,7 @@ const matchesContainer =
 
 
 // ================================
-// PROMOTION CARD
+// PROMOTION
 // ================================
 
 function renderPromotion() {
@@ -93,13 +93,9 @@ function renderPromotion() {
             SPECIAL
           </span>
 
-          <h2>
-            ${promo.title}
-          </h2>
+          <h2>${promo.title}</h2>
 
-          <p>
-            ${promo.subtitle}
-          </p>
+          <p>${promo.subtitle}</p>
 
         </div>
 
@@ -158,22 +154,15 @@ function renderMatches() {
               ${match.mode}
             </span>
 
-            <h3>
-              ${match.title}
-            </h3>
+            <h3>${match.title}</h3>
 
           </div>
 
-
           <div class="prize-box">
 
-            <small>
-              PRIZE
-            </small>
+            <small>PRIZE</small>
 
-            <strong>
-              ${match.prize}
-            </strong>
+            <strong>${match.prize}</strong>
 
           </div>
 
@@ -202,13 +191,9 @@ function renderMatches() {
 
         <div class="match-footer">
 
-          <span>
-            🗓 ${match.date}
-          </span>
+          <span>🗓 ${match.date}</span>
 
-          <span>
-            ⏰ ${match.time}
-          </span>
+          <span>⏰ ${match.time}</span>
 
         </div>
 
@@ -229,7 +214,7 @@ function renderMatches() {
 
 
 // ================================
-// OPEN MATCH DETAILS
+// MATCH DETAILS
 // ================================
 
 function openMatch(id) {
@@ -257,14 +242,12 @@ function openMatch(id) {
 // ================================
 
 function handlePromotion() {
-
   alert("Promotion opened!");
-
 }
 
 
 // ================================
-// START HOME SCREEN
+// START
 // ================================
 
 renderPromotion();
