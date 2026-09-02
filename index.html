@@ -1,265 +1,51 @@
-<!DOCTYPE html><html lang="en"><head>
-  <meta charset="UTF-8"><meta
-name="viewport"
-content="width=device-width, initial-scale=1.0"
+<!DOCTYPE html>
+<html lang="en">
 
-«»
+<head>
+  <meta charset="UTF-8">
 
-  <title>Trusted OP</title>  <link rel="stylesheet" href="./src/style.css">
-</head><body>  <div class="app"><!-- HEADER -->
-<header class="top-header">
-
-  <div class="brand">
-
-    <img
-      src="./Image/file_000000001d9071fb89ee875444fe92f4.png"
-      alt="Trusted OP"
-      class="app-logo"
-    >
-
-    <h1>TRUSTED OP</h1>
-
-  </div>
-
-  <button class="notification-btn">
-    🔔
-  </button>
-
-</header>
-
-
-<!-- HOME PAGE -->
-<main id="homePage">
-
-  <section
-    id="promotionContainer"
-    class="promotion-container"
-  ></section>
-
-  <section
-    id="matchesContainer"
-    class="matches-container"
-  ></section>
-
-</main>
-
-
-<!-- MATCH DETAILS PAGE -->
-<main
-  id="matchDetailsPage"
-  class="app-page hidden"
->
-
-  <button
-    class="back-button"
-    onclick="showPage('home')"
-  >
-    ← Back
-  </button>
-
-  <div id="matchDetailsContainer"></div>
-
-</main>
-
-
-<!-- FULL MATCH SCHEDULE PAGE -->
-<main
-  id="schedulePage"
-  class="app-page hidden"
->
-
-  <button
-    class="back-button"
-    onclick="goBackToMatch()"
-  >
-    ← Back
-  </button>
-
-  <div id="scheduleContainer"></div>
-
-</main>
-
-
-<!-- WALLET PAGE -->
-<main
-  id="walletPage"
-  class="app-page hidden"
->
-
-  <h2>Wallet</h2>
-
-  <div class="wallet-card">
-
-    <span>
-      Available Balance
-    </span>
-
-    <strong>
-      ₹0
-    </strong>
-
-  </div>
-
-</main>
-
-
-<!-- WINNERS PAGE -->
-<main
-  id="winnersPage"
-  class="app-page hidden"
->
-
-  <h2>
-    🏆 Winners
-  </h2>
-
-  <div class="empty-page">
-    Winners will appear here.
-  </div>
-
-</main>
-
-
-<!-- PROFILE PAGE -->
-<main
-  id="profilePage"
-  class="app-page hidden"
->
-
-  <div class="profile-header">
-
-    <div class="profile-avatar">
-      👤
-    </div>
-
-    <div>
-
-      <h2 id="profileUserName">
-        User Name
-      </h2>
-
-      <span>
-        Welcome to Trusted OP
-      </span>
-
-    </div>
-
-  </div>
-
-
-  <div class="profile-menu">
-
-    <button>
-      👤
-      <span>My Profile</span>
-      <b>›</b>
-    </button>
-
-    <button>
-      💰
-      <span>Wallet</span>
-      <b>›</b>
-    </button>
-
-    <button>
-      🔐
-      <span>Change Password</span>
-      <b>›</b>
-    </button>
-
-    <button>
-      📋
-      <span>My Wallet History</span>
-      <b>›</b>
-    </button>
-
-    <button>
-      🏆
-      <span>Top Players</span>
-      <b>›</b>
-    </button>
-
-    <button>
-      ⚔️
-      <span>My Challenge</span>
-      <b>›</b>
-    </button>
-
-    <button>
-      🎧
-      <span>Customer Support</span>
-      <b>›</b>
-    </button>
-
-    <button>
-      📤
-      <span>Share App</span>
-      <b>›</b>
-    </button>
-
-  </div>
-
-</main>
-
-
-<!-- BOTTOM NAVIGATION -->
-<nav class="bottom-nav">
-
-  <button
-    class="nav-item active"
-    data-page="home"
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
   >
 
-    <span>⌂</span>
-
-    <small>
-      Home
-    </small>
-
-  </button>
-
-
-  <button
-    class="nav-item"
-    data-page="wallet"
+  <meta
+    name="theme-color"
+    content="#050a12"
   >
 
-    <span>▣</span>
-
-    <small>
-      Wallet
-    </small>
-
-  </button>
-
-
-  <button
-    class="nav-item"
-    data-page="winners"
+  <meta
+    name="description"
+    content="TRUSTED OP - Premium Gaming Tournament App"
   >
 
-    <span>🏆</span>
+  <title>TRUSTED OP - Tournament App</title>
 
-    <small>
-      Winners
-    </small>
-
-  </button>
-
-
-  <button
-    class="nav-item"
-    data-page="profile"
+  <!-- Main CSS -->
+  <link
+    rel="stylesheet"
+    href="./src/style.css"
   >
+</head>
 
-    <span>●</span>
+<body>
 
-    <small>
-      Profile
-    </small>
+  <!-- =====================================================
+       TRUSTED OP APPLICATION
+       ===================================================== -->
 
-  </button>
+  <div id="app"></div>
 
-</nav>
 
-  </div>  <!-- MAIN JAVASCRIPT -->  <script src="./src/main.js"></script></body></html>
+  <!-- =====================================================
+       MAIN JAVASCRIPT
+       ===================================================== -->
+
+  <script
+    src="./src/main.js"
+    defer
+  ></script>
+
+</body>
+
+</html>
