@@ -1,22 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#0b0b0f" />
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
   <title>Trusted OP - Tournament App</title>
-  <meta
-    name="description"
-    content="Trusted OP secure gaming tournament platform"
-  />
 
-  <link rel="stylesheet" href="/src/style.css" />
+  <link
+    rel="stylesheet"
+    href="style.css"
+  >
 </head>
 
 <body>
-  <div id="app"></div>
 
-  <script type="module" src="/src/main.js"></script>
+  <div class="app">
+
+    <!-- HEADER -->
+    <header class="home-header">
+
+      <div class="brand">
+
+        <img
+          src="images/logo.png"
+          class="brand-logo"
+          alt="Trusted OP"
+        >
+
+        <div>
+          <h1>Trusted OP</h1>
+          <span>TOURNAMENT APP</span>
+        </div>
+
+      </div>
+
+      <div class="header-wallet">
+        💰 ₹0
+      </div>
+
+    </header>
+
+
+    <!-- PROMOTION -->
+    <div id="promotionContainer"></div>
+
+
+    <!-- MATCH SECTION -->
+    <div class="section-heading">
+
+      <h2>🔥 Upcoming Matches</h2>
+
+      <span>View All</span>
+
+    </div>
+
+
+    <!-- MATCH CARDS -->
+    <div
+      id="matchesContainer"
+      class="matches-container"
+    ></div>
+
+  </div>
+
+
+  <!-- JAVASCRIPT -->
+  <script src="main.js"></script>
+
 </body>
+
 </html>
