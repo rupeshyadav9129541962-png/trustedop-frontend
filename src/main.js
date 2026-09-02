@@ -1,80 +1,135 @@
+/* TRUSTED OP
+   User App - Tournament Flow
+   Card: Image + Tournament Name ONLY
+   Details page: Complete tournament information + JOIN MATCH
+*/
+
 const app = document.getElementById("app");
 
-const LOGO = "./images/file_000000001d9071fb89ee875444fe92f4.png";
+const LOGO = "./images/trusted-op-logo.png";
 
 const tournaments = [
   {
-    id: 1,
+    id: "match-1",
     title: "BR FULL MAP",
+    image: "./images/br-survival.jpg",
     game: "FREE FIRE",
-    mode: "Squad",
-    slots: "100/100",
-    entry: 50,
+    type: "Squad",
     prize: 5000,
+    perKill: 0,
+    entry: 50,
+    slots: 100,
+    joined: 90,
+    map: "Bermuda",
+    date: "23/05/2026",
     time: "06:00 PM",
-    date: "23 May",
-    image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=900&q=80"
+    status: "LIVE",
+    rules: [
+      "No hacks, cheats or mod APK.",
+      "No abusive behaviour.",
+      "Screen recording may be required.",
+      "Admin decision will be final."
+    ]
   },
   {
-    id: 2,
+    id: "match-2",
     title: "CLASH SQUAD 1V1",
+    image: "./images/clash-squad.jpg",
     game: "FREE FIRE",
-    mode: "1v1",
-    slots: "45/50",
-    entry: 30,
+    type: "1V1",
     prize: 2000,
+    perKill: 0,
+    entry: 30,
+    slots: 50,
+    joined: 45,
+    map: "Bermuda",
+    date: "23/05/2026",
     time: "04:00 PM",
-    date: "22 May",
-    image: "https://images.unsplash.com/photo-1560253023-3ec5d502959f?auto=format&fit=crop&w=900&q=80"
+    status: "LIVE",
+    rules: [
+      "No hacks or third-party applications.",
+      "Match must be played on time.",
+      "Admin decision will be final."
+    ]
   },
   {
-    id: 3,
+    id: "match-3",
     title: "BR SURVIVAL",
+    image: "./images/br-survival-2.jpg",
     game: "FREE FIRE",
-    mode: "Squad",
-    slots: "60/100",
-    entry: 40,
-    prize: 3000,
-    time: "07:00 PM",
-    date: "24 May",
-    image: "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=900&q=80"
+    type: "Solo",
+    prize: 1000,
+    perKill: 5,
+    entry: 20,
+    slots: 50,
+    joined: 32,
+    map: "Bermuda",
+    date: "24/05/2026",
+    time: "08:00 PM",
+    status: "UPCOMING",
+    rules: [
+      "Only registered players can participate.",
+      "No hacks or cheats.",
+      "Admin decision will be final."
+    ]
   },
   {
-    id: 4,
+    id: "match-4",
     title: "LONE WOLF 1V1",
+    image: "./images/lone-wolf.jpg",
     game: "FREE FIRE",
-    mode: "1v1",
-    slots: "30/50",
-    entry: 20,
+    type: "1V1",
     prize: 1500,
-    time: "08:00 PM",
-    date: "22 May",
-    image: "https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?auto=format&fit=crop&w=900&q=80"
+    perKill: 0,
+    entry: 25,
+    slots: 40,
+    joined: 22,
+    map: "Bermuda",
+    date: "24/05/2026",
+    time: "09:00 PM",
+    status: "UPCOMING",
+    rules: [
+      "No hacks or cheats.",
+      "Do not leave the match intentionally.",
+      "Admin decision will be final."
+    ]
   }
 ];
 
-let balance = 811;
+let balance = Number(localStorage.getItem("trusted_op_balance") || 811);
+let joinedMatches = JSON.parse(
+  localStorage.getItem("trusted_op_joined") || "[]"
+);
+
 let currentPage = "home";
 
-function money(n) {
-  return "₹" + Number(n).toLocaleString("en-IN");
+function saveData() {
+  localStorage.setItem("trusted_op_balance", balance);
+  localStorage.setItem(
+    "trusted_op_joined",
+    JSON.stringify(joinedMatches)
+  );
 }
 
-function logo() {
+function money(value) {
+  return "₹" + Number(value).toLocaleString("en-IN");
+}
+
+function logoHTML(className = "") {
   return `
     <img
-      class="brand-logo"
+      class="${className}"
       src="${LOGO}"
       alt="TRUSTED OP"
-      onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
+      onerror="this.style.display='none'"
     >
-    <div class="logo-fallback">TO</div>
   `;
 }
 
-function render(html) {
-  app.innerHTML = html;
-  window.scrollTo(0, 0);
+function escapeHTML(text) {
+  const div = document.createElement("div");
+  div.textContent = text ?? "";
+  return div.innerHTML;
 }
 
 function toast(message) {
@@ -82,262 +137,88 @@ function toast(message) {
   if (old) old.remove();
 
   const el = document.createElement("div");
-  el.className = "toast show";
+  el.className = "toast";
   el.textContent = message;
   document.body.appendChild(el);
 
   setTimeout(() => {
+    el.classList.add("show");
+  }, 20);
+
+  setTimeout(() => {
     el.classList.remove("show");
-    setTimeout(() => el.remove(), 250);
-  }, 2200);
+    setTimeout(() => el.remove(), 300);
+  }, 2500);
 }
-
-/* ================= SPLASH ================= */
-
-function showSplash() {
-  render(`
-    <div class="splash-screen">
-      <div class="splash-glow"></div>
-
-      <div class="splash-logo-box">
-        ${logo()}
-      </div>
-
-      <h1>TRUSTED <span>OP</span></h1>
-      <p>PLAY • COMPETE • WIN</p>
-
-      <div class="splash-loader">
-        <i></i>
-      </div>
-
-      <small>LET THE BATTLE BEGIN</small>
-    </div>
-  `);
-
-  setTimeout(showLogin, 1600);
-}
-
-/* ================= AUTH ================= */
-
-function showLogin() {
-  render(`
-    <div class="auth-screen">
-      <div class="auth-bg-glow"></div>
-
-      <div class="auth-container">
-
-        <div class="auth-brand">
-          <div class="auth-logo-box">
-            ${logo()}
-          </div>
-          <h1>TRUSTED <span>OP</span></h1>
-          <p>Gaming Tournament Platform</p>
-        </div>
-
-        <div class="auth-card">
-
-          <div class="auth-tabs">
-            <button class="auth-tab active" onclick="showLoginForm()">LOGIN</button>
-            <button class="auth-tab" onclick="showRegisterForm()">REGISTER</button>
-          </div>
-
-          <div id="auth-form">
-            ${loginForm()}
-          </div>
-
-        </div>
-
-        <p class="auth-bottom">
-          Trusted gaming • Fast rewards • Fair play
-        </p>
-
-      </div>
-    </div>
-  `);
-}
-
-function loginForm() {
-  return `
-    <h2>Welcome Back 👋</h2>
-    <p class="auth-description">Login to continue playing tournaments.</p>
-
-    <div class="field">
-      <label>Mobile Number</label>
-      <div class="input-wrap">
-        <span>📱</span>
-        <input id="login-mobile" type="tel" placeholder="Enter mobile number">
-      </div>
-    </div>
-
-    <div class="field">
-      <label>Password</label>
-      <div class="input-wrap">
-        <span>🔐</span>
-        <input id="login-password" type="password" placeholder="Enter password">
-      </div>
-    </div>
-
-    <button class="primary-btn" onclick="loginUser()">
-      LOGIN
-    </button>
-
-    <button class="forgot-btn" onclick="toast('Password recovery coming soon')">
-      Forgot Password?
-    </button>
-  `;
-}
-
-function registerForm() {
-  return `
-    <h2>Create Account</h2>
-    <p class="auth-description">Join TRUSTED OP and start winning.</p>
-
-    <div class="field">
-      <label>Full Name</label>
-      <div class="input-wrap">
-        <span>👤</span>
-        <input id="reg-name" type="text" placeholder="Full Name">
-      </div>
-    </div>
-
-    <div class="field">
-      <label>Mobile Number</label>
-      <div class="input-wrap">
-        <span>📱</span>
-        <input id="reg-mobile" type="tel" placeholder="Mobile Number">
-      </div>
-    </div>
-
-    <div class="field">
-      <label>Create Password</label>
-      <div class="input-wrap">
-        <span>🔐</span>
-        <input id="reg-password" type="password" placeholder="Create Password">
-      </div>
-    </div>
-
-    <div class="field">
-      <label>Referral Code <em>(Optional)</em></label>
-      <div class="input-wrap">
-        <span>🎁</span>
-        <input id="reg-referral" type="text" placeholder="Referral Code">
-      </div>
-    </div>
-
-    <button class="primary-btn" onclick="registerUser()">
-      CREATE ACCOUNT
-    </button>
-  `;
-}
-
-function showLoginForm() {
-  document.querySelectorAll(".auth-tab").forEach((x, i) => {
-    x.classList.toggle("active", i === 0);
-  });
-
-  document.getElementById("auth-form").innerHTML = loginForm();
-}
-
-function showRegisterForm() {
-  document.querySelectorAll(".auth-tab").forEach((x, i) => {
-    x.classList.toggle("active", i === 1);
-  });
-
-  document.getElementById("auth-form").innerHTML = registerForm();
-}
-
-function loginUser() {
-  const mobile = document.getElementById("login-mobile").value.trim();
-  const password = document.getElementById("login-password").value.trim();
-
-  if (!mobile || !password) {
-    toast("Please enter mobile number and password");
-    return;
-  }
-
-  toast("Login successful 🎉");
-
-  setTimeout(() => {
-    showHome();
-  }, 500);
-}
-
-function registerUser() {
-  const name = document.getElementById("reg-name").value.trim();
-  const mobile = document.getElementById("reg-mobile").value.trim();
-  const password = document.getElementById("reg-password").value.trim();
-
-  if (!name || !mobile || !password) {
-    toast("Please fill all required fields");
-    return;
-  }
-
-  toast("Account created successfully 🎉");
-
-  setTimeout(() => {
-    showHome();
-  }, 600);
-}
-
-/* ================= HEADER ================= */
 
 function header() {
   return `
-    <header class="top-header">
-
+    <header class="app-header">
       <div class="brand">
-        <div class="brand-image">
-          ${logo()}
+        <div class="brand-logo">
+          ${logoHTML("header-logo")}
         </div>
 
-        <div>
+        <div class="brand-text">
           <strong>TRUSTED OP</strong>
           <small>ESPORTS</small>
         </div>
       </div>
 
-      <div class="header-right">
+      <div class="header-actions">
         <button class="coin-box" onclick="showWallet()">
-          🪙 <span>${balance}</span>
+          🪙 ${balance}
         </button>
 
-        <button class="header-icon" onclick="showNotifications()">
+        <button class="icon-button" onclick="showNotifications()">
           🔔
-          <b>3</b>
+          <span class="notification-dot">3</span>
         </button>
       </div>
-
     </header>
   `;
 }
 
-/* ================= BOTTOM NAV ================= */
-
 function bottomNav(active = "home") {
   return `
-    <nav class="bottom-navigation">
+    <nav class="bottom-nav">
 
-      <button class="${active === "home" ? "active" : ""}" onclick="showHome()">
+      <button
+        class="${active === "home" ? "active" : ""}"
+        onclick="showHome()"
+      >
         <span>⌂</span>
         <small>Home</small>
       </button>
 
-      <button class="${active === "tournaments" ? "active" : ""}" onclick="showTournaments()">
+      <button
+        class="${active === "tournaments" ? "active" : ""}"
+        onclick="showTournaments()"
+      >
         <span>🏆</span>
         <small>Tournaments</small>
       </button>
 
-      <button class="${active === "matches" ? "active" : ""}" onclick="showMatches()">
+      <button
+        class="${active === "matches" ? "active" : ""}"
+        onclick="showMatches()"
+      >
         <span>⚔</span>
         <small>My Matches</small>
       </button>
 
-      <button class="${active === "wallet" ? "active" : ""}" onclick="showWallet()">
+      <button
+        class="${active === "wallet" ? "active" : ""}"
+        onclick="showWallet()"
+      >
         <span>🪙</span>
         <small>Wallet</small>
       </button>
 
-      <button class="${active === "menu" ? "active" : ""}" onclick="showMenu()">
+      <button
+        class="${active === "menu" ? "active" : ""}"
+        onclick="showMenu()"
+      >
         <span>☰</span>
         <small>Menu</small>
       </button>
@@ -346,99 +227,99 @@ function bottomNav(active = "home") {
   `;
 }
 
-/* ================= HOME ================= */
+/* ---------------- HOME ---------------- */
 
 function showHome() {
   currentPage = "home";
 
-  render(`
+  app.innerHTML = `
     <div class="app-shell">
 
       ${header()}
 
-      <main class="page">
+      <main class="page-content">
 
-        <section class="welcome-row">
+        <section class="welcome">
           <div>
-            <span class="hello">WELCOME BACK!</span>
-            <h2>bizon_49</h2>
+            <small>WELCOME BACK!</small>
+            <h2>Trusted Player</h2>
           </div>
 
-          <div class="profile-mini" onclick="showProfile()">
-            👤
-          </div>
+          <div class="profile-avatar">👤</div>
         </section>
 
-        <section class="notice-card">
-          <span class="notice-icon">📢</span>
+        <section class="notice-banner" onclick="showNotifications()">
+          📢
           <div>
-            <b>HACKERS & POV RULES UPDATE</b>
-            <p>Player ko match ke dauran POV / screen recording maintain karna hoga.</p>
+            <strong>HACKERS & POV RULES UPDATE</strong>
+            <small>
+              Player ko match ke dauran POV / screen recording maintain karna hoga.
+            </small>
           </div>
-          <span>›</span>
+          <b>›</b>
         </section>
 
         <section class="hero-card">
           <div class="hero-content">
             <small>TRUSTED OP COMMUNITY</small>
             <h1>PLAY.<br>COMPETE.<br><span>WIN.</span></h1>
-            <p>India's next generation gaming tournament platform.</p>
+
+            <p>
+              India's next generation gaming tournament platform.
+            </p>
 
             <button onclick="showTournaments()">
               EXPLORE TOURNAMENTS →
             </button>
           </div>
 
-          <div class="hero-decoration">
-            🎮
-          </div>
+          <div class="hero-gamepad">🎮</div>
         </section>
 
-        <section class="section">
-          <div class="section-title">
-            <h3>My Matches</h3>
-            <button onclick="showMatches()">View all</button>
-          </div>
-
-          <div class="match-stats">
-
-            <div class="stat-box ongoing">
-              <span>🔥</span>
-              <strong>2</strong>
-              <small>ONGOING</small>
-            </div>
-
-            <div class="stat-box upcoming">
-              <span>⏰</span>
-              <strong>5</strong>
-              <small>UPCOMING</small>
-            </div>
-
-            <div class="stat-box completed">
-              <span>🏆</span>
-              <strong>12</strong>
-              <small>COMPLETED</small>
-            </div>
-
-          </div>
+        <section class="section-heading">
+          <h2>My Matches</h2>
+          <button onclick="showMatches()">View all</button>
         </section>
 
-        <section class="section">
-          <div class="section-title">
-            <h3>Live Tournaments</h3>
-            <button onclick="showTournaments()">View all</button>
+        <section class="match-stats">
+
+          <div class="stat-card">
+            <span>🔥</span>
+            <strong>2</strong>
+            <small>ONGOING</small>
           </div>
 
-          <div class="filter-tabs">
-            <button class="selected">All</button>
-            <button>Solo</button>
-            <button>Duo</button>
-            <button>Squad</button>
+          <div class="stat-card">
+            <span>⏰</span>
+            <strong>5</strong>
+            <small>UPCOMING</small>
           </div>
 
-          <div class="tournament-grid">
-            ${tournaments.map(tournamentCard).join("")}
+          <div class="stat-card">
+            <span>🏆</span>
+            <strong>12</strong>
+            <small>COMPLETED</small>
           </div>
+
+        </section>
+
+        <section class="section-heading">
+          <h2>Live Tournaments</h2>
+          <button onclick="showTournaments()">View all</button>
+        </section>
+
+        <div class="filter-tabs">
+          <button class="active">All</button>
+          <button>Solo</button>
+          <button>Duo</button>
+          <button>Squad</button>
+        </div>
+
+        <section class="tournament-grid">
+          ${tournaments
+            .filter(x => x.status === "LIVE" || x.status === "UPCOMING")
+            .map(tournamentCard)
+            .join("")}
         </section>
 
       </main>
@@ -446,416 +327,333 @@ function showHome() {
       ${bottomNav("home")}
 
     </div>
-  `);
+  `;
 }
 
-/* ================= TOURNAMENT CARD ================= */
+/* ---------------- TOURNAMENT CARD ---------------- */
 
 function tournamentCard(t) {
   return `
-    <article class="tournament-card" onclick="showDetails(${t.id})">
+    <article
+      class="tournament-card clean-card"
+      onclick="showTournamentDetails('${t.id}')"
+    >
 
-      <div class="tournament-cover">
+      <div class="tournament-image">
         <img
-          src="${t.image}"
-          alt="${t.title}"
-          loading="lazy"
-        >
-
-        <span class="game-label">${t.game}</span>
-
-        <div class="cover-gradient"></div>
-
-        <div class="cover-title">
-          <strong>${t.title}</strong>
-          <small>TOURNAMENT</small>
-        </div>
+          src="${escapeHTML(t.image)}"
+          alt="${escapeHTML(t.title)}"
+          onerror="this.style.display='none'"
+        />
       </div>
 
-      <div class="tournament-content">
-
-        <div class="tournament-name">
-          <span>${t.mode}</span>
-          <b>LIVE</b>
-        </div>
-
-        <div class="tournament-data">
-          <div>
-            <small>SLOTS</small>
-            <strong>${t.slots}</strong>
-          </div>
-
-          <div>
-            <small>ENTRY</small>
-            <strong>${money(t.entry)}</strong>
-          </div>
-
-          <div>
-            <small>PRIZE</small>
-            <strong class="green">${money(t.prize)}</strong>
-          </div>
-        </div>
-
-        <div class="tournament-footer">
-          <span>📅 ${t.date} • ${t.time}</span>
-          <button onclick="event.stopPropagation();joinTournament(${t.id})">
-            JOIN NOW
-          </button>
-        </div>
-
+      <div class="clean-card-title">
+        ${escapeHTML(t.title)}
       </div>
 
     </article>
   `;
 }
 
-/* ================= TOURNAMENTS ================= */
+/* ---------------- TOURNAMENT LIST ---------------- */
 
 function showTournaments() {
-  render(`
+  currentPage = "tournaments";
+
+  app.innerHTML = `
     <div class="app-shell">
 
-      <header class="inner-header">
-        <button onclick="showHome()">‹</button>
-        <div>
-          <h2>Tournaments</h2>
-          <small>Find your next battle</small>
+      ${header()}
+
+      <main class="page-content">
+
+        <div class="page-title">
+          <h1>Tournaments</h1>
+          <p>Choose your tournament</p>
         </div>
-        <button onclick="toast('Filters coming soon')">⚙</button>
-      </header>
 
-      <main class="page">
-
-        <div class="category-tabs">
+        <div class="filter-tabs">
           <button class="active">All</button>
           <button>Solo</button>
           <button>Duo</button>
           <button>Squad</button>
         </div>
 
-        <div class="full-tournament-list">
-          ${tournaments.map(tournamentListCard).join("")}
-        </div>
+        <section class="tournament-grid">
+          ${tournaments.map(tournamentCard).join("")}
+        </section>
 
       </main>
 
       ${bottomNav("tournaments")}
 
     </div>
-  `);
-}
-
-function tournamentListCard(t) {
-  return `
-    <article class="list-tournament-card">
-
-      <img src="${t.image}" alt="${t.title}">
-
-      <div class="list-card-info">
-
-        <span class="game-label small">${t.game}</span>
-
-        <h3>${t.title}</h3>
-
-        <div class="list-meta">
-          <span>👥 ${t.slots}</span>
-          <span>💰 ${money(t.entry)}</span>
-          <span>🏆 ${money(t.prize)}</span>
-        </div>
-
-        <div class="list-bottom">
-          <span>📅 ${t.date}, ${t.time}<br>⚔ ${t.mode}</span>
-
-          <button onclick="joinTournament(${t.id})">
-            JOIN NOW
-          </button>
-        </div>
-
-      </div>
-    </article>
   `;
 }
 
-/* ================= DETAILS ================= */
+/* ---------------- DETAILS ---------------- */
 
-function showDetails(id) {
-  const t = tournaments.find(x => x.id === id);
-  if (!t) return;
+function showTournamentDetails(id) {
+  const t = tournaments.find(item => item.id === id);
 
-  render(`
-    <div class="app-shell">
+  if (!t) {
+    toast("Tournament not found");
+    return;
+  }
 
-      <header class="inner-header">
-        <button onclick="showHome()">‹</button>
-        <div>
-          <h2>Tournament Details</h2>
-          <small>${t.game}</small>
-        </div>
-        <button onclick="toast('Tournament link copied')">↗</button>
+  const alreadyJoined = joinedMatches.includes(t.id);
+
+  app.innerHTML = `
+    <div class="app-shell details-page">
+
+      <header class="details-header">
+        <button onclick="goBack()">‹</button>
+
+        <strong>${escapeHTML(t.title)}</strong>
+
+        <div></div>
       </header>
 
-      <main class="page details-page">
+      <main class="details-content">
 
-        <div class="details-cover">
-          <img src="${t.image}" alt="${t.title}">
-          <div>
-            <span>${t.game}</span>
-            <h1>${t.title}</h1>
-            <small>TOURNAMENT</small>
-          </div>
+        <div class="details-image">
+          <img
+            src="${escapeHTML(t.image)}"
+            alt="${escapeHTML(t.title)}"
+            onerror="this.style.display='none'"
+          />
         </div>
 
-        <div class="details-stats">
+        <section class="details-main">
 
-          <div>
-            <b>${t.slots}</b>
-            <small>SLOTS</small>
-          </div>
+          <h1>${escapeHTML(t.title)}</h1>
 
-          <div>
-            <b>${money(t.entry)}</b>
-            <small>ENTRY FEE</small>
-          </div>
-
-          <div>
-            <b class="green">${money(t.prize)}</b>
-            <small>PRIZE POOL</small>
-          </div>
-
-        </div>
-
-        <section class="detail-section">
-          <h3>About Tournament</h3>
-
-          <p>
-            Trusted OP presents ${t.title} Tournament.
-            Only fair players are allowed to participate.
+          <p class="details-game">
+            ${escapeHTML(t.game)}
           </p>
 
-          <div class="rules-grid">
-            <span>🗺️ Map: Bermuda</span>
-            <span>⚔️ Mode: ${t.mode}</span>
-            <span>🎥 POV Mandatory</span>
-            <span>🛡️ Fair Play</span>
-          </div>
-        </section>
+          <p class="details-time">
+            Time : ${escapeHTML(t.date)} at ${escapeHTML(t.time)}
+          </p>
 
-        <section class="detail-section">
-          <h3>Tournament Information</h3>
+          <div class="details-stats">
 
-          <div class="info-list">
-            <div><span>Date</span><b>${t.date} 2026</b></div>
-            <div><span>Time</span><b>${t.time}</b></div>
-            <div><span>Type</span><b>${t.mode}</b></div>
-            <div><span>Version</span><b>Latest</b></div>
-          </div>
-        </section>
+            <div>
+              <small>PRIZE POOL</small>
+              <strong>🪙 ${money(t.prize)}</strong>
+            </div>
 
-        <section class="prize-box">
-          <div>
-            <small>GUARANTEED PRIZE</small>
-            <h2>${money(t.prize)}</h2>
+            <div>
+              <small>PER KILL</small>
+              <strong>🪙 ${money(t.perKill)}</strong>
+            </div>
+
+            <div>
+              <small>ENTRY FEE</small>
+              <strong>🪙 ${money(t.entry)}</strong>
+            </div>
+
           </div>
 
-          <span>🏆</span>
+          <div class="details-stats">
+
+            <div>
+              <small>TYPE</small>
+              <strong>${escapeHTML(t.type)}</strong>
+            </div>
+
+            <div>
+              <small>ENTRY PER PLAYER</small>
+              <strong>${money(t.entry)}</strong>
+            </div>
+
+            <div>
+              <small>MAP</small>
+              <strong>${escapeHTML(t.map)}</strong>
+            </div>
+
+          </div>
+
+          <div class="slot-section">
+
+            <div class="slot-bar">
+              <span
+                style="width:${Math.min(
+                  100,
+                  (t.joined / t.slots) * 100
+                )}%"
+              ></span>
+            </div>
+
+            <div class="slot-info">
+              <span>
+                ${Math.max(0, t.slots - t.joined)} Spot Left
+              </span>
+
+              <span>
+                ${t.joined}/${t.slots}
+              </span>
+            </div>
+
+          </div>
+
+          <section class="rules-box">
+            <h3>Rules</h3>
+
+            <ul>
+              ${t.rules
+                .map(rule => `<li>${escapeHTML(rule)}</li>`)
+                .join("")}
+            </ul>
+          </section>
+
+          ${
+            alreadyJoined
+              ? `
+                <button class="join-button joined-button" disabled>
+                  ✓ JOINED
+                </button>
+              `
+              : `
+                <button
+                  class="join-button"
+                  onclick="joinTournament('${t.id}')"
+                >
+                  JOIN MATCH
+                </button>
+              `
+          }
+
         </section>
-
-        <div class="prize-breakdown">
-          <div><span>🥇 1st Prize</span><b>${money(t.prize * .5)}</b></div>
-          <div><span>🥈 2nd Prize</span><b>${money(t.prize * .3)}</b></div>
-          <div><span>🥉 3rd Prize</span><b>${money(t.prize * .2)}</b></div>
-        </div>
-
-        <button class="join-big" onclick="joinTournament(${t.id})">
-          JOIN TOURNAMENT — ${money(t.entry)}
-        </button>
-
-        <button class="share-btn" onclick="toast('Tournament link copied 📋')">
-          SHARE TOURNAMENT
-        </button>
 
       </main>
 
-      ${bottomNav("tournaments")}
-
     </div>
-  `);
+  `;
 }
 
-/* ================= JOIN ================= */
+/* ---------------- JOIN ---------------- */
 
 function joinTournament(id) {
-  const t = tournaments.find(x => x.id === id);
+  const t = tournaments.find(item => item.id === id);
+
   if (!t) return;
 
+  if (joinedMatches.includes(id)) {
+    toast("Already joined");
+    return;
+  }
+
   if (balance < t.entry) {
-    toast("Insufficient balance 💰");
+    toast("Insufficient wallet balance");
     return;
   }
 
   balance -= t.entry;
 
-  toast(`${t.title} joined successfully! 🎮`);
+  joinedMatches.push(id);
+
+  saveData();
+
+  toast("Tournament joined successfully ✓");
 
   setTimeout(() => {
-    showMatches();
-  }, 900);
+    showTournamentDetails(id);
+  }, 700);
 }
 
-/* ================= MATCHES ================= */
+/* ---------------- MY MATCHES ---------------- */
 
 function showMatches() {
-  render(`
+  currentPage = "matches";
+
+  const myMatches = tournaments.filter(t =>
+    joinedMatches.includes(t.id)
+  );
+
+  app.innerHTML = `
     <div class="app-shell">
 
-      <header class="inner-header">
-        <button onclick="showHome()">‹</button>
-        <div>
-          <h2>My Matches</h2>
-          <small>Your tournament matches</small>
-        </div>
-        <button onclick="toast('Matches refreshed')">↻</button>
-      </header>
+      ${header()}
 
-      <main class="page">
+      <main class="page-content">
 
-        <div class="match-tabs">
-          <button class="active">Ongoing</button>
-          <button>Upcoming</button>
-          <button>Completed</button>
+        <div class="page-title">
+          <h1>My Matches</h1>
+          <p>Your joined tournaments</p>
         </div>
 
-        <div class="my-match-card">
+        ${
+          myMatches.length
+            ? `
+              <section class="tournament-grid">
+                ${myMatches.map(tournamentCard).join("")}
+              </section>
+            `
+            : `
+              <div class="empty-state">
+                <div>🎮</div>
+                <h2>No Matches Yet</h2>
+                <p>Join a tournament to see it here.</p>
 
-          <div class="my-match-top">
-            <div>
-              <span>FREE FIRE</span>
-              <h3>BR FULL MAP</h3>
-            </div>
-            <b class="live-status">ONGOING</b>
-          </div>
-
-          <div class="room-info">
-            <div><small>MATCH TIME</small><b>06:00 PM</b></div>
-            <div><small>ROOM ID</small><b>12345678</b></div>
-            <div><small>PASSWORD</small><b>1234</b></div>
-          </div>
-
-          <button class="view-match-btn" onclick="toast('Room details opened')">
-            VIEW MATCH
-          </button>
-
-        </div>
-
-        <div class="my-match-card">
-
-          <div class="my-match-top">
-            <div>
-              <span>FREE FIRE</span>
-              <h3>CLASH SQUAD 1V1</h3>
-            </div>
-            <b class="live-status">ONGOING</b>
-          </div>
-
-          <div class="room-info">
-            <div><small>MATCH TIME</small><b>04:00 PM</b></div>
-            <div><small>ROOM ID</small><b>87654321</b></div>
-            <div><small>PASSWORD</small><b>4321</b></div>
-          </div>
-
-          <button class="view-match-btn" onclick="toast('Room details opened')">
-            VIEW MATCH
-          </button>
-
-        </div>
-
-        <div class="my-match-card upcoming-match">
-
-          <div class="my-match-top">
-            <div>
-              <span>FREE FIRE</span>
-              <h3>BR SURVIVAL</h3>
-            </div>
-            <b>UPCOMING</b>
-          </div>
-
-          <div class="room-info">
-            <div><small>MATCH TIME</small><b>07:00 PM</b></div>
-            <div><small>ROOM ID</small><b>--</b></div>
-            <div><small>PASSWORD</small><b>--</b></div>
-          </div>
-
-          <button class="view-match-btn disabled">
-            WAITING
-          </button>
-
-        </div>
+                <button onclick="showTournaments()">
+                  FIND TOURNAMENT
+                </button>
+              </div>
+            `
+        }
 
       </main>
 
       ${bottomNav("matches")}
 
     </div>
-  `);
+  `;
 }
 
-/* ================= WALLET ================= */
+/* ---------------- WALLET ---------------- */
 
 function showWallet() {
-  render(`
+  currentPage = "wallet";
+
+  app.innerHTML = `
     <div class="app-shell">
 
-      <header class="inner-header">
-        <button onclick="showHome()">‹</button>
-        <div>
-          <h2>Wallet</h2>
-          <small>Your balance & transactions</small>
+      ${header()}
+
+      <main class="page-content">
+
+        <div class="page-title">
+          <h1>Wallet</h1>
+          <p>Manage your tournament balance</p>
         </div>
-        <button onclick="toast('Wallet refreshed')">↻</button>
-      </header>
 
-      <main class="page">
+        <section class="wallet-card">
+          <small>AVAILABLE BALANCE</small>
 
-        <section class="wallet-main">
+          <h1>${money(balance)}</h1>
 
-          <div>
-            <small>TOTAL BALANCE</small>
-            <h1>🪙 ${balance}</h1>
-            <span>Available coins</span>
+          <div class="wallet-actions">
+            <button onclick="addDemoMoney()">
+              + ADD MONEY
+            </button>
+
+            <button onclick="toast('Withdrawal section coming soon')">
+              WITHDRAW
+            </button>
           </div>
-
-          <button onclick="toast('Add Coins coming soon')">
-            + ADD COINS
-          </button>
-
         </section>
 
-        <section class="section">
-          <div class="section-title">
-            <h3>Transaction History</h3>
-            <button>View All</button>
-          </div>
+        <section class="wallet-info">
+          <h3>Transaction History</h3>
 
-          <div class="transactions">
-
-            <div class="transaction">
-              <span>🪙</span>
-              <div><b>Added Coins</b><small>Today</small></div>
-              <strong class="green">+100</strong>
+          <div class="transaction">
+            <span>🪙</span>
+            <div>
+              <strong>Current Balance</strong>
+              <small>TRUSTED OP Wallet</small>
             </div>
-
-            <div class="transaction">
-              <span>🎮</span>
-              <div><b>Joined Tournament</b><small>Today</small></div>
-              <strong class="red">-50</strong>
-            </div>
-
-            <div class="transaction">
-              <span>🪙</span>
-              <div><b>Added Coins</b><small>Yesterday</small></div>
-              <strong class="green">+200</strong>
-            </div>
-
+            <b>${money(balance)}</b>
           </div>
         </section>
 
@@ -864,264 +662,106 @@ function showWallet() {
       ${bottomNav("wallet")}
 
     </div>
-  `);
+  `;
 }
 
-/* ================= LEADERBOARD ================= */
-
-function showLeaderboard() {
-  render(`
-    <div class="app-shell">
-
-      <header class="inner-header">
-        <button onclick="showHome()">‹</button>
-        <div>
-          <h2>Leaderboard</h2>
-          <small>Top players</small>
-        </div>
-        <button>↻</button>
-      </header>
-
-      <main class="page">
-
-        <div class="leader-tabs">
-          <button class="active">All Time</button>
-          <button>This Month</button>
-          <button>This Week</button>
-        </div>
-
-        <div class="podium">
-
-          <div class="podium-player second">
-            <span>🥈</span>
-            <b>REDX</b>
-            <small>8,450</small>
-          </div>
-
-          <div class="podium-player first">
-            <span>👑</span>
-            <b>DEADSHOT</b>
-            <small>12,560</small>
-          </div>
-
-          <div class="podium-player third">
-            <span>🥉</span>
-            <b>NOVA KING</b>
-            <small>7,890</small>
-          </div>
-
-        </div>
-
-        <div class="leader-list">
-
-          ${[
-            ["4","GAMER X","6,450"],
-            ["5","DARK FF","5,980"],
-            ["6","LEGEND 07","5,230"],
-            ["7","ROCKY OP","4,890"],
-            ["8","ALPHA KD","4,560"]
-          ].map(x => `
-            <div class="leader-row">
-              <b>${x[0]}</b>
-              <span>👤 ${x[1]}</span>
-              <strong>${x[2]}</strong>
-            </div>
-          `).join("")}
-
-        </div>
-
-      </main>
-
-      ${bottomNav("menu")}
-
-    </div>
-  `);
+function addDemoMoney() {
+  balance += 100;
+  saveData();
+  toast("₹100 demo balance added");
+  showWallet();
 }
 
-/* ================= EARN ================= */
-
-function showEarn() {
-  render(`
-    <div class="app-shell">
-
-      <header class="inner-header">
-        <button onclick="showHome()">‹</button>
-        <div>
-          <h2>Refer & Earn</h2>
-          <small>Invite friends & earn rewards</small>
-        </div>
-        <button>🎁</button>
-      </header>
-
-      <main class="page">
-
-        <section class="earn-hero">
-          <div>🎁</div>
-          <h1>INVITE & EARN</h1>
-          <p>Share your referral code and earn exciting rewards.</p>
-        </section>
-
-        <section class="referral-card">
-
-          <small>YOUR REFERRAL CODE</small>
-
-          <div class="referral-code">
-            <strong>TRUSTEDOP07</strong>
-            <button onclick="copyReferral()">COPY</button>
-          </div>
-
-        </section>
-
-        <section class="share-card">
-          <h3>Share via</h3>
-
-          <div class="share-buttons">
-            <button onclick="toast('WhatsApp share opened')">WhatsApp</button>
-            <button onclick="toast('Telegram share opened')">Telegram</button>
-            <button onclick="toast('Share opened')">Share</button>
-          </div>
-        </section>
-
-      </main>
-
-      ${bottomNav("menu")}
-
-    </div>
-  `);
-}
-
-function copyReferral() {
-  navigator.clipboard?.writeText("TRUSTEDOP07");
-  toast("Referral code copied 📋");
-}
-
-/* ================= NOTIFICATIONS ================= */
+/* ---------------- NOTIFICATIONS ---------------- */
 
 function showNotifications() {
-  render(`
+  currentPage = "notifications";
+
+  app.innerHTML = `
     <div class="app-shell">
 
-      <header class="inner-header">
-        <button onclick="showHome()">‹</button>
-        <div>
-          <h2>Notifications</h2>
-          <small>Latest updates</small>
-        </div>
-        <button>✓</button>
+      <header class="details-header">
+        <button onclick="goBack()">‹</button>
+        <strong>Notifications</strong>
+        <div></div>
       </header>
 
-      <main class="page">
+      <main class="page-content">
 
-        ${[
-          ["🏆","Tournament Joined","You successfully joined BR FULL MAP tournament.","Just now"],
-          ["💰","Wallet Updated","Your wallet transaction was successful.","1 hour ago"],
-          ["📢","Rules Update","POV and screen recording rules have been updated.","Today"],
-          ["🎮","Match Reminder","Your upcoming match starts soon.","Today"]
-        ].map(n => `
-          <div class="notification-card">
-            <div class="notification-icon">${n[0]}</div>
-            <div>
-              <b>${n[1]}</b>
-              <p>${n[2]}</p>
-              <small>${n[3]}</small>
-            </div>
+        <div class="notification-item">
+          <span>📢</span>
+          <div>
+            <strong>Rules Updated</strong>
+            <p>
+              Please maintain POV/screen recording during matches.
+            </p>
           </div>
-        `).join("")}
+        </div>
+
+        <div class="notification-item">
+          <span>🏆</span>
+          <div>
+            <strong>Welcome to TRUSTED OP</strong>
+            <p>
+              Join tournaments and compete with other players.
+            </p>
+          </div>
+        </div>
 
       </main>
 
     </div>
-  `);
+  `;
 }
 
-/* ================= PROFILE ================= */
-
-function showProfile() {
-  render(`
-    <div class="app-shell">
-
-      <header class="inner-header">
-        <button onclick="showHome()">‹</button>
-        <div>
-          <h2>Profile</h2>
-          <small>Your gaming profile</small>
-        </div>
-        <button onclick="toast('Edit profile coming soon')">✎</button>
-      </header>
-
-      <main class="page">
-
-        <section class="profile-card">
-
-          <div class="profile-avatar">👤</div>
-
-          <h2>Trusted OP</h2>
-          <p>@bizon_49 ✓</p>
-
-          <div class="profile-stats">
-            <div><b>56</b><small>Matches</small></div>
-            <div><b>28</b><small>Wins</small></div>
-            <div><b>50%</b><small>Win Rate</small></div>
-          </div>
-
-        </section>
-
-        <div class="profile-menu">
-
-          <button onclick="showMatches()">⚔️ <span>My Matches</span> ›</button>
-          <button onclick="showWallet()">🪙 <span>Wallet (${balance})</span> ›</button>
-          <button onclick="showNotifications()">🔔 <span>Notifications</span> ›</button>
-          <button onclick="toast('Settings coming soon')">⚙️ <span>Settings</span> ›</button>
-
-        </div>
-
-      </main>
-
-      ${bottomNav("menu")}
-
-    </div>
-  `);
-}
-
-/* ================= MENU ================= */
+/* ---------------- MENU ---------------- */
 
 function showMenu() {
-  render(`
+  currentPage = "menu";
+
+  app.innerHTML = `
     <div class="app-shell">
 
-      <header class="top-header">
-        <div class="brand">
-          <div class="brand-image">${logo()}</div>
-          <div>
-            <strong>TRUSTED OP</strong>
-            <small>MENU</small>
-          </div>
+      ${header()}
+
+      <main class="page-content">
+
+        <div class="page-title">
+          <h1>Menu</h1>
+          <p>TRUSTED OP</p>
         </div>
-      </header>
-
-      <main class="page">
-
-        <section class="menu-profile">
-          <div class="profile-avatar">👤</div>
-          <div>
-            <b>bizon_49</b>
-            <small>Trusted OP Player</small>
-          </div>
-        </section>
 
         <div class="menu-list">
 
-          <button onclick="showHome()">🏠 <span>Home</span> <b>›</b></button>
-          <button onclick="showTournaments()">🏆 <span>Tournaments</span> <b>›</b></button>
-          <button onclick="showMatches()">⚔️ <span>My Matches</span> <b>›</b></button>
-          <button onclick="showWallet()">🪙 <span>Wallet</span> <b>›</b></button>
-          <button onclick="showLeaderboard()">👑 <span>Leaderboard</span> <b>›</b></button>
-          <button onclick="showEarn()">🎁 <span>Refer & Earn</span> <b>›</b></button>
-          <button onclick="showProfile()">👤 <span>Profile</span> <b>›</b></button>
-          <button onclick="toast('Support coming soon')">💬 <span>Support</span> <b>›</b></button>
-          <button onclick="toast('Settings coming soon')">⚙️ <span>Settings</span> <b>›</b></button>
+          <button onclick="showProfile()">
+            👤
+            <span>Profile</span>
+            <b>›</b>
+          </button>
 
-          <button class="logout" onclick="showLogin()">🚪 <span>Logout</span></button>
+          <button onclick="showTournaments()">
+            🏆
+            <span>Tournaments</span>
+            <b>›</b>
+          </button>
+
+          <button onclick="showMatches()">
+            ⚔
+            <span>My Matches</span>
+            <b>›</b>
+          </button>
+
+          <button onclick="showWallet()">
+            🪙
+            <span>Wallet</span>
+            <b>›</b>
+          </button>
+
+          <button onclick="showNotifications()">
+            🔔
+            <span>Notifications</span>
+            <b>›</b>
+          </button>
 
         </div>
 
@@ -1130,31 +770,92 @@ function showMenu() {
       ${bottomNav("menu")}
 
     </div>
-  `);
+  `;
 }
 
-/* ================= START ================= */
+/* ---------------- PROFILE ---------------- */
 
-document.addEventListener("DOMContentLoaded", () => {
-  showSplash();
-});
+function showProfile() {
+  currentPage = "profile";
 
-/* ================= GLOBAL ================= */
+  app.innerHTML = `
+    <div class="app-shell">
 
-window.showLogin = showLogin;
-window.showLoginForm = showLoginForm;
-window.showRegisterForm = showRegisterForm;
-window.loginUser = loginUser;
-window.registerUser = registerUser;
+      <header class="details-header">
+        <button onclick="goBack()">‹</button>
+        <strong>Profile</strong>
+        <div></div>
+      </header>
+
+      <main class="page-content">
+
+        <section class="profile-card">
+
+          <div class="profile-avatar large">
+            👤
+          </div>
+
+          <h2>Trusted Player</h2>
+          <p>TRUSTED OP Member</p>
+
+        </section>
+
+        <div class="profile-info">
+
+          <div>
+            <small>USERNAME</small>
+            <strong>Trusted Player</strong>
+          </div>
+
+          <div>
+            <small>WALLET BALANCE</small>
+            <strong>${money(balance)}</strong>
+          </div>
+
+          <div>
+            <small>JOINED MATCHES</small>
+            <strong>${joinedMatches.length}</strong>
+          </div>
+
+        </div>
+
+      </main>
+
+    </div>
+  `;
+}
+
+/* ---------------- BACK ---------------- */
+
+function goBack() {
+  if (currentPage === "home") {
+    showHome();
+  } else {
+    showHome();
+  }
+}
+
+/* ---------------- START ---------------- */
+
+function startApp() {
+  showHome();
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", startApp);
+} else {
+  startApp();
+}
+
+/* Global functions */
 window.showHome = showHome;
 window.showTournaments = showTournaments;
-window.showDetails = showDetails;
+window.showTournamentDetails = showTournamentDetails;
 window.joinTournament = joinTournament;
 window.showMatches = showMatches;
 window.showWallet = showWallet;
-window.showLeaderboard = showLeaderboard;
-window.showEarn = showEarn;
 window.showNotifications = showNotifications;
-window.showProfile = showProfile;
 window.showMenu = showMenu;
-window.copyReferral = copyReferral;
+window.showProfile = showProfile;
+window.addDemoMoney = addDemoMoney;
+window.goBack = goBack;
