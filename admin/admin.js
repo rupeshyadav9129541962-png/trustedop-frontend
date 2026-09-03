@@ -5406,7 +5406,27 @@ async function showSettings(
       )}
 
       <div class="form-grid">
+<div class="form-group">
 
+  <label>
+    PAYMENT SYSTEM
+  </label>
+
+  <select
+    class="form-select"
+    id="settingPaymentEnabled"
+  >
+    ${option(
+      "false",
+      String(settings.paymentEnabled ?? false)
+    )}
+    ${option(
+      "true",
+      String(settings.paymentEnabled ?? false)
+    )}
+  </select>
+
+</div>
         <div class="form-group">
 
           <label>
@@ -5577,7 +5597,12 @@ async function showSettings(
                   )
                   .value
                   .trim(),
-
+paymentEnabled:
+  document
+    .getElementById(
+      "settingPaymentEnabled"
+    )
+    .value === "true",
               updatedAt:
                 Date.now()
             }
